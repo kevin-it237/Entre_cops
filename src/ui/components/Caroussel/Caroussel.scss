@@ -1,0 +1,26 @@
+.carousel-item{
+    @media only screen and (min-width: 900px) {
+        height: 55rem;
+        
+        img{
+            
+        }
+    }
+}
+
+.carousel-inner {
+    h1 {
+        color: white;
+    }
+    p {
+        font-size: 1.4rem;
+        color: white;
+    }
+    a {
+        font-size: 1.55rem;
+        font-weight: 600;
+        padding: 1rem 4rem;
+        min-width: 15rem;
+        color: white;
+    }
+}

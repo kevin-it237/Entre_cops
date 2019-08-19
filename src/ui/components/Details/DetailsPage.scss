@@ -1,0 +1,257 @@
+#projectdetails  {
+    margin-top: 2rem;
+}
+#projectdetails .left {
+    padding: 2rem;
+
+    textarea {
+        font-size: 1.5rem;
+    }
+}
+#projectdetails .left .aws-sld__content {
+    background-color: transparent !important;
+}
+#projectdetails .left .aws-sld__bullets {
+    bottom: -1rem !important;
+}
+
+#projectdetails .right {
+    padding: 2rem;
+}
+
+#projectdetails .left img{
+    height: 40rem;
+    width: 100%;
+}
+
+#projectdetails .left .infos{
+    background-color: white;
+    border: solid 1px #eee;
+}
+
+#projectdetails .left .otherinfos{
+    padding: 0 2rem 2rem 2rem;
+
+    p{
+        font-size: 1.3rem;
+    }
+}
+#projectdetails .left .founds{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#projectdetails .description img{
+    width: 100% !important;
+}
+#projectdetails .description iframe {
+    width: 100% !important;
+}
+
+@media only screen and (max-width: 1200px) {
+    #projectdetails .left h2{
+        margin-top: 1rem !important;
+    }
+}
+@media only screen and (max-width: 900px) {
+    #projectdetails .left h2{
+        margin-top: 2rem !important;
+    }
+}
+
+#projectdetails .left h2{
+    margin-top: 2.5rem;
+    font-weight: 600;
+    font-size: 2.3rem;
+    color: #33475B;
+}
+
+#projectdetails .left .socialBtn{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: auto;
+}
+#projectdetails .left .shareButtons{
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+#projectdetails .left .moreinfos{
+    margin-top: -2rem;
+
+    @media only screen and (max-width: 1024px) {
+        flex-direction: column !important;
+    }
+}
+
+#projectdetails .left .moreinfos .headers{
+    display: flex;
+    padding-right: 2rem;
+    padding-left: 2rem;
+}
+#projectdetails .left .moreinfos .stars{
+    display: flex;
+    align-items: center;
+    padding-right: 2rem;
+    padding-left: 2rem;
+
+    svg {
+        margin-right: .5rem;
+        cursor: pointer;
+        path {
+            fill: orange !important;
+        }
+        &:hover path {
+            fill: orangered !important;
+        }
+    }
+
+    .votes {
+        font-size: 1.25rem;
+        margin-top: .2rem;
+    }
+}
+
+#projectdetails .left .moreinfos .content{
+    padding: 2rem 3rem 0 3rem;
+}
+#projectdetails .left .form-content {
+    padding: 0 1.6rem;
+    margin-top: 2.5rem;
+
+    textarea {
+        font-size: 1.4rem;
+        border-radius: 5px;
+    }
+}
+#projectdetails .left .reviews p {
+    border-bottom: solid 1px #eee;
+    padding-bottom: 1.5rem;
+}
+#projectdetails .left .send-btn{
+    margin-top: 1.8rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    min-width: 13rem;
+    margin-left: auto;
+    box-shadow: 0 4px 10px #e2e2e2;
+    display: block;
+
+    svg {
+        margin-left: 1rem;
+        path {
+            color: white;
+        }
+    }
+}
+
+#projectdetails .right {
+    .infos {
+        padding: 4rem 2.5rem;
+        background-color: white;
+        border: solid 1px #eee;
+    
+        svg {
+            margin-right: 1.5rem;
+    
+            path {
+                fill: orangered !important;
+            }
+        }
+    
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: .15rem;
+        }
+    
+        .book {
+            width: 100%;
+        }
+        .reccommand {
+            background-color: red;
+            width: 100%;
+        }
+
+        .button {
+            @media only screen and (max-width: 1000px) {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+    }
+
+    .other-infos {
+        padding: 4rem 2.5rem;
+        background-color: white;
+        border: solid 1px #eee;
+
+        .button {
+            @media only screen and (max-width: 1000px) {
+                padding-left: 1rem;
+                padding-right: 1rem;
+                font-size: 1.35rem;
+            }
+        }
+
+        p {
+            font-size: 1.3rem;
+            text-align: justify;
+        }
+        h3 {
+            font-weight: 600;
+        }
+    }
+
+    .stiky {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+    }
+
+    video {
+        cursor: pointer;
+    }
+
+}
+
+.modal-content {
+    .modal-title {
+        font-size: 2rem;
+    }
+
+    button {
+        font-size: 1.4rem !important;
+        font-weight: 600;
+    }
+
+    input {
+        width: 100% !important;
+    }
+
+    .search {
+        svg {
+            margin-left: -3.5rem;
+            font-size: 1.7rem;
+        }
+    }
+
+    .searchInput {
+        border: solid 1px #e2e2e2;
+        padding: 1.8rem;
+
+        &:focus {
+            border-bottom: none;
+        }
+    }
+    .download-btn {
+        svg {
+            margin-left: 1rem;
+            path {
+                fill: white;
+            }
+        }
+    }
+}

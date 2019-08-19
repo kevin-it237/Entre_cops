@@ -1,25 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route } from "react-router-dom";
+import Home from './ui/Home';
+import AuthPage from './ui/components/Forms/AuthForm';
+import AllServicesPage from './ui/components/Services/AllServicesPage';
+import AllEventsPage from './ui/components/Events/AllEventsPage';
+import SingleCategoryPage from './ui/components/Categories/SingleCategoryPage';
+import DetailsPage from './ui/components/Details/DetailsPage';
+import SupplierDashboard from './ui/suppliers/Dashboard/Dashboard';
+
+/* Admin Pages */
+import Admin from './ui/admin/Admin';
+import AdminLogin from './ui/admin/AdminLogin/AdminLogin';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+        <Route path="/" exact component={Home}  />
+        <Route path="/auth" exact component={AuthPage}  />
+        <Route path="/annonces" exact component={AllEventsPage}  />
+        <Route path="/services" exact component={AllServicesPage}  />
+        <Route path="/category/:id" component={SingleCategoryPage}  />
+        <Route path="/service/details/:id" component={DetailsPage}  />
+        <Route path="/dashboard/reservations" component={SupplierDashboard}  />
+
+        {/* Admin Routes */}
+        <Route path="/auth/admin" exact component={AdminLogin} />
+        <Route path="/admin" component={Admin} />
+    </BrowserRouter>
   );
 }
 

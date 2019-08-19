@@ -1,0 +1,95 @@
+.navbar-shadow {
+  box-shadow: 2px 3px 10px #eee !important;
+}
+
+.navbar{
+    opacity: 1;
+    background: #fff !important;
+    z-index: 10;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+
+    .nav-item{
+        font-size: 1.4rem;
+        padding-right: 2rem;
+
+        a {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #33475B !important;
+        }
+    }
+    form {
+      display: flex;
+      align-items: center;
+        input {
+            min-width: 32rem;
+            height: 3.2rem;
+            font-size: 1.4rem;
+            border-radius: 15px;
+            padding: .6rem 1.7rem;
+            border-color: #aaa;
+            &:focus {
+                outline: none;
+                box-shadow: 0 5px 10px #eee;
+                border-color: #e2e2e2;
+            }
+        }
+        svg {
+          margin-left: -3.2rem;
+          font-size: 1.35rem;
+          cursor: pointer;
+          position: relative;
+        }
+    }
+    
+    .nav-link {
+      sup {
+        color: orangered;
+        margin-left: .12rem;
+      }
+    }
+
+    .nav-link.active {
+      color: orangered !important;
+    }
+}
+
+/* DROPDOWN BUTTON ON HEADER */
+.dropbtn {
+    color: inherit;
+    font-size: 1.5rem;
+    font-weight: 600 !important;
+    border: none;
+    cursor: pointer;
+    margin: 0 !important;
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 16rem;
+    box-shadow: 0px 8px 10px 0px rgba(0,0,0,0.1);
+    z-index: 10;
+  }
+  
+  .dropdown-content a {
+    color: inherit ;
+    padding: 8px 12px !important;
+    min-height: 0 !important;
+    text-decoration: none;
+    display: block;
+    font-size: 1.4rem;
+  }
+  
+  .dropdown-content a:hover {background-color: #f6f6f6;}
+  
+  .dropdown:hover .dropdown-content {display: block;}
+  
+  .dropdown:hover .dropbtn {color: orangered;}
