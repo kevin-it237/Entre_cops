@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Footer from '../../globalComponent/Footer';
 import { faStar, faClock, faCalendar, faMapMarked, faPaperPlane, 
     faSearch, faComment, faFileDownload } from '@fortawesome/free-solid-svg-icons';
 import './DetailsPage.scss';
@@ -146,6 +147,8 @@ class DetailsPage extends Component {
                         </div>
                     </div>
                 </section>
+
+                <Footer />
 
                 {/* Reservation */}
                 <Modal show={this.state.showReservationModal} onHide={() => this.setState({showReservationModal: !this.state.showReservationModal})} >

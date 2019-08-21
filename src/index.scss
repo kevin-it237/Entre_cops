@@ -1,10 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway&display=swap');
-
-// Variable
-$fontColor: #33475B;
-$greyLight: #F5F8FA;
-
-
+@import './ui/utils/utils.scss';
 
 
 *,*::after, *::before{
@@ -46,7 +41,7 @@ html, body, * {
   /* FORM TYPOGRAPHY*/
   
   input[type=button], input[type=submit], input[type=reset], .button  {
-    background-color: #56baed;
+    background-color: $maincolor;
     border: none;
     color: white;
     padding: 1.3rem 4rem;
@@ -68,7 +63,7 @@ html, body, * {
   }
   
   input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
-    background-color: #39ace7;
+    background-color: $maincolor;
   }
   
   input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
@@ -101,7 +96,7 @@ html, body, * {
   
   input[type=text]:focus,input[type=email]:focus,input[type=password]:focus, input[type=tel]:focus, input[type=number]:focus {
     background-color: #fff;
-    border-bottom: 2px solid #5fbae9;
+    border-bottom: 2px solid $fontColor;
   }
   
   input[type=text]:placeholder,input[type=email]:placeholder,input[type=password]:placeholder, input[type=tel]:placeholder, input[type=number]:placeholder {

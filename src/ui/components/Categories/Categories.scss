@@ -1,4 +1,8 @@
+@import '../../utils//utils.scss';
+
 .categories {
+    .horizontal-scroll {
+    }
     .wrimagecard{	
         margin-top: 0;
         margin-bottom: 1.5rem;
@@ -8,6 +12,15 @@
         box-shadow: 5px 5px 10px 0px rgba(46,61,73,0.15);
         border-radius: 4px;
         transition: all 0.3s ease;
+        width: 15rem;
+
+        &:not(:last-child) {
+            margin-right: 1.5rem;
+            @media only screen and(max-width: 1024px) {
+                margin-right: 0 !important;
+            }
+        }
+
     }
     .wrimagecard .fa {
         position: relative;
@@ -15,11 +28,11 @@
     }
     .wrimagecard-topimage_header{
         padding: 20px;
-        background-color:rgba(187, 120, 36, 0.1);
+        background-color:rgba($maincolor, 0.1);
     }
     svg {
         path {
-            fill: #dc3545 !important;
+            fill: $maincolor !important;
         }
     }
     a.wrimagecard:hover, .wrimagecard-topimage:hover {
@@ -31,7 +44,7 @@
         display: block;
     }
     .wrimagecard-topimage_title {
-        padding: 2rem;
+        padding: 1.5rem;
         height: 80px;
         padding-bottom: 0.75rem;
         position: relative;
@@ -44,7 +57,6 @@
     .wrimagecard-topimage a {
         border-bottom: none;
         text-decoration: none;
-        color: #525c65;
         transition: color 0.3s ease;
     }
     
@@ -59,16 +71,9 @@
         cursor: pointer;
         border: none;
     }
-    .menu-item-wrapper.active {
-        border: 1px blue solid;
-    }
-    .menu-item.active {
-        border: 1px green solid;
-    }
        
     .scroll-menu-arrow {
         padding: 20px;
         cursor: pointer;
-        color: red;
     }
 }

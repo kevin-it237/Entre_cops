@@ -6,13 +6,13 @@ const EventItem = (props) => {
     return (
         <div class="home">
             <img src={img} alt="" class="home__img"/>
-            <h5 class="home_name">Beautiful Family House</h5>
+            <h5 class="home_name">Prestation Petit pays à la Sanza</h5>
             <div class="home_content">
                 <center>
-                    <p>infos...</p>
+                    <p>Description de l'évènement...</p>
                 </center>
             </div>
-            <Link className="btn home__btn" to="/service/details/1">Contact realtors</Link>
+            <Link className="btn home__btn" to="/service/details/1">Consulter</Link>
         </div>
     );
 }

@@ -1,3 +1,5 @@
+@import '../utils/utils.scss';
+
 .navbar-shadow {
   box-shadow: 2px 3px 10px #eee !important;
 }
@@ -6,8 +8,8 @@
     opacity: 1;
     background: #fff !important;
     z-index: 10;
-    padding-top: 2.5rem;
-    padding-bottom: 2.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 
     .nav-item{
         font-size: 1.4rem;
@@ -16,7 +18,7 @@
         a {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #33475B !important;
+            color: $fontColor !important;
         }
     }
     form {
@@ -45,13 +47,13 @@
     
     .nav-link {
       sup {
-        color: orangered;
+        color: $maincolor;
         margin-left: .12rem;
       }
     }
 
     .nav-link.active {
-      color: orangered !important;
+      color: $maincolor !important;
     }
 }
 
@@ -92,4 +94,4 @@
   
   .dropdown:hover .dropdown-content {display: block;}
   
-  .dropdown:hover .dropbtn {color: orangered;}
+  .dropdown:hover .dropbtn {color: $maincolor;}

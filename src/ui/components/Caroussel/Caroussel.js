@@ -19,7 +19,7 @@ const Caroussel = (props) => {
                             <div class="carousel-caption d-none d-sm-block text-bottom mb-5">
                                 <h1 class="display-3">Heading 1</h1>
                                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                <a href="#a" class="btn btn-danger btn-lg">Parcourir les Evènements</a>
+                                <a href="#events" class="btn btn-danger btn-lg">Parcourir les Evènements</a>
                             </div>
                         </div>
                     </div>

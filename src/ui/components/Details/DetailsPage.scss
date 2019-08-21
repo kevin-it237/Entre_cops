@@ -1,3 +1,5 @@
+@import '../../utils/utils.scss';
+
 #projectdetails  {
     margin-top: 2rem;
 }
@@ -63,7 +65,7 @@
     margin-top: 2.5rem;
     font-weight: 600;
     font-size: 2.3rem;
-    color: #33475B;
+    color: $fontColor;
 }
 
 #projectdetails .left .socialBtn{
@@ -157,7 +159,7 @@
             margin-right: 1.5rem;
     
             path {
-                fill: orangered !important;
+                fill: $maincolor !important;
             }
         }
     
@@ -171,7 +173,7 @@
             width: 100%;
         }
         .reccommand {
-            background-color: red;
+            background-color: $fontColor;
             width: 100%;
         }
 

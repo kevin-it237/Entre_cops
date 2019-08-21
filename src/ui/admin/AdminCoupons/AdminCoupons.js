@@ -40,7 +40,8 @@ class AdminCoupons extends Component {
                                         <td>Formation Wordpress</td>
                                         <td>5</td>
                                         <td className="date">
-                                            <button className="btn btn-danger btn-lg" onClick={() => this.setState({showModal: true})}>Générer des coupons</button>
+                                            <button className="btn btn-danger btn-lg mr-3" onClick={() => this.setState({showModal: true})}>Générer des coupons</button>
+                                            <button className="btn btn-dark btn-lg">Annuler coupons</button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -48,7 +49,8 @@ class AdminCoupons extends Component {
                                         <td>Concert Dadju</td>
                                         <td>0</td>
                                         <td className="date">
-                                            <button className="btn btn-danger btn-lg" onClick={() => this.setState({showModal: true})}>Générer des coupons</button>
+                                            <button className="btn btn-danger btn-lg mr-3" onClick={() => this.setState({showModal: true})}>Générer des coupons</button>
+                                            <button className="btn btn-dark btn-lg">Annuler coupons</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -67,16 +69,8 @@ class AdminCoupons extends Component {
                             <div className="row">
                                 <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
                                     <div class="form-group">
-                                        <label for="name">Nom complet</label>
-                                        <input type="text" class="form-control" name="nom" id="name" placeholder="Nom complet"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Email address</label>
-                                        <input type="email" class="form-control" name="email" id="email" placeholder="Adresse Email"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="tel">Numero de Téléphone</label>
-                                        <input type="tel" class="form-control" name="tel" id="tel" pattern="[0-9]{9}" placeholder="Numero de Téléphone"/>
+                                        <label for="name">Code</label>
+                                        <input type="text" class="form-control" name="code" id="code" placeholder="Code"/>
                                     </div>
                                     <div class="form-group">
                                         <label for="ncoupons">Numero de Téléphone</label>

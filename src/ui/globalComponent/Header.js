@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faBookmark } from '@fortawesome/free-solid-svg-icons';
 import './Header.scss';
+import logo from '../../assets/images/logo.png';
 
 class Header extends Component {
     render() {
@@ -13,8 +14,7 @@ class Header extends Component {
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <NavLink className="navbar-brand" to="/">
-                        <img src="img/mlogo.png" width="50" height="50" alt="" />
-                        <h3 class="d-inline align-middle">LOGO</h3>
+                        <img src={logo} width="110" height="100%" alt="Logo" />
                     </NavLink>
                     <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
                         <form className="form-inline my-2 my-lg-0 ml-auto mr-4">

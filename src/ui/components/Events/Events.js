@@ -9,11 +9,11 @@ class Events extends Component {
 
     render() {
         return (
-            <section className="events">
+            <section className="events" id="events">
                 <div className="container pb-5 pt-3">
                     <div className="row py-5">
                         <div className="col">
-                            <center><h1 className="py-4 event-header">{this.props.eventType}</h1></center>
+                            <center><h1 className="pt-3 event-header">{this.props.eventType}</h1></center>
                         </div>
                     </div>
                     <div className="row pb-5 mb-2">
@@ -34,7 +34,7 @@ class Events extends Component {
                         {
                             this.props.isHomePage ?
                             <div className="col all_events">
-                                <Link to="/annonces">Toutes les Annonces</Link>
+                                <Link to="/annonces">Toutes les Evènements</Link>
                                 <FontAwesomeIcon icon={faChevronRight} />
                             </div> : null
                         }

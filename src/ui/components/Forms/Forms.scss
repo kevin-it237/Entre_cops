@@ -1,3 +1,4 @@
+@import '../../utils/utils.scss';
 
 .wrapper {
     display: flex;
@@ -45,6 +46,8 @@
     a {
         font-size: 1.4rem;
         text-decoration: none;
+        color: $fontColor;
+        cursor: pointer;
     }
   }
   
@@ -81,8 +84,8 @@
       
     }
     .facebook {
-      background-color: #1f2d9b !important;
-      border-color: #1f2d9b !important;
+      background-color: #3544b8 !important;
+      border-color: #3544b8 !important;
     }
   }
   
@@ -95,7 +98,7 @@
   
   h2.active {
     color: #0d0d0d;
-    border-bottom: 2px solid #5fbae9;
+    border-bottom: 2px solid $fontColor;
   }
   
   
@@ -188,7 +191,7 @@
     bottom: -10px;
     width: 0;
     height: 2px;
-    background-color: #56baed;
+    background-color: $fontColor;
     content: "";
     transition: width 0.2s;
   }

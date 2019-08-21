@@ -37,7 +37,7 @@ class Dashboard extends Component {
                         <div className="row pt-3">
                             <div className="col-sm-12 d-flex mb-3 add-buttom-wrapper">
                                 <h2 className="py-3 mr-auto align-align-self-end">TOUTES LES RESERVATIONS</h2>
-                                <button className="button" onClick={() => this.setState({showNewEv: true})}>NOUVELLE ANNONCE</button>
+                                <button className="button" onClick={() => this.setState({showNewEv: true})}>NOUVEL EVENEMENT</button>
                                 <button className="button" onClick={() => this.setState({showNewAn: true})}>NOUVEAU SERVICE</button>
                             </div>
                             <div className="col-sm-12">
@@ -100,7 +100,7 @@ class Dashboard extends Component {
                                     <div class="tab-pane fade" id="list-set" role="tabpanel" aria-labelledby="list-settings-list">CONTENT 5</div>
                                 </div>
                                 <div className="deleteWrapper d-flex">
-                                    <button className="btn btn-danger ml-auto mt-3">Supprimer le service/Annonce</button>
+                                    <button className="btn btn-danger ml-auto mt-3">Supprimer l'Evenement/Service</button>
                                 </div>
                             </div>
                         </div>
@@ -125,7 +125,7 @@ class Dashboard extends Component {
                 {/* New Event/Annonce */}
                 <Modal show={this.state.showNewEv} onHide={() => this.setState({showNewEv: false})} size="lg" >
                     <Modal.Header closeButton>
-                    <Modal.Title>Ajouter une nouvelle Annonce</Modal.Title>
+                    <Modal.Title>Ajouter un nouvel Evènement</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <form>

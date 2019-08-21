@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Header from '../ui/globalComponent/Header';
+import Footer from '../ui/globalComponent/Footer';
 
 import Hoc from './globalComponent/Hoc';
 import Events from '../ui/components/Events/Events';
@@ -14,8 +15,9 @@ class Home extends Component {
                 <Header home={true} />
                 <Caroussel />
                 <Categories />
-                <Events eventType="Annonces" isHomePage={true} />
+                <Events eventType="Evènements" isHomePage={true} />
                 <Services eventType="Services" isHomePage={true} />
+                <Footer />
             </Hoc>
         );
     }
