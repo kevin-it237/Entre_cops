@@ -1,6 +1,11 @@
 @import '../../utils//utils.scss';
 
 .categories {
+    background: linear-gradient(to bottom, rgba(255,255,255,0.88), rgba(255,255,255,0.88)), 
+    url("./../../../assets/images/bg3.jpg"), ;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    
     .horizontal-scroll {
     }
     .wrimagecard{	

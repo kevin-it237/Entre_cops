@@ -7,6 +7,7 @@ import AllEventsPage from './ui/components/Events/AllEventsPage';
 import SingleCategoryPage from './ui/components/Categories/SingleCategoryPage';
 import DetailsPage from './ui/components/Details/DetailsPage';
 import SupplierDashboard from './ui/suppliers/Dashboard/Dashboard';
+import SupplierRevervation from './ui/components/Supplier/SupplierRegistration';
 
 /* Admin Pages */
 import Admin from './ui/admin/Admin';
@@ -19,6 +20,7 @@ function App() {
         <Route path="/auth" exact component={AuthPage}  />
         <Route path="/annonces" exact component={AllEventsPage}  />
         <Route path="/services" exact component={AllServicesPage}  />
+        <Route path="/supplier" exact component={SupplierRevervation}  />
         <Route path="/category/:id" component={SingleCategoryPage}  />
         <Route path="/service/details/:id" component={DetailsPage}  />
         <Route path="/dashboard/reservations" component={SupplierDashboard}  />

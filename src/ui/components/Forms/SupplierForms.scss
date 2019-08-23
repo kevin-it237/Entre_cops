@@ -1,0 +1,27 @@
+@import '../../utils/utils.scss';
+
+
+.supplier-view-page {
+    margin-top: 6rem;
+}
+.supplier-registration-form {
+    padding: 6rem 4rem;
+    background-color: white;
+
+    .form-group {
+        label {
+            display: block;
+            font-size: 1.3rem;
+        }
+
+        input {
+            font-size: 1.4rem;
+            width: 100%;
+            border: 1px solid #ced4da;
+            background-color: white;
+        }
+        textarea {
+            font-size: 1.4rem;
+        }
+    }
+  }

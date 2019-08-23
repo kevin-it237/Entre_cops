@@ -34,7 +34,7 @@ class Events extends Component {
                         {
                             this.props.isHomePage ?
                             <div className="col all_events">
-                                <Link to="/annonces">Toutes les Evènements</Link>
+                                <Link to="/annonces">Tous les Evènements</Link>
                                 <FontAwesomeIcon icon={faChevronRight} />
                             </div> : null
                         }

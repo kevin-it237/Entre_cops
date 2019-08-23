@@ -168,14 +168,14 @@ class Dashboard extends Component {
                                             <div className="col-sm-12 col-md-4 col-lg-4">
                                                 <label for="name">Importer une image</label><br/>
                                                 <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="customImgFile" />
+                                                    <input type="file" accept="image/*" class="custom-file-input" id="customImgFile" />
                                                     <label class="custom-file-label" for="customImgFile">Choisir</label>
                                                 </div>
                                             </div>
                                             <div className="col-sm-12 col-md-4 col-lg-4">
                                                 <label for="name">Importer une video</label><br/>
                                                 <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="customVideoFile" />
+                                                    <input type="file" accept="video/*" class="custom-file-input" id="customVideoFile" />
                                                     <label class="custom-file-label" for="customVideoFile">Choisir</label>
                                                 </div>
                                             </div>
@@ -184,7 +184,7 @@ class Dashboard extends Component {
                                             <label for="name">Autres informations</label>
                                             <textarea type="text" class="form-control" name="resume" rows={3} placeholder="Autres informations"></textarea>
                                         </div>
-                                        <input className="mt-4" type="submit" name="Valider"/>
+                                        <input className="mt-4" type="submit" name="Valider" value="Ajouter l'Evenement"/>
                                     </div>
                                 </div>
                             </div>
@@ -250,7 +250,23 @@ class Dashboard extends Component {
                                                 Looks good!
                                             </div>
                                         </div>
-                                        <input className="mt-4" type="submit" name="Valider"/>
+                                        <div className="row mb-4">
+                                            <div className="col-sm-12 col-md-6 col-lg-6">
+                                                <label for="name">Importer une image</label><br/>
+                                                <div class="custom-file">
+                                                    <input type="file" accept="image/*" class="custom-file-input" id="customImgFile" />
+                                                    <label class="custom-file-label" for="customImgFile">Choisir</label>
+                                                </div>
+                                            </div>
+                                            <div className="col-sm-12 col-md-6 col-lg-6">
+                                                <label for="name">Importer une video</label><br/>
+                                                <div class="custom-file">
+                                                    <input type="file" accept="video/*" class="custom-file-input" id="customVideoFile" />
+                                                    <label class="custom-file-label" for="customVideoFile">Choisir</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input className="mt-4" type="submit" name="Valider" value="Ajouter le service" />
                                     </div>
                                 </div>
                             </div>

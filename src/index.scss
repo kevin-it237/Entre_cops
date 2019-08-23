@@ -75,12 +75,12 @@ html, body, * {
   }
   
   input[type=text], input[type=email], input[type=password], input[type=tel], input[type=number] {
-    background-color: #f6f6f6;
-    border: none;
     color: #0d0d0d;
-    padding: 15px 10px;
+    padding: 10px 8px;
     text-decoration: none;
     display: inline-block;
+    border: 1px solid #ced4da;
+    background-color: white;
     font-size: 1.5rem;
     margin: .5rem 0px;
     width: 85%;

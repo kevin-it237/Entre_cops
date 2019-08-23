@@ -259,25 +259,17 @@ class AdminHome extends Component {
                                             <input type="text" class="form-control" name="location" id="name" placeholder="Localisation"/>
                                         </div>
                                         <div class="form-group">
-                                            <label for="name">Services (Séparez par des virgules:",")</label>
+                                            <label for="name">Services (Séparez par des virgules: ",")</label>
                                             <textarea type="text" class="form-control is-invalid" name="resume" rows={3} placeholder="Resumé"></textarea>
                                             <div class="invalid-feedback">
                                                 {/* Invalid. */}
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="category">Catégorie</label>
-                                            <select id="category" class="form-control">
-                                                <option selected>Choisir...</option>
-                                                <option>Catégorie 1</option>
-                                                <option>Catégorie 2</option>
-                                            </select>
-                                        </div>
                                         <div className="row align-items-start py-3">
                                             <div className="col-sm-12 col-md-4 col-lg-4">
                                                 <label for="name">Image du Fournisseur</label><br/>
                                                 <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="customImgFile" />
+                                                    <input type="file" accept="image/*" class="custom-file-input" id="customImgFile" />
                                                     <label class="custom-file-label" for="customImgFile">Choisir</label>
                                                 </div>
                                             </div>
