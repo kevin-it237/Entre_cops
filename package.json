@@ -1,6 +1,7 @@
 {
   "name": "youths",
   "version": "0.1.0",
+  "homepage":"http://entrecops.co",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.20",
