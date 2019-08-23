@@ -17,7 +17,7 @@ class Categories extends Component {
                             <center><h1 className="pt-4 service-header">Parcourir par catégorie</h1></center>
                         </div>
                     </div>
-                    <div className="row pb-5 justify-content-between">
+                    <div className="row pb-5 justify-content-around">
                             <CategoryItem categoryName={"Concert de Musique"} icon={faAllergies} />
                             <CategoryItem categoryName={"Cours d'informatique"} icon={faAd} />
                             <CategoryItem categoryName={"Snack / Bar"} icon={faAddressBook} />
