@@ -5,6 +5,8 @@ import { faSearch, faBookmark } from '@fortawesome/free-solid-svg-icons';
 import './Header.scss';
 import logo from '../../assets/images/logo.png';
 
+import Recommandations from '../users/Recommantions/Recommandations';
+
 class Header extends Component {
     render() {
         return (
@@ -17,7 +19,7 @@ class Header extends Component {
                         <img src={logo} width="110" height="100%" alt="Logo" />
                     </NavLink>
                     <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
-                        <form className="form-inline my-2 my-lg-0 ml-auto mr-4">
+                        <form className="form-inline d-none d-lg-block my-2 my-lg-0 ml-auto mr-4">
                             <input className="form-control mr-sm-2" type="search" placeholder="Rechercher..." aria-label="Rechercher..."/>
                             <FontAwesomeIcon icon={faSearch} size={"2x"} />
                         </form>
@@ -26,7 +28,14 @@ class Header extends Component {
                                 <NavLink className="nav-link" to="/dashboard/reservations">Réservations</NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink className="nav-link" to="#recommadations"><FontAwesomeIcon icon={faBookmark} size={"1x"}/><sup>new</sup></NavLink>
+                                <div className="dropdown mt-2">
+                                    <a href="/recommandations" className=""  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <FontAwesomeIcon icon={faBookmark} size={"1x"}/><sup className="ml-1">1</sup>
+                                    </a>
+                                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <Recommandations />
+                                    </div>
+                                </div>
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/auth"><i class="fa fa-user"></i>Se connecter</NavLink>
@@ -39,6 +48,10 @@ class Header extends Component {
                             </div>
                         </div>
                     </div>
+                    <form className="form-inline d-lg-none my-2 my-lg-0">
+                        <input className="form-control mr-sm-2" type="search" placeholder="Rechercher..." aria-label="Rechercher..."/>
+                        <FontAwesomeIcon icon={faSearch} size={"2x"} />
+                    </form>
                 </div>
             </nav>
         );

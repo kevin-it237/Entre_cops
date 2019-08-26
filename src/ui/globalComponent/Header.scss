@@ -19,6 +19,13 @@
             font-size: 1.5rem;
             font-weight: 600;
             color: $fontColor !important;
+            text-decoration: none !important;
+        }
+
+        .dropdown-menu {
+          min-width: 30rem !important;
+          padding: 0 !important;
+          margin-top: 1rem;
         }
     }
     form {
@@ -31,6 +38,10 @@
             border-radius: 15px;
             padding: .6rem 1.7rem;
             border-color: #aaa;
+            @media only screen and (mix-width: 900px) {
+              min-width: 100% !important;
+              width: 100% !important;
+            }
             &:focus {
                 outline: none;
                 box-shadow: 0 5px 10px #eee;

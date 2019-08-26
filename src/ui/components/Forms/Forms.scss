@@ -5,15 +5,25 @@
     align-items: center;
     flex-direction: column; 
     justify-content: center;
-    width: 100%;
-    min-height: 100%;
     padding: 2rem;
     margin-top: 3rem;
+    margin-bottom: 8rem;
+    height: 100%;
+    min-height: 100%;
+    @media only screen and (max-width: 900px) {
+      padding: 1rem;
+    }
 
     img {
-        width: 7rem !important;
+        width: 20rem !important;
         margin-top: 2rem;
         margin-bottom: 2rem;
+    }
+    input, input[type=submit] {
+      font-size: 1.3rem !important;
+    }
+    input[type=email], input[type=text], input[type=password] {
+      border: solid 1px rgb(230, 229, 229);
     }
   }
   
@@ -29,6 +39,10 @@
     -webkit-box-shadow: 0 20px 40px 0 rgba(0,0,0,0.2);
     box-shadow: 0 20px 40px 0 rgba(0,0,0,0.2);
     text-align: center;
+
+    @media only screen and (max-width: 900px) {
+      width: 98%;
+    }
     
     p{
       font-size: 1.2rem;
@@ -69,7 +83,7 @@
     }
 
     button {
-      font-size: 1.45rem;
+      font-size: 1.35rem;
       min-width: 15rem;
       font-weight: 600;
       box-shadow: 0 5px 10px #e2e2e2;
@@ -80,12 +94,16 @@
       }
     }
 
+    .google, .facebook {
+      font-size: 1.35rem;
+    }
     .google {
-      
+      background-color: #EA4335 !important;
+      border-color: #EA4335 !important;
     }
     .facebook {
-      background-color: #3544b8 !important;
-      border-color: #3544b8 !important;
+      background-color: #3C5999 !important;
+      border-color: #3C5999 !important;
     }
   }
   

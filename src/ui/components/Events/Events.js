@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import EventItem from './EventItem';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import './Events.scss';
@@ -34,7 +33,7 @@ class Events extends Component {
                         {
                             this.props.isHomePage ?
                             <div className="col all_events">
-                                <Link to="/annonces">Tous les Evènements</Link>
+                                <a href="/annonces">Tous les Evènements</a>
                                 <FontAwesomeIcon icon={faChevronRight} />
                             </div> : null
                         }

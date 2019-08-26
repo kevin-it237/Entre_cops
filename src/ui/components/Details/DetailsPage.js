@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Footer from '../../globalComponent/Footer';
 import { faStar, faClock, faCalendar, faMapMarked, faPaperPlane, 
     faSearch, faComment, faFileDownload } from '@fortawesome/free-solid-svg-icons';
 import './DetailsPage.scss';
@@ -42,11 +41,81 @@ class DetailsPage extends Component {
                                 <div className="infos pb-4">
                                     <img src={img} alt="service" />
 
-                                    <div className="otherinfos">
-                                        <h2>Nom du service</h2>
-                                        <h5 className="py-2">Catégorie</h5>
+                                    <div className="otherinfos ">
+                                        <div className="d-flex align-items-center justify-content-between titleandstars">
+                                            <div>
+                                                <h2>Nom du service</h2>
+                                                <h5 className="py-2">Catégorie</h5>
+                                            </div>
+                                            <div className="moreinfos d-none d-md-block d-flex justify-content-between mt-3">
+                                                <div className="stars">
+                                                    <FontAwesomeIcon icon={faStar} size={"2x"} />
+                                                    <FontAwesomeIcon icon={faStar} size={"2x"} />
+                                                    <FontAwesomeIcon icon={faStar} size={"2x"} />
+                                                    <FontAwesomeIcon icon={faStar} size={"2x"} />
+                                                    <FontAwesomeIcon icon={faStar} size={"2x"} />
+                                                    <span className="votes">(100 votes)</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <hr/>
                                     </div>
+
+                                    {/* Mobile Version */}
+                                    <div className="right right-mobile" id="right-mobile">
+                                        <div className="infos">
+                                            <div className="d-flex py-2">
+                                                <FontAwesomeIcon icon={faCalendar} size={"2x"} />
+                                                <h2>Date: 12 Juin</h2>
+                                            </div>
+                                            <hr />
+                                            <div className="d-flex py-2">
+                                                <FontAwesomeIcon icon={faClock} size={"2x"} />
+                                                <h2>Heure: 12h</h2>
+                                            </div>
+                                            <hr />
+                                            <div className="d-flex py-2">
+                                                <FontAwesomeIcon icon={faMapMarked} size={"2x"} />
+                                                <h2>Lieu: Yaounde</h2>
+                                            </div>
+                                            <hr />
+                                            <button className="button mt-3 book" 
+                                                onClick={() => this.setState({showReservationModal: !this.state.showRecModal})}>Reserver</button>
+                                            <button className="button mt-3 reccommand" 
+                                                onClick={() => this.setState({showRecModal: !this.state.showRecModal})}>Recommander</button>
+                                        </div>
+
+                                        <div className="other-infos mt-4">
+                                            <div className="d-flex flex-column py-2">
+                                                <h3>Coupon de réductions de 10% pour cet évènement.</h3><br/>
+                                                <button className="button mt-2 book" onClick={() => this.setState({showCouponModal: true})}>Télécharger le Coupon</button>
+                                            </div>
+                                        </div>
+                                        <div className="moreinfos d-flex justify-content-between mb-3">
+                                            <div className="headers d-flex align-items-center py-4">
+                                                <FontAwesomeIcon icon={faComment} size={"2x"} />
+                                                <h3 className="ml-3 mb-0">Reviews des clients</h3>
+                                            </div>
+                                            <div className="stars">
+                                                <FontAwesomeIcon icon={faStar} size={"2x"} />
+                                                <FontAwesomeIcon icon={faStar} size={"2x"} />
+                                                <FontAwesomeIcon icon={faStar} size={"2x"} />
+                                                <FontAwesomeIcon icon={faStar} size={"2x"} />
+                                                <FontAwesomeIcon icon={faStar} size={"2x"} />
+                                                <span className="votes">(100 votes)</span>
+                                            </div>
+                                        </div>
+                                        <div className="other-infos mt-4">
+                                            <div className="d-flex flex-column">
+                                                <h3 className="mb-3">Regardez l'aperçu en video</h3>
+                                                <video width="100%" height="100%" controls onClick={() => this.setState({showVideo: true})}>
+                                                    <source src="movie.mp4" type="video/mp4"></source>
+                                                    <source src="movie.ogg" type="video/ogg"></source>
+                                                </video>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* End Mobile Version */}
 
                                     <div className="otherinfos">
                                         <div className="d-flex flex-column">
@@ -69,14 +138,14 @@ class DetailsPage extends Component {
                                             <FontAwesomeIcon icon={faComment} size={"2x"} />
                                             <h3 className="ml-3 mb-0">Reviews des clients</h3>
                                         </div>
-                                        <div className="stars">
+                                        {/* <div className="stars">
                                             <FontAwesomeIcon icon={faStar} size={"2x"} />
                                             <FontAwesomeIcon icon={faStar} size={"2x"} />
                                             <FontAwesomeIcon icon={faStar} size={"2x"} />
                                             <FontAwesomeIcon icon={faStar} size={"2x"} />
                                             <FontAwesomeIcon icon={faStar} size={"2x"} />
                                             <span className="votes">(100 votes)</span>
-                                        </div>
+                                        </div> */}
                                     </div>
                                     <div className="moreinfos">
                                         <div className="content">
@@ -96,8 +165,8 @@ class DetailsPage extends Component {
                             
                             </div>
 
-                            <div className="col-sm-12 col-md-4 col-lg-4 right">
-                                <div className="stiky">
+                            <div className="col-sm-12 col-md-4 col-lg-4 right right-desktop">
+                                <div className="">
                                     <div className="infos">
                                         <div className="d-flex py-2">
                                             <FontAwesomeIcon icon={faCalendar} size={"2x"} />
@@ -147,8 +216,6 @@ class DetailsPage extends Component {
                         </div>
                     </div>
                 </section>
-
-                <Footer />
 
                 {/* Reservation */}
                 <Modal show={this.state.showReservationModal} onHide={() => this.setState({showReservationModal: !this.state.showReservationModal})} >

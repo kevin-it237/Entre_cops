@@ -2,6 +2,7 @@
 
 #projectdetails  {
     margin-top: 2rem;
+    margin-bottom: 5rem;
 }
 #projectdetails .left {
     padding: 2rem;
@@ -24,6 +25,17 @@
 #projectdetails .left img{
     height: 40rem;
     width: 100%;
+
+    @media only screen and (max-width: 900px) {
+        height: 25rem;
+    }
+}
+
+#projectdetails .left .titleandstars{
+    @media only screen and (max-width: 1023px) {
+        flex-direction: column !important;
+        justify-content: center !important;
+    }
 }
 
 #projectdetails .left .infos{
@@ -55,6 +67,11 @@
         margin-top: 1rem !important;
     }
 }
+@media only screen and (max-width: 1023px) {
+    #projectdetails .left .titleandstars h5{
+        text-align: center !important;
+    }
+}
 @media only screen and (max-width: 900px) {
     #projectdetails .left h2{
         margin-top: 2rem !important;
@@ -83,7 +100,7 @@
 #projectdetails .left .moreinfos{
     margin-top: -2rem;
 
-    @media only screen and (max-width: 1024px) {
+    @media only screen and (max-width: 1023px) {
         flex-direction: column !important;
     }
 }
@@ -112,7 +129,10 @@
 
     .votes {
         font-size: 1.25rem;
-        margin-top: .2rem;
+        margin-top: .25rem;
+        @media only screen and (max-width: 600px) {
+            font-size: 1.05rem;
+        }
     }
 }
 
@@ -140,6 +160,9 @@
     margin-left: auto;
     box-shadow: 0 4px 10px #e2e2e2;
     display: block;
+    @media only screen and (max-width: 767px) {
+        width: 100%;
+    }
 
     svg {
         margin-left: 1rem;
@@ -149,11 +172,41 @@
     }
 }
 
+#projectdetails .left #right-mobile {
+    @media only screen and (max-width: 767px) {
+        padding-top: 0;
+    }
+}
+#projectdetails .left #right-mobile h2 {
+    @media only screen and (max-width: 767px) {
+        margin-top: .2rem !important;
+    }
+}
+#projectdetails .left #right-mobile .infos {
+    @media only screen and (max-width: 767px) {
+        border: none !important;
+    }
+}
+
+#projectdetails .right-desktop {
+    @media only screen and (max-width: 767px) {
+        display: none;
+    }
+}
+#projectdetails .right-mobile {
+    @media only screen and (min-width: 767px) {
+       display: none;
+    }
+}
+
 #projectdetails .right {
     .infos {
         padding: 4rem 2.5rem;
         background-color: white;
         border: solid 1px #eee;
+        @media only screen and (max-width: 768px) {
+            padding: 0 !important;
+        }
     
         svg {
             margin-right: 1.5rem;
@@ -189,6 +242,9 @@
         padding: 4rem 2.5rem;
         background-color: white;
         border: solid 1px #eee;
+        @media only screen and (max-width: 768px) {
+            padding: 2rem 0 !important;
+        }
 
         .button {
             @media only screen and (max-width: 1000px) {
@@ -207,11 +263,6 @@
         }
     }
 
-    .stiky {
-        position: -webkit-sticky;
-        position: sticky;
-        top: 0;
-    }
 
     video {
         cursor: pointer;

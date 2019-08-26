@@ -1,10 +1,9 @@
 import React from 'react';
 import img from '../../../assets/images/bg.jpg';
-import { Link } from 'react-router-dom';
 
 const ServiceItem = (props) => {
     return (
-        <Link to="/service/details/2">
+        <a href="/service/details/2">
             <div class="card">
                 <div class="box">
                     <div class="img">
@@ -15,7 +14,7 @@ const ServiceItem = (props) => {
                     <p>Description du service...</p>
                 </div>
             </div>
-        </Link>
+        </a>
     );
 }
 

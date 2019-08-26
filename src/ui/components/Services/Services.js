@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ServiceItem from './ServicesItem';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import './Services.scss';
@@ -34,7 +33,7 @@ class Services extends Component {
                         {
                             this.props.isHomePage ?
                             <div className="col all_services">
-                                <Link to="/services">Tous les Services</Link>
+                                <a href="/services">Tous les Services</a>
                                 <FontAwesomeIcon icon={faChevronRight} />
                             </div>: null
                         }

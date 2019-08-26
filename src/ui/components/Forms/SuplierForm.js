@@ -57,10 +57,6 @@ class SupplierForm extends Component {
                                     <input type="tel" class="form-control" name="tel" id="tel" pattern="[0-9]{9}" placeholder="Numero de Téléphone"/>
                                 </div>
                                 <div class="form-group">
-                                    <label for="pass">Mot de Passe</label>
-                                    <input type="password" class="form-control" name="pass" id="pass"  placeholder="Mot de Passe"/>
-                                </div>
-                                <div class="form-group">
                                     <label for="name">Localisation</label>
                                     <input type="text" class="form-control" name="location" id="location" placeholder="Localisation"/>
                                 </div>

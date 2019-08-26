@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Forms.scss';
 
-import userLogo from '../../../assets/images/user.png'
+import userLogo from '../../../assets/images/event.png'
 
 class LoginForm extends Component {
 
