@@ -1,3 +1,5 @@
 module.exports = {
-    database: 'mongodb://localhost/entrecops'
+    database: 'mongodb://localhost/entrecops',
+    googleapikey: '',
+    facebookapikey: ''
 }

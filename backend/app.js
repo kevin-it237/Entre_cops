@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('./node_modules/express');
 const mongoose = require('mongoose');
 const config = require('./config/database');
 
