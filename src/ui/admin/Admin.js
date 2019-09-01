@@ -25,7 +25,7 @@ class Admin extends Component {
                     <div className="main-container">
                         <div className="left-content d-flex flex-column">
                             <div className="logoWrapper">
-                                <img src={logo} width="110" height="50" alt="LOGO" />
+                                <a href="/"><img src={logo} width="110" height="50" alt="LOGO" /></a>
                             </div>
                             <div className="menu mt-5">
                                 <NavLink className="navbar-brand" to="/admin/home">
@@ -46,7 +46,7 @@ class Admin extends Component {
                                 <NavLink className="navbar-brand" to="/admin/users">
                                     <h3 className="d-inline align-middle">UTILISATEURS</h3>
                                 </NavLink>
-                                <a href="/admin/login" className="mt-auto btn btn-outline-light btn-lg logout">Logout</a> 
+                                <a href="/auth" className="mt-auto btn btn-outline-light btn-lg logout">Logout</a> 
                             </div>
                         </div>
                         <div className="right-content">

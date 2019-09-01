@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import './Dashboard.scss';
@@ -10,6 +8,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import Hoc from '../../globalComponent/Hoc';
 import Header from '../../globalComponent/Header';
 import ReviewItem from '../../components/Reviews/ReviewItem';
+import Stars from '../../components/Stars/Stars';
+import Upload from '../../components/Forms/Upload';
 
 import fr from 'date-fns/locale/fr';
 registerLocale('fr', fr);
@@ -19,7 +19,11 @@ class Dashboard extends Component {
     state = {
         showNewEv: false,
         showNewAn: false,
-        date: new Date()
+        date: new Date(),
+        serviceImage: '',
+        eventImage: '',
+        eventVideo: '',
+        serviceVideo: ''
     }
     
     handleChange = (date) => {
@@ -28,7 +32,14 @@ class Dashboard extends Component {
         });
     }
 
+    setFile(name,file, previewFile) {
+        this.setState({
+            [name]: file
+        });
+    }
+
     render() {
+        const { serviceImage, eventImage, eventVideo, serviceVideo } = this.state;
         return (
             <Hoc>
                 <Header />
@@ -48,21 +59,25 @@ class Dashboard extends Component {
                             <div className="col-sm-12 col-md-12 col-lg-4 mt-2">
                                 <div class="list-group" id="list-tab" role="tablist">
                                     <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">
-                                        Event 1 (3)
+                                        After Work - Prestation (3)
                                         <br/>
-                                        <div className="stars">
-                                            <FontAwesomeIcon icon={faStar} size={"1x"} />
-                                            <FontAwesomeIcon icon={faStar} size={"1x"} />
-                                            <FontAwesomeIcon icon={faStar} size={"1x"} />
-                                            <FontAwesomeIcon icon={faStar} size={"1x"} />
-                                            <FontAwesomeIcon icon={faStar} size={"1x"} />
-                                            <span className="votes">(100 votes)</span>
-                                        </div>
+                                        <Stars isSupplierDashboard />
                                     </a>
-                                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Event 2</a>
-                                    <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Event 3</a>
-                                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Event 4</a>
-                                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-set" role="tab" aria-controls="settings">Event 5</a>
+                                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">
+                                        Miss & Master Etudiant 2020 (1)
+                                        <br/>
+                                        <Stars isSupplierDashboard />
+                                    </a>
+                                    <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">
+                                        Formation Wordpress débutant (1)
+                                        <br/>
+                                        <Stars isSupplierDashboard />
+                                    </a>
+                                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">
+                                        Cours d'Allemand rapide (1)
+                                        <br/>
+                                        <Stars isSupplierDashboard />
+                                    </a>
                                 </div>
                             </div>
                             <div className="col-sm-12 col-md-12 col-lg-8 mt-2 d-flex flex-column justify-content-between">
@@ -94,10 +109,45 @@ class Dashboard extends Component {
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">CONTENT 2</div>
-                                    <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">CONTENT 3</div>
-                                    <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">CONTENT 4</div>
-                                    <div class="tab-pane fade" id="list-set" role="tabpanel" aria-labelledby="list-settings-list">CONTENT 5</div>
+                                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                <th scope="row">1</th>
+                                                <td>Mark</td>
+                                                <td>@Otto.com</td>
+                                                <td>655881562</td>
+                                                <td className="date">05 Sep 2019</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                <th scope="row">1</th>
+                                                <td>Larry</td>
+                                                <td>theBird.com</td>
+                                                <td>655881562</td>
+                                                <td className="date">05 Sep 2019</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                <th scope="row">1</th>
+                                                <td>Jacob</td>
+                                                <td>@Thornton.com</td>
+                                                <td>655881562</td>
+                                                <td className="date">05 Sep 2019</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                                 <div className="deleteWrapper d-flex">
                                     <button className="btn btn-danger ml-auto mt-3">Supprimer l'Evenement/Service</button>
@@ -166,18 +216,10 @@ class Dashboard extends Component {
                                                 </div>
                                             </div>
                                             <div className="col-sm-12 col-md-4 col-lg-4">
-                                                <label for="name">Importer une image</label><br/>
-                                                <div class="custom-file">
-                                                    <input type="file" accept="image/*" class="custom-file-input" id="customImgFile" />
-                                                    <label class="custom-file-label" for="customImgFile">Choisir</label>
-                                                </div>
+                                                <Upload type="image" oldUrl={eventImage} setFile={(name,file, previewFile)=>this.setFile(name, file, previewFile)} name="eventImage" label={"Importer une image"} />
                                             </div>
                                             <div className="col-sm-12 col-md-4 col-lg-4">
-                                                <label for="name">Importer une video</label><br/>
-                                                <div class="custom-file">
-                                                    <input type="file" accept="video/*" class="custom-file-input" id="customVideoFile" />
-                                                    <label class="custom-file-label" for="customVideoFile">Choisir</label>
-                                                </div>
+                                                <Upload type="video" oldUrl={eventVideo} setFile={(name,file, previewFile)=>this.setFile(name, file, previewFile)} name="eventVideo" label={"Importer une video"} />
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -252,18 +294,10 @@ class Dashboard extends Component {
                                         </div>
                                         <div className="row mb-4">
                                             <div className="col-sm-12 col-md-6 col-lg-6">
-                                                <label for="name">Importer une image</label><br/>
-                                                <div class="custom-file">
-                                                    <input type="file" accept="image/*" class="custom-file-input" id="customImgFile" />
-                                                    <label class="custom-file-label" for="customImgFile">Choisir</label>
-                                                </div>
+                                                <Upload type="image" oldUrl={serviceImage} setFile={(name,file, previewFile)=>this.setFile(name, file, previewFile)} name="serviceImage" label={"Importer une image"} />
                                             </div>
                                             <div className="col-sm-12 col-md-6 col-lg-6">
-                                                <label for="name">Importer une video</label><br/>
-                                                <div class="custom-file">
-                                                    <input type="file" accept="video/*" class="custom-file-input" id="customVideoFile" />
-                                                    <label class="custom-file-label" for="customVideoFile">Choisir</label>
-                                                </div>
+                                                <Upload type="video" oldUrl={serviceVideo} setFile={(name,file, previewFile)=>this.setFile(name, file, previewFile)} name="serviceVideo" label={"Importer une video"} />
                                             </div>
                                         </div>
                                         <input className="mt-4" type="submit" name="Valider" value="Ajouter le service" />

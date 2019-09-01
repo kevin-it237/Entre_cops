@@ -1,17 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faClock, faCalendar, faMapMarked, faPaperPlane, 
-    faSearch, faComment, faFileDownload } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faCalendar, faMapMarked, faSearch, faComment, faFileDownload } from '@fortawesome/free-solid-svg-icons';
 import './DetailsPage.scss';
 
 import Header from '../../globalComponent/Header';
 import Hoc from '../../globalComponent/Hoc';
 import ReviewItem from '../Reviews/ReviewItem';
 import SearchResultItem from '../UserSearchResult/UserSearchResult';
+import Stars from '../Stars/Stars';
 
 import img from '../../../assets/images/bg.jpg';
+import coupon from '../../../assets/coupons/coupon.pdf';
 
 class DetailsPage extends Component {
     state = {
@@ -20,7 +21,19 @@ class DetailsPage extends Component {
         showCouponModal: false,
         couponGenerated: false,
         showVideo: false,
-        showToast: false
+        showToast: false,
+        documentPreview: coupon,
+        coupon: ''
+    }
+
+    handleInputChange = (e) => {
+        e.preventDefault();
+        const name = e.target.name;
+        const value = e.target.value;
+        console.log(value);
+        this.setState({
+            [name]: value
+        });
     }
 
     displayToast = () => {
@@ -30,7 +43,14 @@ class DetailsPage extends Component {
         }, 2000)
     }
 
+    setFile(name,file, previewFile) {
+        this.setState({
+            [name]: file
+        });
+    }
+
     render() {
+        const { documentPreview } = this.state;
         return (
             <Hoc>
                 <Header />
@@ -48,14 +68,7 @@ class DetailsPage extends Component {
                                                 <h5 className="py-2">Catégorie</h5>
                                             </div>
                                             <div className="moreinfos d-none d-md-block d-flex justify-content-between mt-3">
-                                                <div className="stars">
-                                                    <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                                    <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                                    <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                                    <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                                    <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                                    <span className="votes">(100 votes)</span>
-                                                </div>
+                                                <Stars />
                                             </div>
                                         </div>
                                         <hr/>
@@ -96,14 +109,7 @@ class DetailsPage extends Component {
                                                 <FontAwesomeIcon icon={faComment} size={"2x"} />
                                                 <h3 className="ml-3 mb-0">Reviews des clients</h3>
                                             </div>
-                                            <div className="stars">
-                                                <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                                <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                                <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                                <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                                <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                                <span className="votes">(100 votes)</span>
-                                            </div>
+                                            <Stars />
                                         </div>
                                         <div className="other-infos mt-4">
                                             <div className="d-flex flex-column">
@@ -138,14 +144,6 @@ class DetailsPage extends Component {
                                             <FontAwesomeIcon icon={faComment} size={"2x"} />
                                             <h3 className="ml-3 mb-0">Reviews des clients</h3>
                                         </div>
-                                        {/* <div className="stars">
-                                            <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                            <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                            <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                            <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                            <FontAwesomeIcon icon={faStar} size={"2x"} />
-                                            <span className="votes">(100 votes)</span>
-                                        </div> */}
                                     </div>
                                     <div className="moreinfos">
                                         <div className="content">
@@ -154,11 +152,12 @@ class DetailsPage extends Component {
                                         </div>
                                     </div>
                                     <div className="form-content mb-5">
+                                        <p>Laissez un commentaire</p>
                                         <form className="input__form">
                                             <div className="form-group">
-                                                <textarea placeholder="Entrer un commentaire" className="form-control" onChange={(e) => this.setState({message: e.target.value})} id="textmessage" rows="2"></textarea>
+                                                <textarea placeholder="Entrer votre commentaire" className="form-control" onChange={(e) => this.setState({message: e.target.value})} id="textmessage" rows="2"></textarea>
                                             </div>
-                                            <button className="btn btn-danger send-btn" type="submit">Send <FontAwesomeIcon icon={faPaperPlane} size={"1x"} /></button>
+                                            <button className="btn btn-danger send-btn" type="submit">Publier</button>
                                         </form>
                                     </div>
                                 </div>
@@ -228,11 +227,11 @@ class DetailsPage extends Component {
                                 <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
                                     <div class="form-group">
                                         <label for="name">Nom complet</label>
-                                        <input type="text" class="form-control" name="nom" id="name" placeholder="Nom complet"/>
+                                        <input type="text" class="form-control" value="Yves Roland" name="nom" id="name" placeholder="Nom complet"/>
                                     </div>
                                     <div class="form-group">
                                         <label for="email">Email address</label>
-                                        <input type="email" class="form-control" name="email" id="email" placeholder="Adresse Email"/>
+                                        <input type="email" class="form-control" value="yves@gmail.com" name="email" id="email" placeholder="Adresse Email"/>
                                     </div>
                                     <div class="form-group">
                                         <label for="tel">Numero de Téléphone</label>
@@ -301,7 +300,12 @@ class DetailsPage extends Component {
                                 <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3 text-center">
                                     {
                                         this.state.couponGenerated ?
-                                        <button className="btn btn-dark download-btn">Télécharger <FontAwesomeIcon icon={faFileDownload} size={"1x"} /></button>:
+                                        <Fragment>
+                                            <iframe src={documentPreview} projectName="Funnel PDF" align="top" width="100%" frameBorder="0" title="Doc" target="Message"><p>Your browser doesn't support Iframe. Here is a <a href={documentPreview}>link to the document</a> instead.</p> 
+                                            </iframe>:
+                                            <a href={documentPreview} rel="noopener noreferrer" target="_blank" className="btn btn-dark download-btn mt-3">Télécharger <FontAwesomeIcon icon={faFileDownload} size={"1x"} /></a>
+                                        </Fragment>
+                                        :
                                         <button className="button" onClick={() => this.setState({couponGenerated: true})}>Générer le Coupon</button>
                                     }
                                 </div>

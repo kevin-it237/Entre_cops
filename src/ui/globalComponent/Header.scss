@@ -11,6 +11,33 @@
     padding-top: 1rem;
     padding-bottom: 1rem;
 
+    img {
+      @media only screen and (max-width: 900px) {
+        width: 70px;
+      }
+      @media only screen and (max-width: 600px) {
+        width: 50px;
+      }
+      @media only screen and (max-width: 352px) {
+        width: 40px;
+      }
+    }
+
+    .dropdown-mobile {
+      @media only screen and (min-width: 991px) {
+        display: none;
+      }
+      @media only screen and (max-width: 992px) {
+          position:  relative !important;
+      }
+    }
+
+    .rec-item-desktop {
+      @media only screen and (max-width: 992px) {
+        display: none;
+      }
+    }
+
     .nav-item{
         font-size: 1.4rem;
         padding-right: 2rem;
@@ -25,12 +52,14 @@
         .dropdown-menu {
           min-width: 30rem !important;
           padding: 0 !important;
-          margin-top: 1rem;
         }
     }
     form {
       display: flex;
       align-items: center;
+      @media only screen and (max-width: 600px) {
+        width: 50% !important;
+      }
         input {
             min-width: 32rem;
             height: 3.2rem;
@@ -38,9 +67,15 @@
             border-radius: 15px;
             padding: .6rem 1.7rem;
             border-color: #aaa;
-            @media only screen and (mix-width: 900px) {
-              min-width: 100% !important;
-              width: 100% !important;
+            @media only screen and (max-width: 900px) {
+              min-width: auto !important;
+            }
+            @media only screen and (max-width: 600px) {
+              margin-left: 1rem !important;
+            }
+            @media only screen and (max-width: 352px) {
+              margin-left: .4rem !important;
+              font-size: 1.2rem;
             }
             &:focus {
                 outline: none;
@@ -53,6 +88,7 @@
           font-size: 1.35rem;
           cursor: pointer;
           position: relative;
+          vertical-align: middle !important;
         }
     }
     
@@ -65,6 +101,15 @@
 
     .nav-link.active {
       color: $maincolor !important;
+    }
+
+    .dropdown-menu {
+      @media only screen and (max-width: 992px) {
+        left: -18rem !important;
+      }
+      @media only screen and (max-width: 550px) {
+          left: -23rem !important;
+      }
     }
 }
 

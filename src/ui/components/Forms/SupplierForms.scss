@@ -24,4 +24,11 @@
             font-size: 1.4rem;
         }
     }
-  }
+
+    img {
+        height: 20rem;
+        width: 20rem !important;
+        vertical-align: middle !important;
+        border-radius: 50%;
+    }
+}

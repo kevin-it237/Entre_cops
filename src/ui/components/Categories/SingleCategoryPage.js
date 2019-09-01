@@ -3,7 +3,6 @@ import Header from '../../globalComponent/Header';
 import Hoc from '../../globalComponent/Hoc';
 import Categories from './Categories';
 import Events from '../Events/Events';
-import Footer from '../../globalComponent/Footer';
 import './Categories.scss';
 
 class Home extends Component {
@@ -13,7 +12,6 @@ class Home extends Component {
                 <Header />
                 <Categories />
                 <Events eventType="Category 1" isHomePage={false} />
-                <Footer />
             </Hoc>
         );
     }

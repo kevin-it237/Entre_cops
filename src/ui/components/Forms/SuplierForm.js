@@ -1,37 +1,31 @@
 import React, { Component, Fragment } from 'react';
 import './SupplierForms.scss';
+import Upload from '../Forms/Upload';
 
 class SupplierForm extends Component {
     state = {
-        image: null
+        imagePreview: '',
+        profileImage: ''
     }
 
     handleInputChange = (e) => {
         e.preventDefault();
         const name = e.target.name;
-        const value = e.target.files[0];
+        const value = e.target.value;
         console.log(value);
         this.setState({
             [name]: value
         });
     }
 
-    _onChange = () => {
-        // Assuming only image
-        let file = this.refs.file;
-        let reader = new FileReader();
-        // let url = reader.readAsDataURL(file);
-         reader.onloadend = function (e) {
-            this.setState({
-                image: [reader.result]
-            })
-          }.bind(this);
-        console.log(reader) // Would see a path?
-        console.log(file) // Would see a path?
-        // TODO: concat files
+    setFile(name,file, previewFile) {
+        this.setState({
+            [name]: file
+        });
     }
 
     render() {
+        const { imagePreview } = this.state;
         return (
             <Fragment>
                 <section className="supplier-view-page">
@@ -40,7 +34,7 @@ class SupplierForm extends Component {
                             <div className="col-sm-11 col-md-10 col-lg-8 mb-5 supplier-registration-form">
                                 <div className="row mb-5">
                                     <div className="col-sm-12">
-                                        <h2 className="text-center mb-5">DEVINIR UN FOUNISSEUR</h2>
+                                        <h2 className="text-center mb-5">DEVINIR UN PARTENAIRE</h2>
                                         <hr/>
                                     </div>
                                 </div>
@@ -67,21 +61,14 @@ class SupplierForm extends Component {
                                         {/* Invalid. */}
                                     </div>
                                 </div>
-                                <div className="row align-items-start py-3">
-                                    <div className="col-sm-12 col-md-6 col-lg-4">
-                                        <label for="name">Photo de profil</label><br/>
-                                        <div class="custom-file">
-                                            <input type="file" onChange={(e) => this.handleInputChange(e)} accept="image/*" class="custom-file-input" name="image" id="image" />
-                                            <label class="custom-file-label" for="customImgFile">Choisir l'image</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-12 col-md-6 col-lg-4">
-                                        <img src={this.state.image} alt="" />
-                                    </div>
-                                </div>
                                 <div class="form-group">
                                     <label for="name">Autres informations</label>
                                     <textarea type="text" class="form-control" name="resume" rows={3} placeholder="Autres informations"></textarea>
+                                </div>
+                                <div className="row align-items-center justify-content-center py-3">
+                                    <div className="col-sm-8 col-md-8 col-lg-6 d-flex flex-column justify-content-center align-items-center">
+                                        <Upload type="image" oldUrl={imagePreview} setFile={(name,file, previewFile)=>this.setFile(name, file, previewFile)} name="profileImage" label={"Image de Profil"} />
+                                    </div>
                                 </div>
                                 <div className="d-flex justify-content-end">
                                     <input className="mt-4" type="submit" value="Envoyer" name="submit"/>

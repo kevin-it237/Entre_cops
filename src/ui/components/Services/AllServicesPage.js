@@ -3,7 +3,6 @@ import Hoc from '../../globalComponent/Hoc';
 import Header from '../../globalComponent/Header';
 import Services from './Services';
 import Categories from '../Categories/Categories';
-import Footer from '../../globalComponent/Footer';
 
 class AllServicesPage extends Component {
 
@@ -13,7 +12,6 @@ class AllServicesPage extends Component {
                 <Header />
                 <Categories />
                 <Services eventType="Tous les Services" isHomePage={false} />
-                <Footer />
             </Hoc>
         );
     }

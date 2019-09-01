@@ -15,6 +15,18 @@ class Header extends Component {
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
+                    <form className="form-inline d-lg-none my-2 my-lg-0 navbar-brand">
+                        <input className="form-control mr-sm-2" type="search" placeholder="Rechercher..." aria-label="Rechercher..."/>
+                        <FontAwesomeIcon icon={faSearch} size={"2x"} />
+                    </form>
+                    <div className="dropdown-mobile mt-2">
+                        <a href="/recommandations" className=""  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <FontAwesomeIcon icon={faBookmark} size={"1x"}/><sup className="ml-1">1</sup>
+                        </a>
+                        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <Recommandations />
+                        </div>
+                    </div>
                     <NavLink className="navbar-brand" to="/">
                         <img src={logo} width="110" height="100%" alt="Logo" />
                     </NavLink>
@@ -25,9 +37,12 @@ class Header extends Component {
                         </form>
                         <ul className="navbar-nav  mt-2 mt-lg-0">
                             <li className="nav-item">
-                                <NavLink className="nav-link" to="/dashboard/reservations">Réservations</NavLink>
+                                <NavLink className="nav-link" to="/admin/home">Admin</NavLink>
                             </li>
                             <li className="nav-item">
+                                <NavLink className="nav-link" to="/dashboard/reservations">Réservations</NavLink>
+                            </li>
+                            <li className="nav-item rec-item-desktop">
                                 <div className="dropdown mt-2">
                                     <a href="/recommandations" className=""  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <FontAwesomeIcon icon={faBookmark} size={"1x"}/><sup className="ml-1">1</sup>
@@ -48,10 +63,6 @@ class Header extends Component {
                             </div>
                         </div>
                     </div>
-                    <form className="form-inline d-lg-none my-2 my-lg-0">
-                        <input className="form-control mr-sm-2" type="search" placeholder="Rechercher..." aria-label="Rechercher..."/>
-                        <FontAwesomeIcon icon={faSearch} size={"2x"} />
-                    </form>
                 </div>
             </nav>
         );
