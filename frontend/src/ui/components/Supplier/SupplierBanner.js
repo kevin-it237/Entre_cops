@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import './Supplier.scss';
-import img from '../../../assets/images/supplier.jpg';
+import img from '../../../assets/images/service.png';
 
 class Home extends Component {
     render() {
@@ -15,7 +15,7 @@ class Home extends Component {
                             <div className="col-sm-12 col-md-6 d-md-center">
                                 <h1><b>Vous avez des services ou</b> </h1>
                                 <h1><b>des évènements à communiquer ?</b></h1>
-                                <a className="btn btn-outline-light btn-lg mt-4 supplierdemand" href="/supplier">Devenez un Fournisseur Maintenant</a>
+                                <a className="btn btn-outline-light btn-lg mt-4 supplierdemand" href="/supplier">Devenez un Partenaire Maintenant</a>
                             </div>
                         </div>
                     </div>

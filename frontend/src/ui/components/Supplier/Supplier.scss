@@ -6,6 +6,11 @@
     background-repeat: no-repeat;
 
     .banner {
+        h1 {
+            @media only screen and (max-width: 767px) {
+                text-align: center;
+            }
+        }
         h1 > b {
             color: white !important;
             font-size: 3rem;
@@ -25,6 +30,12 @@
                 padding-right: 1rem;
                 text-align: center !important;
             }
+            @media only screen and (max-width: 767px) {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                width: 80%;
+            }
 
             &:hover {
                 color: $maincolor !important;
@@ -38,8 +49,8 @@
 
     .banner {
         img {
-            width: 30rem;
-            height: 30rem;
+            width: 40rem;
+            height: 40rem;
         }
         .supplierdemand {
             color: white !important;
