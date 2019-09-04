@@ -13,7 +13,8 @@ router.post('/signup', (req, res, next) => {
         .then(user => {
             if (user) {
                 return res.status(409).json({
-                    message: 'EMAIL_EXIST'
+                    message: 'EMAIL_EXIST',
+                    status: 409
                 })
             } else {
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
@@ -24,15 +25,24 @@ router.post('/signup', (req, res, next) => {
                     } else {
                         const user = new User({
                             _id: mongoose.Types.ObjectId(),
-                            username: req.body.username,
+                            name: req.body.name,
                             email: req.body.email,
                             password: hash
                         });
                         user.save()
                             .then(user => {
-                                console.log(user)
+                                const token = jwt.sign({
+                                    email: user.email,
+                                    username: user.username,
+                                    userId: user._id
+                                }, "ENTRECOPS_SECRET.JWT_KEY",
+                                {
+                                    expiresIn: "24h"
+                                });
                                 res.status(201).json({
-                                    message: 'User Created'
+                                    message: 'User Created',
+                                    token: token,
+                                    user: user
                                 })
                             }).catch(err => {
                                 console.log(err)
@@ -65,9 +75,9 @@ router.post('/login', (req, res, next) => {
                         email: user.email,
                         username: user.username,
                         userId: user._id
-                    }, "SECRET.JWT_KEY",
+                    }, "ENTRECOPS_SECRET.JWT_KEY",
                     {
-                        expiresIn: "1h"
+                        expiresIn: "24h"
                     });
                     return res.status(200).json({
                         message: 'Auth Successfull',

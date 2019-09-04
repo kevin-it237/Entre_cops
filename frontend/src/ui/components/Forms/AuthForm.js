@@ -7,7 +7,7 @@ import SignupForm from './SignupForm';
 class AuthForm extends Component {
 
     state = {
-        isLogin: true
+        isLogin: false
     }
 
     changeForm = () => {

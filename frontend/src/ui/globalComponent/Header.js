@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { connect } from 'react-redux';
 import { faSearch, faBookmark } from '@fortawesome/free-solid-svg-icons';
 import './Header.scss';
 import logo from '../../assets/images/logo.png';
@@ -11,7 +12,7 @@ class Header extends Component {
     render() {
         return (
             <nav  className={this.props.home ? "navbar navbar-expand-lg navbar-light bg-light": "navbar navbar-expand-lg navbar-light bg-light navbar-shadow" }>
-                <div class="container">
+                <div className="container">
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
@@ -53,7 +54,7 @@ class Header extends Component {
                                 </div>
                             </li>
                             <li className="nav-item">
-                                <NavLink className="nav-link" to="/auth"><i class="fa fa-user"></i>Se connecter</NavLink>
+                                <NavLink className="nav-link" to="/auth"><i className="fa fa-user"></i>Se connecter</NavLink>
                             </li>
                         </ul>
                         <div className="dropdown">
@@ -69,4 +70,18 @@ class Header extends Component {
     }
 }
 
-export default Header;
+const mapStateToProps = state => {
+    return {
+        email: state.auth.email,
+        username: state.auth.username,
+        token: state.auth.token,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        login: (data) => (data) => dispatch()
+    }
+}
+
+export default connect(mapStateToProps)(Header);

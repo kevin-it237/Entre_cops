@@ -21,7 +21,7 @@ class LoginForm extends Component {
                     <form>
                     <input type="email" id="login" class="fadeIn second" name="email" placeholder="Adresse Email"/>
                     <input type="password" id="password" class="fadeIn third" name="password" placeholder="Mot de passe"/>
-                    <input type="submit" id="signBtn" class="fadeIn fourth mt-4 mb-5" value="Se connecter"/>
+                    <input type="submit" disabled={!this.state.formValid} id="signBtn" class="fadeIn fourth mt-4 mb-5" value="Se connecter"/>
                     </form>
                     <p>Ou bien connectez vous avec:</p>
                     <div className="d-flex socialWrapper">
