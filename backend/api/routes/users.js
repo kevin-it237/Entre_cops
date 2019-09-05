@@ -13,8 +13,7 @@ router.post('/signup', (req, res, next) => {
         .then(user => {
             if (user) {
                 return res.status(409).json({
-                    message: 'EMAIL_EXIST',
-                    status: 409
+                    message: 'EMAIL_EXIST'
                 })
             } else {
                 bcrypt.hash(req.body.password, 10, (err, hash) => {
@@ -37,12 +36,15 @@ router.post('/signup', (req, res, next) => {
                                     userId: user._id
                                 }, "ENTRECOPS_SECRET.JWT_KEY",
                                 {
-                                    expiresIn: "24h"
+                                    expiresIn: 60 * 60 * 24
                                 });
+                                const now = new Date();
+                                const expiresDate = now.getTime() + 60 * 60 * 24  * 1000;
                                 res.status(201).json({
                                     message: 'User Created',
                                     token: token,
-                                    user: user
+                                    user: user,
+                                    expiresDate: expiresDate
                                 })
                             }).catch(err => {
                                 console.log(err)
@@ -73,16 +75,19 @@ router.post('/login', (req, res, next) => {
                 if (result) {
                     const token = jwt.sign({
                         email: user.email,
-                        username: user.username,
+                        name: user.name,
                         userId: user._id
                     }, "ENTRECOPS_SECRET.JWT_KEY",
                     {
-                        expiresIn: "24h"
+                        expiresIn: 60 * 60 * 24
                     });
-                    return res.status(200).json({
-                        message: 'Auth Successfull',
+                    const now = new Date();
+                    const expiresDate = now.getTime() + 60 * 60 * 24 * 1000;
+                    res.status(201).json({
+                        message: 'User Created',
                         token: token,
-                        user: user
+                        user: user,
+                        expiresDate: expiresDate
                     })
                 }
                 res.status(401).json({
@@ -94,6 +99,24 @@ router.post('/login', (req, res, next) => {
             console.log(err)
             res.status(500).json({ error: err })
         })
+})
+
+// Regenarate token
+router.post('/generatetoken', (req, res, next) => {
+    const token = jwt.sign({
+        email: req.body.email,
+        name: req.body.name,
+        userId: req.body._id
+    }, "ENTRECOPS_SECRET.JWT_KEY",
+    {
+        expiresIn: 60 * 60 * 24
+    });
+    const now = new Date();
+    const expiresDate = now.getTime() + 60 * 60 * 24 * 1000;
+    res.status(201).json({
+        token: token,
+        expiresDate: expiresDate
+    })
 })
 
 // delete a user

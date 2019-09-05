@@ -12,16 +12,20 @@ const reducer = (state = initialState, action) => {
         case actionTypes.LOGIN:
             return {
                 ...state,
+                userId: action.data.user._id,
                 name: action.data.user.name,
                 email: action.data.user.email,
-                token: action.data.token
+                token: action.data.token,
+                expiresDate: action.data.expiresDate
             };
         case actionTypes.SIGNUP:
             return {
                 ...state,
+                userId: action.data.user._id,
                 name: action.data.user.name,
                 email: action.data.user.email,
-                token: action.data.token
+                token: action.data.token,
+                expiresDate: action.data.expiresDate
             };
         case actionTypes.LOGOUT:
             return {
@@ -31,7 +35,7 @@ const reducer = (state = initialState, action) => {
                 token: null
             };
         case actionTypes.AUTH_ERROR:
-            let error = action.errorType == "INTERNET" ? "Erreur de connection": null;
+            let error = action.errorType === "INTERNET" ? "Erreur de connection": null;
             return {
                 ...state,
                 error: error

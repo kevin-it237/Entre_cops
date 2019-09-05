@@ -15,6 +15,7 @@ export const signup = (data) => {
                 dispatch(startSignup(res.data))
             })
             .catch(err => {
+                console.log(err)
                 dispatch(authArror("OTHER"))
             })
         } catch (error) {
@@ -70,7 +71,7 @@ export const authArror = (type) => {
 export const logout = () => {
     localStorage.removeItem('authData')
     return {
-        type: actionTypes.LOGIN
+        type: actionTypes.LOGOUT
     }
 };
 
@@ -79,10 +80,40 @@ export const autoSignIn = () => {
     let authData = localStorage.getItem("authData");
     authData = JSON.parse(authData);
     return dispatch => {
-        if(authData) {
-            console.log(authData)
-            console.log("Auto sign")
-            dispatch(startLogin(authData));
+        const now = new Date();
+        if (authData) {
+            const parsedExpiryDate = new Date(parseInt(authData.expiresDate));
+            if (parsedExpiryDate > now) {
+                console.log("Auto sign")
+                dispatch(startLogin(authData));
+            } else {
+                // Generate a new token and login the user
+                const user = {
+                    email: authData.user.email,
+                    name: authData.user.name,
+                    userId: authData.user.userId,
+                }
+                axios.post('/api/user/generatetoken', user)
+                .then(res => {
+                    console.log("Re signin");
+                    // Update the localstorage localstorage
+                    let previousData = JSON.parse(localStorage.getItem('authData'));
+                    previousData.token = res.data.token;
+                    previousData.expiresDate = res.data.expiresDate;
+                    localStorage.setItem('authData', JSON.stringify(previousData));
+                    const newData = {
+                        ...user,
+                        token: res.data.token,
+                        expiresDate: res.data.expiresDate
+                    }
+                    dispatch(startLogin(newData))
+                })
+                .catch(err => {
+                    dispatch(authArror("OTHER"))
+                })
+            }
+        } else {
+            dispatch(logout());
         }
     }
 };
