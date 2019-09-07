@@ -4,7 +4,10 @@ const initialState = {
     name: '',
     email: '',
     token: null,
-    error: ''
+    error: '',
+    expiresDate: '',
+    userId: null,
+    role: ''
 }
 
 const reducer = (state = initialState, action) => {
@@ -16,7 +19,9 @@ const reducer = (state = initialState, action) => {
                 name: action.data.user.name,
                 email: action.data.user.email,
                 token: action.data.token,
-                expiresDate: action.data.expiresDate
+                expiresDate: action.data.expiresDate,
+                role: action.data.user.role,
+                error: ''
             };
         case actionTypes.SIGNUP:
             return {
@@ -25,20 +30,30 @@ const reducer = (state = initialState, action) => {
                 name: action.data.user.name,
                 email: action.data.user.email,
                 token: action.data.token,
-                expiresDate: action.data.expiresDate
+                expiresDate: action.data.expiresDate,
+                role: action.data.user.role,
+                error: ''
             };
         case actionTypes.LOGOUT:
             return {
                 ...state,
-                username: '',
+                userId: null,
+                name: '',
                 email: '',
-                token: null
+                token: null,
+                expiresDate: null,
+                role: '',
+                error: ''
             };
         case actionTypes.AUTH_ERROR:
-            let error = action.errorType === "INTERNET" ? "Erreur de connection": null;
             return {
                 ...state,
-                error: error
+                error: action.errorType
+            };
+        case actionTypes.CLEAR_ERROR:
+            return {
+                ...state,
+                error: ''
             };
         default:
             return state;

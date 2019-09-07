@@ -4,9 +4,9 @@ import img from '../../../assets/images/bg.jpg';
 const ServiceItem = (props) => {
     return (
         <a href="/service/details/2">
-            <div class="card">
-                <div class="box">
-                    <div class="img">
+            <div className="card">
+                <div className="box">
+                    <div className="img">
                         <img src={img} alt="Service" />
                     </div>
                     <h2>Catégorie<br/>

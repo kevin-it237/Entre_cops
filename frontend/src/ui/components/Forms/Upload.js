@@ -12,7 +12,7 @@ export default class Upload extends Component {
 
     preview(event){
       this.setState({url: URL.createObjectURL(event.target.files[0])});
-      this.props.setFile(this.props.name, event.target.files[0], URL.createObjectURL(event.target.files[0]))
+      this.props.setFile(this.props.name, event.target.files[0])
     }
 
     render() {

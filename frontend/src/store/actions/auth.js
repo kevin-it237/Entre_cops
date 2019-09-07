@@ -15,11 +15,11 @@ export const signup = (data) => {
                 dispatch(startSignup(res.data))
             })
             .catch(err => {
-                console.log(err)
-                dispatch(authArror("OTHER"))
+                // User already Exist
+                dispatch(authError("Adresse Email déja utilisée"))
             })
         } catch (error) {
-            dispatch(authArror("INTERNET"))
+            dispatch(authError("Problème de connection."))
         }
     }
 };
@@ -45,10 +45,10 @@ export const login = (data) => {
                 dispatch(startLogin(res.data))
             })
             .catch(err => {
-                dispatch(authArror("OTHER"))
+                dispatch(authError("Vos informations sont Incorrectes."))
             })
         } catch (error) {
-            dispatch(authArror("INTERNET"))
+            dispatch(authError("Erreur de connexion. Veuillez reéssayer."))
         }
     }
 };
@@ -60,10 +60,16 @@ export const startLogin = (data) => {
     }
 };
 
-export const authArror = (type) => {
+export const authError = (type) => {
     return {
         type: actionTypes.AUTH_ERROR,
         errorType: type
+    }
+};
+
+export const clearError = () => {
+    return {
+        type: actionTypes.CLEAR_ERROR
     }
 };
 
@@ -75,13 +81,13 @@ export const logout = () => {
     }
 };
 
-
+// Auto signin the user when the token expires
 export const autoSignIn = () => {
     let authData = localStorage.getItem("authData");
     authData = JSON.parse(authData);
     return dispatch => {
         const now = new Date();
-        if (authData) {
+        if (authData && authData.token) {
             const parsedExpiryDate = new Date(parseInt(authData.expiresDate));
             if (parsedExpiryDate > now) {
                 console.log("Auto sign")
@@ -109,10 +115,11 @@ export const autoSignIn = () => {
                     dispatch(startLogin(newData))
                 })
                 .catch(err => {
-                    dispatch(authArror("OTHER"))
+                    dispatch(authError("Erreur de connexion. Veuillez reéssayer."))
                 })
             }
         } else {
+            console.log("Logout")
             dispatch(logout());
         }
     }

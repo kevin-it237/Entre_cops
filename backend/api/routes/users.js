@@ -26,7 +26,9 @@ router.post('/signup', (req, res, next) => {
                             _id: mongoose.Types.ObjectId(),
                             name: req.body.name,
                             email: req.body.email,
-                            password: hash
+                            role: "user",
+                            password: hash,
+                            date: new Date()
                         });
                         user.save()
                             .then(user => {
@@ -36,11 +38,11 @@ router.post('/signup', (req, res, next) => {
                                     userId: user._id
                                 }, "ENTRECOPS_SECRET.JWT_KEY",
                                 {
-                                    expiresIn: 60 * 60 * 24
+                                    expiresIn: "24h"
                                 });
                                 const now = new Date();
                                 const expiresDate = now.getTime() + 60 * 60 * 24  * 1000;
-                                res.status(201).json({
+                                return res.status(201).json({
                                     message: 'User Created',
                                     token: token,
                                     user: user,
@@ -48,7 +50,7 @@ router.post('/signup', (req, res, next) => {
                                 })
                             }).catch(err => {
                                 console.log(err)
-                                res.status(500).json({ error: err })
+                                return res.status(500).json({ error: err })
                             })
                     }
                 })
@@ -79,12 +81,12 @@ router.post('/login', (req, res, next) => {
                         userId: user._id
                     }, "ENTRECOPS_SECRET.JWT_KEY",
                     {
-                        expiresIn: 60 * 60 * 24
+                        expiresIn: "24h"
                     });
                     const now = new Date();
                     const expiresDate = now.getTime() + 60 * 60 * 24 * 1000;
-                    res.status(201).json({
-                        message: 'User Created',
+                    return res.status(201).json({
+                        message: 'User Login',
                         token: token,
                         user: user,
                         expiresDate: expiresDate
@@ -97,7 +99,7 @@ router.post('/login', (req, res, next) => {
         })
         .catch(err => {
             console.log(err)
-            res.status(500).json({ error: err })
+            return res.status(500).json({ error: err })
         })
 })
 
@@ -109,11 +111,11 @@ router.post('/generatetoken', (req, res, next) => {
         userId: req.body._id
     }, "ENTRECOPS_SECRET.JWT_KEY",
     {
-        expiresIn: 60 * 60 * 24
+        expiresIn: "24h"
     });
     const now = new Date();
     const expiresDate = now.getTime() + 60 * 60 * 24 * 1000;
-    res.status(201).json({
+    return res.status(201).json({
         token: token,
         expiresDate: expiresDate
     })
@@ -124,7 +126,7 @@ router.delete('/:userId', (req, res, next) => {
     User.remove({ _id: req.params.userId })
         .exec()
         .then(result => {
-            res.status(200).json({
+            return res.status(200).json({
                 message: "User deleted"
             })
         })

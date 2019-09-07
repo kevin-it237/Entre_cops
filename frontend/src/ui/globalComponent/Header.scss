@@ -54,9 +54,20 @@
           padding: 0 !important;
         }
     }
+    .form-desktop{
+      @media only screen and (min-width: 991px) {
+        display: flex !important;
+        margin-right: 3rem !important;
+      }
+    }
+    .form-mobile{
+      @media only screen and (max-width: 992px) {
+        display: flex !important;
+      }
+    }
     form {
-      display: flex;
       align-items: center;
+
       @media only screen and (max-width: 600px) {
         width: 50% !important;
       }

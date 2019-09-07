@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import SupplierForm from '../../components/Forms/SuplierForm';
 
 
 class AdminHome extends Component {
@@ -67,8 +68,8 @@ class AdminHome extends Component {
                             <h3 className="title">EVENEMENTS</h3>
                         </div>
                         <div className="col-sm-12">
-                            <table class="table table-bordered">
-                                <thead class="thead-inverse thead-dark">
+                            <table className="table table-bordered">
+                                <thead className="thead-inverse thead-dark">
                                     <tr>
                                     <th>#</th>
                                     <th>Nom</th>
@@ -151,8 +152,8 @@ class AdminHome extends Component {
                             <h3 className="title">SERVICES</h3>
                         </div>
                         <div className="col-sm-12">
-                            <table class="table table-bordered">
-                                <thead class="thead-inverse thead-dark">
+                            <table className="table table-bordered">
+                                <thead className="thead-inverse thead-dark">
                                     <tr>
                                     <th>#</th>
                                     <th>Nom</th>
@@ -238,51 +239,9 @@ class AdminHome extends Component {
                     <Modal.Title>Nouveau Fournisseur</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <form>
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
-                                        <div class="form-group">
-                                            <label for="name">Nom complet</label>
-                                            <input type="text" class="form-control" name="nom" id="name" placeholder="Nom complet"/>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="email">Adresse Email</label>
-                                            <input type="email" class="form-control" name="email" id="email" placeholder="Adresse Email"/>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="tel">Numero de Téléphone</label>
-                                            <input type="tel" class="form-control" name="tel" id="tel" pattern="[0-9]{9}" placeholder="Numero de Téléphone"/>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="name">Localisation</label>
-                                            <input type="text" class="form-control" name="location" id="name" placeholder="Localisation"/>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="name">Services (Séparez par des virgules: ",")</label>
-                                            <textarea type="text" class="form-control is-invalid" name="resume" rows={3} placeholder="Resumé"></textarea>
-                                            <div class="invalid-feedback">
-                                                {/* Invalid. */}
-                                            </div>
-                                        </div>
-                                        <div className="row align-items-start py-3">
-                                            <div className="col-sm-12 col-md-4 col-lg-4">
-                                                <label for="name">Image du Fournisseur</label><br/>
-                                                <div class="custom-file">
-                                                    <input type="file" accept="image/*" class="custom-file-input" id="customImgFile" />
-                                                    <label class="custom-file-label" for="customImgFile">Choisir</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="name">Autres informations</label>
-                                            <textarea type="text" class="form-control" name="resume" rows={3} placeholder="Autres informations"></textarea>
-                                        </div>
-                                        <input className="mt-4" type="submit" value="Ajouter le Fournisseur" name="submit"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                        <div className="container supplier-form">
+                            <SupplierForm />
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="py-3">

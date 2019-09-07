@@ -6,6 +6,12 @@ const userSchema = mongoose.Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     profileImage: { type: String, required: false },
+    tel: { type: Number, required: false },
+    localisation: { type: String, required: false },
+    services: { type: String, required: false },
+    supplierAccountValidated: { type: Boolean, required: false },
+    otherInfos: { type: String, required: false },
+    role: { type: String, required: true },
     date: { type: Date, required: false },
 })
 

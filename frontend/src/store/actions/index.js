@@ -2,7 +2,8 @@ export {
     login,
     logout,
     signup,
-    autoSignIn
+    autoSignIn,
+    clearError
 } from './auth';
 
 export {

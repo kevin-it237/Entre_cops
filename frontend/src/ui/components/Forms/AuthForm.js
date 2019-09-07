@@ -3,11 +3,12 @@ import Header from '../../globalComponent/Header';
 import Hoc from '../../globalComponent/Hoc'
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
+import { connect } from 'react-redux';
 
 class AuthForm extends Component {
 
     state = {
-        isLogin: false
+        isLogin: true
     }
 
     changeForm = () => {
@@ -20,6 +21,7 @@ class AuthForm extends Component {
             <SignupForm changeForm={this.changeForm} />;
         return (
             <Hoc>
+                {this.props.token ? this.props.history.goBack(): null}
                 <Header />
                 {Form}
             </Hoc>
@@ -27,4 +29,10 @@ class AuthForm extends Component {
     }
 }
 
-export default AuthForm;
+const mapPropsToState = state => {
+    return {
+        token: state.auth.token,
+    }
+}
+
+export default connect(mapPropsToState)(AuthForm);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Forms.scss';
 import { connect } from 'react-redux';
-import { signup, renderLoader, clearLoader } from '../../../store/actions';
+import { signup, renderLoader, clearLoader, clearError } from '../../../store/actions';
 import Loader from '../../globalComponent/Loader';
 
 import userLogo from '../../../assets/images/event.png';
@@ -21,6 +21,8 @@ class SignUpForm extends Component {
 
     goToSignInForm = (e) => {
         e.preventDefault();
+        // Clear the error of the global state
+        this.props.onClearError();
         this.props.changeForm()
     }
 
@@ -82,20 +84,22 @@ class SignUpForm extends Component {
 
     render() {
         const { isTyping, emailValid, passwordValid, nameValid , name, email, password } = this.state;
+        const { error, loader } = this.props;
         return (
-            <div class="wrapper fadeInDown">
+            <div className="wrapper fadeInDown">
                 <div id="formContent">
-                    <div class="fadeIn first mt-5">
+                    <div className="fadeIn first mt-5">
                     <img src={userLogo} id="icon" alt="User Icon" />
                     </div>
                     <form>
-                        <input type="text" value={name} onChange={(e) => this.handleInputChange(e)} id="nom" class="fadeIn second" name="name" placeholder="Nom"/>
+                        {error&&error.length ? <div className="alert alert-danger">{error}</div>:null}
+                        <input type="text" value={name} onChange={(e) => this.handleInputChange(e)} id="nom" className="fadeIn second" name="name" placeholder="Nom"/>
                         {isTyping&&!nameValid ? <div style={{color: "red"}}>Invalide. Min 6 caratères</div>:null}
-                        <input type="email" value={email} onChange={(e) => this.handleInputChange(e)} id="email" class="fadeIn second" name="email" placeholder="Adresse Email"/>
+                        <input type="email" value={email} onChange={(e) => this.handleInputChange(e)} id="email" className="fadeIn second" name="email" placeholder="Adresse Email"/>
                         {isTyping&&!emailValid ? <div style={{color: "red"}}>Email non valide.</div>:null}
-                        <input type="password" value={password} onChange={(e) => this.handleInputChange(e)} id="password" class="fadeIn third" name="password" placeholder="Mot de passe"/>
+                        <input type="password" value={password} onChange={(e) => this.handleInputChange(e)} id="password" className="fadeIn third" name="password" placeholder="Mot de passe"/>
                         {isTyping&&!this.state.passwordValid ? <div style={{color: "red"}}>Invalide. Min 6 caratères</div>:null}
-                        <button disabled={!passwordValid} type="submit" onClick={(e) => this.handleSubmit(e)} id="signBtn" class="button fadeIn fourth mt-4 mb-5">{this.props.loader ? <Loader color="white" />:"S'inscrire"}</button>
+                        <button disabled={!passwordValid || loader} type="submit" onClick={(e) => this.handleSubmit(e)} id="signBtn" className="button fadeIn fourth mt-4 mb-5">{this.props.loader ? <Loader color="white" />:"S'inscrire"}</button>
                     </form>
 
                     <p>Ou bien inscrivez vous avec:</p>
@@ -105,7 +109,7 @@ class SignUpForm extends Component {
                     </div>
 
                     <div id="formFooter">
-                    <a class="underlineHover" href="#signin" onClick={(event) => this.goToSignInForm(event)}>Déja inscrit ? Connectez vous.</a>
+                    <a className="underlineHover" href="#signin" onClick={(event) => this.goToSignInForm(event)}>Déja inscrit ? Connectez vous.</a>
                     </div>
 
                 </div>
@@ -126,6 +130,7 @@ const mapDispatchToState = dispatch => {
         onSignUp: (data) => dispatch(signup(data)),
         onClearLoader: () => dispatch(clearLoader()),
         onRenderLoader: () => dispatch(renderLoader()),
+        onClearError: () => dispatch(clearError()),
     }
 }
 

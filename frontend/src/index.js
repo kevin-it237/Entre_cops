@@ -11,8 +11,8 @@ import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
 
 axios.defaults.baseURL = "http://localhost:3000";
-axios.defaults.headers.common['Authorization'] = "token";
-axios.defaults.headers.post['Content-Type'] = "application/json; charset=utf-8";
+// axios.defaults.headers.common['Authorization'] = "token";
+axios.defaults.headers.post['Content-Type'] = "application/json";
 
 const store = configureStore();
 

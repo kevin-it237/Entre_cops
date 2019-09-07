@@ -28,6 +28,9 @@
         * {
             color: white !important;
         }
+        img {
+            
+        }
         .menu {
             display: flex;
             flex-direction: column;
@@ -160,5 +163,15 @@
                 font-size: 1.4rem !important;
             }
         }
+
+    }
+}
+
+.supplier-form {
+    img {
+        height: 20rem !important;
+        width: 20rem !important;
+        vertical-align: middle !important;
+        border-radius: 50%;
     }
 }

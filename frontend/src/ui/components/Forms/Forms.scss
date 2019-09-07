@@ -40,6 +40,13 @@
     box-shadow: 0 20px 40px 0 rgba(0,0,0,0.2);
     text-align: center;
 
+    .alert {
+      width: 85%;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     @media only screen and (max-width: 900px) {
       width: 98%;
     }

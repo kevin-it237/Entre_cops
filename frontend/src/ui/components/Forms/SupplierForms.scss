@@ -24,6 +24,10 @@
             font-size: 1.4rem;
         }
     }
+
+    .button {
+        width: 100% !important;
+    }
     
     input[type=submit] {
         @media only screen and (max-width: 600px) {

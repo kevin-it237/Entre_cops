@@ -4,7 +4,8 @@ const config = require('./config/database');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-const userRoutes = require('./api/routes/users')
+const userRoutes = require('./api/routes/users');
+const categoryRoutes = require('./api/routes/categories');
 
 // Connect to db
 mongoose.connect(config.database, { useNewUrlParser: true });
@@ -33,14 +34,13 @@ app.use((req, res, next) => {
     next()
 })
 
-// app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-// });
+/* App Routes */
 
-// App Routes
+// User routes
 app.use('/api/user', userRoutes)
+
+// Admin routes
+app.use('/api', categoryRoutes)
 
 app.use((req, res, next) => {
     const error = new Error('Not Found');
