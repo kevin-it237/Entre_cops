@@ -26,6 +26,10 @@ router.post('/signup', (req, res, next) => {
                             _id: mongoose.Types.ObjectId(),
                             name: req.body.name,
                             email: req.body.email,
+                            profileImage: '',
+                            tel: '',
+                            location: '',
+                            accountValidated: false,
                             role: "user",
                             password: hash,
                             date: new Date()
@@ -134,6 +138,6 @@ router.delete('/:userId', (req, res, next) => {
             console.log(err)
             res.status(500).json({ error: err })
         })
-})
+});
 
 module.exports = router;

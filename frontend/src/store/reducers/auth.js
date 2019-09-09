@@ -19,8 +19,10 @@ const reducer = (state = initialState, action) => {
                 name: action.data.user.name,
                 email: action.data.user.email,
                 token: action.data.token,
+                accountValidated: action.data.user.accountValidated,
                 expiresDate: action.data.expiresDate,
                 role: action.data.user.role,
+                user: action.data.user,
                 error: ''
             };
         case actionTypes.SIGNUP:
@@ -30,8 +32,10 @@ const reducer = (state = initialState, action) => {
                 name: action.data.user.name,
                 email: action.data.user.email,
                 token: action.data.token,
+                accountValidated: action.data.user.accountValidated,
                 expiresDate: action.data.expiresDate,
                 role: action.data.user.role,
+                user: action.data.user,
                 error: ''
             };
         case actionTypes.LOGOUT:

@@ -5,12 +5,12 @@ import './index.scss';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import App from './App';
-import Footer from './ui/globalComponent/Footer';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
+import {rootUrl} from './configs/config';
 
-axios.defaults.baseURL = "http://localhost:3000";
+axios.defaults.baseURL = rootUrl;
 // axios.defaults.headers.common['Authorization'] = "token";
 axios.defaults.headers.post['Content-Type'] = "application/json";
 
@@ -19,7 +19,6 @@ const store = configureStore();
 ReactDOM.render(
     <Provider store={store}>
         <App />
-        <Footer />
     </Provider>, 
     document.getElementById('root'));
 

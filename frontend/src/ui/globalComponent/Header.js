@@ -12,7 +12,7 @@ import Recommandations from '../users/Recommantions/Recommandations';
 class Header extends Component {
     
     render() {
-        const { name, token, role } = this.props;
+        const { name, token, role, accountValidated } = this.props;
         return (
             <nav  className={this.props.home ? "navbar navbar-expand-lg navbar-light bg-light": "navbar navbar-expand-lg navbar-light bg-light navbar-shadow" }>
                 <div className="container">
@@ -51,7 +51,7 @@ class Header extends Component {
                                 </li>:null
                             }
                             {
-                                token && role === "supplier" ?
+                                token && role === "supplier" && accountValidated ?
                                 <li className="nav-item">
                                     <NavLink className="nav-link" to="/dashboard/reservations">Réservations</NavLink>
                                 </li>:null
@@ -100,6 +100,7 @@ const mapStateToProps = state => {
         name: state.auth.name,
         token: state.auth.token,
         role: state.auth.role,
+        accountValidated: state.auth.accountValidated
     }
 }
 

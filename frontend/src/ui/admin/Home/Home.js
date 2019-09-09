@@ -2,16 +2,39 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import axios from 'axios';
 import SupplierForm from '../../components/Forms/SuplierForm';
-
+import Loader from '../../globalComponent/Loader';
 
 class AdminHome extends Component {
 
     state = {
-        showModal: false
+        showModal: false,
+        eventsLoading: true,
+        events: [],
+        servicesLoading: true,
+        services: [],
+        error: ''
+    }
+
+    closeSupplierModal = () => {
+        this.setState({showModal: false});
+    }
+
+    componentDidMount() {
+        //Get 5 events
+        axios.get('/api/event/all')
+        .then(res => {
+            console.log(res)
+            this.setState({ events: res.data.events, eventsLoading: false, error:'' })
+        })
+        .catch(err => {
+            this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", eventsLoading: false })
+        })
     }
 
     render() {
+        const {events, eventsLoading, services, servicesLoading, error} = this.state;
         return (
             <Fragment>
                 <div className="container">
@@ -37,7 +60,7 @@ class AdminHome extends Component {
                                 <div className="card-body">
                                     <h5 className="card-title">Evènements</h5>
                                     <p className="card-text">Valider/Supprimer Evènements.</p>
-                                    <Link className="btn btn-dark btn-block" to="/admin/annonces">Gérer les Annonces</Link>
+                                    <Link className="btn btn-dark btn-block" to="/admin/annonces">Gérer les Evènements</Link>
                                 </div>
                             </div>
                         </div>
@@ -67,81 +90,42 @@ class AdminHome extends Component {
                         <div className="col-sm-12">
                             <h3 className="title">EVENEMENTS</h3>
                         </div>
-                        <div className="col-sm-12">
-                            <table className="table table-bordered">
-                                <thead className="thead-inverse thead-dark">
-                                    <tr>
-                                    <th>#</th>
-                                    <th>Nom</th>
-                                    <th>Lieux</th>
-                                    <th>Date</th>
-                                    <th>Création</th>
-                                    <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Concert Dadju</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Concert Dadju</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Concert Dadju</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">4</th>
-                                        <td>Concert Dadju</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">5</th>
-                                        <td>Concert Dadju</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div className="col-sm-12 text-center">
+                            {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
+                            {
+                                eventsLoading ? <Loader />:
+                                events&&events.length ?
+                                    <table className="table table-bordered">
+                                        <thead className="thead-inverse thead-dark">
+                                            <tr>
+                                            <th>#</th>
+                                            <th>Nom</th>
+                                            <th>Lieux</th>
+                                            <th>Date</th>
+                                            <th>Catégorie</th>
+                                            <th>Etat</th>
+                                            <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {
+                                            events.map((event, i) => (
+                                                <tr key={event._id}>
+                                                    <th scope="row">{i+1}</th>
+                                                    <td>{event.title}</td>
+                                                    <td>{event.place}</td>
+                                                    <td>{event.date}</td>
+                                                    <td>{event.category}</td>
+                                                    <td>{event.validated ? <span style={{ color: "green" }}>Validé</span> : <b style={{ color: "red" }}>En attente</b>}</td>
+                                                    <td className="actions">
+                                                        <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        }
+                                        </tbody>
+                                    </table>:null
+                            }
                             <div className="d-flex justify-content-end">
                                 <Link className="btn btn-outline-dark" to="/admin/annonces">Afficher tous</Link>
                             </div>
@@ -240,7 +224,7 @@ class AdminHome extends Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="container supplier-form">
-                            <SupplierForm />
+                            <SupplierForm closeModal={this.closeSupplierModal} />
                         </div>
                     </Modal.Body>
                     <Modal.Footer>

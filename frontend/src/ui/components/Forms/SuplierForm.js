@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import axios from 'axios';
 import './SupplierForms.scss';
+import {Redirect} from 'react-router-dom';
 import Upload from '../Forms/Upload';
 import Loader from '../../globalComponent/Loader';
 
@@ -22,17 +24,20 @@ class SupplierForm extends Component {
         servicesValid: false,
         profileImageValid: false,
         otherInfosValid: false,
+        loading: false,
+        redirect: false,
+        error: '',
     }
 
     handleInputChange = (e) => {
         e.preventDefault();
         const name = e.target.name;
         const value = e.target.value;
-        this.setState({ [name]: value },
+        this.setState({ [name]: value, error: '' },
             () => { this.validateField(name, value) });
     }
 
-    validateField(fieldName, value) {
+    validateField = (fieldName, value) => {
         let { emailValid, nameValid, telValid, locationValid, servicesValid, profileImageValid, otherInfosValid} = this.state;
 
         switch (fieldName) {
@@ -71,9 +76,9 @@ class SupplierForm extends Component {
         }, this.validateForm);
     }
 
-    validateForm() {
+    validateForm = () => {
         this.setState({ formValid: 
-            this.state.emailValid && 
+            (this.state.emailValid&&this.state.emailValid.length === 4) && 
             this.state.nameValid &&
             this.state.telValid &&
             this.state.locationValid &&
@@ -84,77 +89,100 @@ class SupplierForm extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.setState({isTyping: true});
         if(this.state.formValid) {
+            const formData = new FormData();
             const { email, name, tel, location, services, profileImage, otherInfos } = this.state;
-            const newSupplier = {
-                name: name,
-                email: email,
-                tel: tel,
-                location: location,
-                services: services,
-                profileImage: profileImage,
-                otherInfos: otherInfos,
-            }
-            console.log(newSupplier);
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('tel', tel);
+            formData.append('location', location);
+            formData.append('services', services);
+            formData.append('profileImage', profileImage);
+            formData.append('otherInfos', otherInfos);
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            };
             // Save the supplier
+            this.setState({loading: true});
+            try {
+                axios.post('/api/supplier/new', formData, config)
+                .then(res => {
+                    this.setState({ loading: false, redirect: true });
+                    if (this.props.closeModal) {
+                        this.props.closeModal();
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.setState({ error: "Adresse Email déja utilisée", loading: false });
+                })
+            } catch (error) {
+                this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
+            }
         } else {
-            this.setState({error: "Veuillez remplir tous les champs"});
+            this.setState({ error: "Veuillez remplir tous les champs", isTyping: true});
         }
     }
 
     setFile(name,file) {
         this.setState({
-            [name]: file
-        });
+            [name]: file,
+            profileImageValid: true,
+            error: ''
+        }, this.validateForm);
     }
 
     render() {
         const { isTyping, name, tel, services, location, locationValid, otherInfos,  emailValid, telValid, email, 
-                nameValid, profileImage, servicesValid, otherInfosValid, profileImageValid, error } = this.state;
+                nameValid, profileImage, servicesValid, otherInfosValid, profileImageValid, error, loading } = this.state;
         return (
-            <form>
-                {error && error.length ? <div className="alert alert-danger" style={{fontSize: "1.3rem"}}>{error}</div> : null}
-                <div className="form-group">
-                    <label for="name">Nom complet</label>
-                    <input type="text" className={isTyping && nameValid ? "form-control is-valid" : "form-control is-invalid"} value={name} onChange={(e) => this.handleInputChange(e)} name="name" id="name" placeholder="Nom complet" />
-                    {isTyping && nameValid ? <div className="valid-feedback">Valide</div> : <div className="invalid-feedback">Invalide</div>}
-                </div>
-                <div className="form-group">
-                    <label for="email">Adresse Email</label>
-                    <input type="email" className={isTyping && emailValid ? "form-control is-valid" : "form-control is-invalid"} value={email} onChange={(e) => this.handleInputChange(e)} name="email" id="email" placeholder="Adresse Email" />
-                    {isTyping&&emailValid ? <div className="valid-feedback">Valide</div> : <div className="invalid-feedback">Email invalide</div>}
-                </div>
-                <div className="form-group">
-                    <label for="tel">Numero de Téléphone</label>
-                    <input type="tel" className={isTyping && telValid ? "form-control is-valid" : "form-control is-invalid"} value={tel} onChange={(e) => this.handleInputChange(e)} name="tel" id="tel" pattern="[0-9]{9}" placeholder="Numero de Téléphone" />
-                    {isTyping&&telValid ? <div className="valid-feedback">Valide</div> : <div className="invalid-feedback">Invalide</div>}
-                </div>
-                <div className="form-group">
-                    <label for="name">Localisation</label>
-                    <input type="text" className={isTyping && locationValid ? "form-control is-valid" : "form-control is-invalid"} value={location} onChange={(e) => this.handleInputChange(e)} name="location" id="location" placeholder="Localisation" />
-                    {isTyping&&locationValid ? <div className="valid-feedback">Valide</div> : <div className="invalid-feedback">Invalide</div>}
-                </div>
-                <div className="form-group">
-                    <label for="name">Vos services (Séparez par des virgules: ",")</label>
-                    <textarea type="text" className={isTyping && servicesValid ? "form-control is-valid" : "form-control is-invalid"} value={services} onChange={(e) => this.handleInputChange(e)} name="services" rows={3} placeholder="Services"></textarea>
-                    {isTyping&&servicesValid ? <div className="valid-feedback">Valide</div> : <div className="invalid-feedback">Invalide</div>}
-                </div>
-                <div className="form-group">
-                    <label for="name">Autres informations</label>
-                    <textarea type="text" className={isTyping && otherInfosValid ? "form-control is-valid" : "form-control is-invalid"} value={otherInfos} onChange={(e) => this.handleInputChange(e)} name="otherInfos" rows={3} placeholder="Autres informations"></textarea>
-                    {isTyping&&otherInfosValid ? <div className="valid-feedback">Valide</div> : <div className="invalid-feedback">Invalide</div>}
-                </div>
-                <div className="row align-items-center justify-content-center py-3">
-                    <div className="col-sm-8 col-md-8 col-lg-6 d-flex flex-column justify-content-center align-items-center">
-                        <Upload type="image" oldUrl={profileImage} setFile={(name, file) => this.setFile(name, file)} name="profileImage" label={"Image de Profil"} />
+            <Fragment>
+                {this.state.redirect ? this.props.closeTo ? <Redirect to={this.props.closeTo} />: null : null}
+                <form>
+                    {error && error.length ? <div className="alert alert-danger" style={{fontSize: "1.3rem"}}>{error}</div> : null}
+                    <div className="form-group">
+                        <label for="name">Nom complet</label>
+                        <input type="text" className={isTyping && !nameValid ? "form-control is-invalid" : "form-control"} value={name} onChange={(e) => this.handleInputChange(e)} name="name" id="name" placeholder="Nom complet" />
+                        {isTyping && !nameValid ? <div className="invalid-feedback">Invalide</div> : null}
                     </div>
-                    {isTyping &&profileImageValid  ?  null : <div className="invalid-feedback">Image Requise</div>}
-                </div>
-                <div className="d-flex justify-content-end">
-                    <button type="submit" onClick={(e) => this.handleSubmit(e)} className="button fadeIn fourth mt-4 mb-5">{this.props.loader ? <Loader color="white" /> : "Valider"}</button>
-                </div>
-            </form>
+                    <div className="form-group">
+                        <label for="email">Adresse Email</label>
+                        <input type="email" className={isTyping && !emailValid ? "form-control is-invalid" : "form-control"} value={email} onChange={(e) => this.handleInputChange(e)} name="email" id="email" placeholder="Adresse Email" />
+                        {isTyping && !emailValid ? <div className="invalid-feedback">Email invalide</div> : null}
+                    </div>
+                    <div className="form-group">
+                        <label for="tel">Numero de Téléphone</label>
+                        <input type="tel" className={isTyping && !telValid ? "form-control is-invalid" : "form-control"} value={tel} onChange={(e) => this.handleInputChange(e)} name="tel" id="tel" pattern="[0-9]{9}" placeholder="Numero de Téléphone" />
+                        {isTyping && !telValid ? <div className="invalid-feedback">Invalide</div> : null}
+                    </div>
+                    <div className="form-group">
+                        <label for="name">Localisation</label>
+                        <input type="text" className={isTyping && !locationValid ? "form-control is-invalid" : "form-control"} value={location} onChange={(e) => this.handleInputChange(e)} name="location" id="location" placeholder="Localisation" />
+                        {isTyping && !locationValid ? <div className="invalid-feedback">Invalide</div> : null}
+                    </div>
+                    <div className="form-group">
+                        <label for="name">Vos services (Séparez par des virgules: ",")</label>
+                        <textarea type="text" className={isTyping && !servicesValid ? "form-control is-invalid" : "form-control"} value={services} onChange={(e) => this.handleInputChange(e)} name="services" rows={3} placeholder="Services"></textarea>
+                        {isTyping && !servicesValid ? <div className="invalid-feedback">Invalide</div> : null}
+                    </div>
+                    <div className="form-group">
+                        <label for="name">Autres informations</label>
+                        <textarea type="text" className={isTyping && !otherInfosValid ? "form-control is-invalid" : "form-control"} value={otherInfos} onChange={(e) => this.handleInputChange(e)} name="otherInfos" rows={3} placeholder="Autres informations"></textarea>
+                        {isTyping && !otherInfosValid ? <div className="invalid-feedback">Invalide</div> : null}
+                    </div>
+                    <div className="row align-items-center justify-content-center py-3">
+                        <div className="col-sm-8 col-md-8 col-lg-6 d-flex flex-column justify-content-center align-items-center">
+                            <Upload type="image" oldUrl={profileImage} setFile={(name, file) => this.setFile(name, file)} name="profileImage" label={"Image de Profil"} />
+                            {isTyping && !profileImageValid ? <p className="alert alert-danger">Image Requise</p>:null }
+                        </div>
+                    </div>
+                    <div className="d-flex justify-content-end">
+                        <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Valider"}</button>
+                    </div>
+                </form>
+            </Fragment>
         );
     }
 }

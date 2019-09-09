@@ -90,30 +90,3 @@
         }
     }
 }
-
-form {
-    #category {
-        height: 3rem;
-        option {
-            font-size: 1.4rem !important;
-        }
-    }
-
-    .form-control {
-        border: solid 1px #aaa !important;
-        background-color: white;
-    }
-    .custom-file-label {
-        font-size: 1.4rem;
-    }
-    .react-datepicker__input-container {
-        input {
-            height: 3.5rem;
-            margin: 0 !important;
-            width: 100%;
-        }
-    }
-    .react-datepicker {
-        font-size: 1.1rem !important;
-    }
-}

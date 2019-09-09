@@ -14,11 +14,12 @@ class SupplierRegistration extends Component {
                             <div className="col-sm-11 col-md-10 col-lg-8 mb-5 supplier-registration-form">
                                 <div className="row mb-5">
                                     <div className="col-sm-12">
-                                        <h2 className="text-center mb-5">DEVINIR UN PARTENAIRE</h2>
+                                        <h2 className="text-center mb-3">DEVINIR UN PARTENAIRE</h2>
+                                        <h5 className="text-center mb-5">Vous serez contactez par email pour confirmer votre compte après vérification de vos informations.</h5>
                                         <hr />
                                     </div>
                                 </div>
-                                <SuplierForm />
+                                <SuplierForm closeTo="/" />
                             </div>
                         </div>
                     </div>

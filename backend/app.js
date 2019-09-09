@@ -6,6 +6,8 @@ const morgan = require('morgan');
 
 const userRoutes = require('./api/routes/users');
 const categoryRoutes = require('./api/routes/categories');
+const supplierRoutes = require('./api/routes/suppliers');
+const eventRoutes = require('./api/routes/events');
 
 // Connect to db
 mongoose.connect(config.database, { useNewUrlParser: true });
@@ -38,9 +40,11 @@ app.use((req, res, next) => {
 
 // User routes
 app.use('/api/user', userRoutes)
+app.use('/api', categoryRoutes)
+app.use('/api/supplier', supplierRoutes)
+app.use('/api/event', eventRoutes)
 
 // Admin routes
-app.use('/api', categoryRoutes)
 
 app.use((req, res, next) => {
     const error = new Error('Not Found');

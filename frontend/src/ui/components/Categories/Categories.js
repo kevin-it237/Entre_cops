@@ -15,6 +15,37 @@ class Categories extends Component {
 
     componentDidMount() {
         //get the categories
+        const categories = JSON.parse(localStorage.getItem("categories"));
+        if(categories) {
+            this.setState({
+                categories: categories,
+                loading: false
+            });
+            // Fetch if new categories
+            axios.get('/api/category/all')
+            .then(res => {
+                if(JSON.stringify(categories) !== JSON.stringify(res.data.categories)) {
+                    localStorage.setItem("categories", JSON.stringify(res.data.categories));
+                    console.log('Categories changed');
+                    this.setState({
+                        categories: res.data.categories,
+                        loading: false
+                    })
+                }
+            })
+            .catch(err => {
+                this.setState({
+                    error: "Une erreur s'est produite",
+                    loading: false
+                })
+            })
+            
+        } else {
+            this.fetchCategories();
+        }
+    }
+
+    fetchCategories = () => {
         axios.get('/api/category/all')
         .then(res => {
             localStorage.setItem("categories", JSON.stringify(res.data.categories));
@@ -25,10 +56,12 @@ class Categories extends Component {
         })
         .catch(err => {
             this.setState({
-                error: "Une erreur s'est produite"
+                error: "Une erreur s'est produite",
+                loading: false
             })
         })
     }
+
     render() {
         const { categories, loading } = this.state;
         let content = <Loader />;

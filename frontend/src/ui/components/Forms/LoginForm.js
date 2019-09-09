@@ -22,7 +22,7 @@ class LoginForm extends Component {
         e.preventDefault();
         const name = e.target.name;
         const value = e.target.value;
-        this.setState({ [name]: value, isTyping: true },
+        this.setState({ [name]: value },
             () => { this.validateField(name, value) });
     }
 
@@ -57,15 +57,18 @@ class LoginForm extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         // Display Loader
-        this.props.onRenderLoader();
-        const data = {
-            email: this.state.email,
-            password: this.state.password
+        this.setState({isTyping: true});
+        if(this.state.formValid) {
+            this.props.onRenderLoader();
+            const data = {
+                email: this.state.email,
+                password: this.state.password
+            }
+            // Launch the signup
+            this.props.onLogin(data);
+            // Clear loader
+            this.props.onClearLoader();
         }
-        // Launch the signup
-        this.props.onLogin(data);
-        // Clear loader
-        this.props.onClearLoader();
     }
 
     goToSignUpForm = (e) => {
@@ -76,7 +79,7 @@ class LoginForm extends Component {
     }
 
     render() {
-        const { isTyping, emailValid, passwordValid, email, password } = this.state;
+        const { isTyping, emailValid, email, password } = this.state;
         const { error, loader } = this.props;
         return (
             <div className="wrapper fadeInDown">
@@ -91,7 +94,7 @@ class LoginForm extends Component {
                         {isTyping && !emailValid ? <div style={{ color: "red" }}>Email non valide.</div> : null}
                         <input type="password" value={password} onChange={(e) => this.handleInputChange(e)} id="password" className="fadeIn third" name="password" placeholder="Mot de passe" />
                         {isTyping && !this.state.passwordValid ? <div style={{ color: "red" }}>Invalide. Min 6 caratères</div> : null}
-                        <button disabled={!passwordValid || loader} type="submit" onClick={(e) => this.handleSubmit(e)} id="signBtn" className="button fadeIn fourth mt-4 mb-5">{this.props.loader ? <Loader color="white" /> : "Se connecter"}</button>
+                        <button disabled={loader} type="submit" onClick={(e) => this.handleSubmit(e)} id="signBtn" className="button fadeIn fourth mt-4 mb-5">{this.props.loader ? <Loader color="white" /> : "Se connecter"}</button>
                     </form>
                     <p>Ou bien connectez vous avec:</p>
                     <div className="d-flex socialWrapper">

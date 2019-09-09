@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import {connect} from 'react-redux';
 import './Dashboard.scss';
-import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import axios from 'axios';
 
 import Hoc from '../../globalComponent/Hoc';
 import Header from '../../globalComponent/Header';
 import ReviewItem from '../../components/Reviews/ReviewItem';
 import Stars from '../../components/Stars/Stars';
 import Upload from '../../components/Forms/Upload';
-
-import fr from 'date-fns/locale/fr';
-registerLocale('fr', fr);
+import EventForm from './EventForm';
 
 class Dashboard extends Component {
     
@@ -21,8 +19,6 @@ class Dashboard extends Component {
         showNewAn: false,
         date: new Date(),
         serviceImage: '',
-        eventImage: '',
-        eventVideo: '',
         serviceVideo: ''
     }
     
@@ -32,14 +28,24 @@ class Dashboard extends Component {
         });
     }
 
-    setFile(name,file, previewFile) {
+    setFile(name, file) {
         this.setState({
-            [name]: file
-        });
+            [name]: file,
+            profileImageValid: true,
+            error: ''
+        }, this.validateForm);
+    }
+
+    closeEventModal = () => {
+        this.setState({showNewEv: false});
+    }
+
+    componentDidMount() {
+        
     }
 
     render() {
-        const { serviceImage, eventImage, eventVideo, serviceVideo } = this.state;
+        const { serviceImage, serviceVideo } = this.state;
         return (
             <Hoc>
                 <Header />
@@ -57,23 +63,23 @@ class Dashboard extends Component {
                         </div>
                         <div className="row mt-4 pb-5">
                             <div className="col-sm-12 col-md-12 col-lg-4 mt-2">
-                                <div class="list-group" id="list-tab" role="tablist">
-                                    <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">
+                                <div className="list-group" id="list-tab" role="tablist">
+                                    <a className="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">
                                         After Work - Prestation (3)
                                         <br/>
                                         <Stars isSupplierDashboard />
                                     </a>
-                                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">
+                                    <a className="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">
                                         Miss & Master Etudiant 2020 (1)
                                         <br/>
                                         <Stars isSupplierDashboard />
                                     </a>
-                                    <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">
+                                    <a className="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">
                                         Formation Wordpress débutant (1)
                                         <br/>
                                         <Stars isSupplierDashboard />
                                     </a>
-                                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">
+                                    <a className="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">
                                         Cours d'Allemand rapide (1)
                                         <br/>
                                         <Stars isSupplierDashboard />
@@ -81,9 +87,9 @@ class Dashboard extends Component {
                                 </div>
                             </div>
                             <div className="col-sm-12 col-md-12 col-lg-8 mt-2 d-flex flex-column justify-content-between">
-                                <div class="tab-content" id="nav-tabContent">
-                                    <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
-                                        <table class="table">
+                                <div className="tab-content" id="nav-tabContent">
+                                    <div className="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                                        <table className="table">
                                             <tbody>
                                                 <tr>
                                                 <th scope="row">1</th>
@@ -109,8 +115,8 @@ class Dashboard extends Component {
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
-                                        <table class="table">
+                                    <div className="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                                        <table className="table">
                                             <tbody>
                                                 <tr>
                                                 <th scope="row">1</th>
@@ -122,8 +128,8 @@ class Dashboard extends Component {
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
-                                        <table class="table">
+                                    <div className="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
+                                        <table className="table">
                                             <tbody>
                                                 <tr>
                                                 <th scope="row">1</th>
@@ -135,8 +141,8 @@ class Dashboard extends Component {
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
-                                        <table class="table">
+                                    <div className="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+                                        <table className="table">
                                             <tbody>
                                                 <tr>
                                                 <th scope="row">1</th>
@@ -178,59 +184,7 @@ class Dashboard extends Component {
                     <Modal.Title>Ajouter un nouvel Evènement</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <form>
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
-                                        <div class="form-group">
-                                            <label for="name">Titre</label>
-                                            <input type="text" class="form-control is-valid" name="title" placeholder="Titre de l'évènement" required/>
-                                            <div class="valid-feedback">
-                                                Looks good!
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="category">Catégorie</label>
-                                            <select id="category" class="form-control">
-                                                <option selected>Choisir...</option>
-                                                <option>Catégorie 1</option>
-                                                <option>Catégorie 2</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="name">Resumé</label>
-                                            <textarea type="text" class="form-control is-invalid" name="resume" rows={3} placeholder="Resumé"></textarea>
-                                            <div class="invalid-feedback">
-                                                Invalid.
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="name">Lieu</label>
-                                            <input type="text" class="form-control" name="place" placeholder="Lieu de l'évènement" required/>
-                                        </div>
-                                        <div className="row align-items-start py-3">
-                                            <div className="col-sm-12 col-md-4 col-lg-4">
-                                                <div class="form-group">
-                                                    <label for="name">Date et Heure de l'évènement</label><br/>
-                                                    <DatePicker locale="es" showTimeSelect dateFormat="Pp" class="form-control" selected={this.state.date} onChange={this.handleChange} />
-                                                </div>
-                                            </div>
-                                            <div className="col-sm-12 col-md-4 col-lg-4">
-                                                <Upload type="image" oldUrl={eventImage} setFile={(name,file, previewFile)=>this.setFile(name, file, previewFile)} name="eventImage" label={"Importer une image"} />
-                                            </div>
-                                            <div className="col-sm-12 col-md-4 col-lg-4">
-                                                <Upload type="video" oldUrl={eventVideo} setFile={(name,file, previewFile)=>this.setFile(name, file, previewFile)} name="eventVideo" label={"Importer une video"} />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="name">Autres informations</label>
-                                            <textarea type="text" class="form-control" name="resume" rows={3} placeholder="Autres informations"></textarea>
-                                        </div>
-                                        <input className="mt-4" type="submit" name="Valider" value="Ajouter l'Evenement"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                        <EventForm closeModal={this.closeEventModal} user={this.props.user} />
                     </Modal.Body>
                     <Modal.Footer>
                     <Button variant="secondary" onClick={() => this.setState({showNewEv: false})}>
@@ -249,55 +203,55 @@ class Dashboard extends Component {
                             <div className="container">
                                 <div className="row">
                                     <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
-                                        <div class="form-group">
+                                        <div className="form-group">
                                             <label for="name">Nom du Service</label>
-                                            <input type="text" class="form-control is-valid" name="title" placeholder="Nom du Service" required/>
-                                            <div class="valid-feedback">
+                                            <input type="text" className="form-control is-valid" name="title" placeholder="Nom du Service" required/>
+                                            <div className="valid-feedback">
                                                 Looks good!
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        <div className="form-group">
                                             <label for="category">Catégorie</label>
-                                            <select id="category" class="form-control">
+                                            <select id="category" className="form-control">
                                                 <option selected>Choisir...</option>
                                                 <option>Catégorie 1</option>
                                                 <option>Catégorie 2</option>
                                             </select>
                                         </div>
-                                        <div class="form-group">
+                                        <div className="form-group">
                                             <label for="name">Problème</label>
-                                            <textarea type="text" class="form-control is-invalid" name="resume" rows={3} placeholder="Problème"></textarea>
-                                            <div class="invalid-feedback">
+                                            <textarea type="text" className="form-control is-invalid" name="resume" rows={3} placeholder="Problème"></textarea>
+                                            <div className="invalid-feedback">
                                                 Invalid.
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        <div className="form-group">
                                             <label for="name">Offre</label>
-                                            <textarea type="text" class="form-control is-invalid" name="offre" rows={3} placeholder="Entrer votre offre"></textarea>
-                                            <div class="invalid-feedback">
+                                            <textarea type="text" className="form-control is-invalid" name="offre" rows={3} placeholder="Entrer votre offre"></textarea>
+                                            <div className="invalid-feedback">
                                                 Invalid.
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        <div className="form-group">
                                             <label for="name">Cible</label>
-                                            <input type="text" class="form-control is-valid" name="target" placeholder="Entrer votre cible" required/>
-                                            <div class="valid-feedback">
+                                            <input type="text" className="form-control is-valid" name="target" placeholder="Entrer votre cible" required/>
+                                            <div className="valid-feedback">
                                                 Looks good!
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        <div className="form-group">
                                             <label for="name">Durée du service</label>
-                                            <input type="text" class="form-control is-valid" name="duration" placeholder="Exemple: 1 Mois" required/>
-                                            <div class="valid-feedback">
+                                            <input type="text" className="form-control is-valid" name="duration" placeholder="Exemple: 1 Mois" required/>
+                                            <div className="valid-feedback">
                                                 Looks good!
                                             </div>
                                         </div>
                                         <div className="row mb-4">
                                             <div className="col-sm-12 col-md-6 col-lg-6">
-                                                <Upload type="image" oldUrl={serviceImage} setFile={(name,file, previewFile)=>this.setFile(name, file, previewFile)} name="serviceImage" label={"Importer une image"} />
+                                                <Upload type="image" oldUrl={serviceImage} setFile={(name,file)=>this.setFile(name, file)} name="serviceImage" label={"Importer une image"} />
                                             </div>
                                             <div className="col-sm-12 col-md-6 col-lg-6">
-                                                <Upload type="video" oldUrl={serviceVideo} setFile={(name,file, previewFile)=>this.setFile(name, file, previewFile)} name="serviceVideo" label={"Importer une video"} />
+                                                <Upload type="video" oldUrl={serviceVideo} setFile={(name,file)=>this.setFile(name, file )} name="serviceVideo" label={"Importer une video"} />
                                             </div>
                                         </div>
                                         <input className="mt-4" type="submit" name="Valider" value="Ajouter le service" />
@@ -317,4 +271,9 @@ class Dashboard extends Component {
     }
 }
 
-export default Dashboard;
+const mapPropsToState = state => {
+    return {
+        user: state.auth.user
+    }
+}
+export default connect(mapPropsToState)(Dashboard);
