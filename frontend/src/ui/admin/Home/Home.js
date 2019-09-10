@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import SupplierForm from '../../components/Forms/SuplierForm';
 import Loader from '../../globalComponent/Loader';
+import EventModal from '../../suppliers/Dashboard/EventModal';
 
 class AdminHome extends Component {
 
@@ -14,18 +15,23 @@ class AdminHome extends Component {
         events: [],
         servicesLoading: true,
         services: [],
-        error: ''
+        error: '',
+        showEventModal: false,
+        showServiceModal: false,
+        loadinSingleEv: false,
+        loadinSingleAn: false,
+        event: null,
+        service: null
     }
 
     closeSupplierModal = () => {
-        this.setState({showModal: false});
+        this.setState({showModal: false, showEventModal: false, showServiceModal: false});
     }
 
     componentDidMount() {
         //Get 5 events
-        axios.get('/api/event/all')
+        axios.get('/api/event/5')
         .then(res => {
-            console.log(res)
             this.setState({ events: res.data.events, eventsLoading: false, error:'' })
         })
         .catch(err => {
@@ -33,8 +39,33 @@ class AdminHome extends Component {
         })
     }
 
+    getSingleEvent = (id) => {
+        this.setState({ loadinSingleEv: true, showEventModal: true })
+        axios.get('/api/event/' + id)
+        .then(res => {
+            this.setState({
+                loadinSingleEv: false,
+                event: res.data.event,
+                'error': ''
+            })
+        })
+        .catch(err => {
+            this.setState({
+                loadinSingleEv: false,
+                'error': 'Erreur survenue, veuillez actualiser'
+            })
+        })
+    }
+
+    // Refresh view when delete or validate event/service
+    refreshList = (list, name) => {
+        this.setState({
+            [name]: list
+        })
+    }
+
     render() {
-        const {events, eventsLoading, services, servicesLoading, error} = this.state;
+        const {events, eventsLoading, services, servicesLoading, error, event} = this.state;
         return (
             <Fragment>
                 <div className="container">
@@ -88,7 +119,7 @@ class AdminHome extends Component {
 
                     <div className="row mt-5">
                         <div className="col-sm-12">
-                            <h3 className="title">EVENEMENTS</h3>
+                            <h3 className="title">EVENEMENTS RECENTS</h3>
                         </div>
                         <div className="col-sm-12 text-center">
                             {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
@@ -118,7 +149,7 @@ class AdminHome extends Component {
                                                     <td>{event.category}</td>
                                                     <td>{event.validated ? <span style={{ color: "green" }}>Validé</span> : <b style={{ color: "red" }}>En attente</b>}</td>
                                                     <td className="actions">
-                                                        <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
+                                                        <button onClick={() => this.getSingleEvent(event._id)} className="btn btn-outline-dark btn-md ml-3">Afficher</button>
                                                     </td>
                                                 </tr>
                                             ))
@@ -127,13 +158,13 @@ class AdminHome extends Component {
                                     </table>:null
                             }
                             <div className="d-flex justify-content-end">
-                                <Link className="btn btn-outline-dark" to="/admin/annonces">Afficher tous</Link>
+                                <Link className="btn btn-dark" to="/admin/annonces">Afficher tous</Link>
                             </div>
                         </div>
                     </div>
                     <div className="row mt-5">
                         <div className="col-sm-12">
-                            <h3 className="title">SERVICES</h3>
+                            <h3 className="title">SERVICES RECENTS</h3>
                         </div>
                         <div className="col-sm-12">
                             <table className="table table-bordered">
@@ -149,30 +180,6 @@ class AdminHome extends Component {
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th scope="row">1</th>
-                                        <td>Cours d'Anglais</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Cours d'Anglais</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
                                         <th scope="row">3</th>
                                         <td>Cours d'Anglais</td>
                                         <td>Yaounde</td>
@@ -180,42 +187,29 @@ class AdminHome extends Component {
                                         <td className="date">05 Sep 2019</td>
                                         <td className="actions">
                                             <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">4</th>
-                                        <td>Cours d'Anglais</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">5</th>
-                                        <td>Cours d'Anglais</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                             <div className="d-flex justify-content-end">
-                                <Link className="btn btn-outline-dark" to="/admin/services">Afficher tous</Link>
+                                <Link className="btn btn-dark" to="/admin/services">Afficher tous</Link>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                {/* View/Update An Event */}
+                <EventModal
+                    user={null}
+                    isEditing={true}
+                    event={this.state.event}
+                    refreshList={this.refreshList}
+                    events={this.state.events}
+                    loadingEv={this.state.loadinSingleEv}
+                    show={this.state.showEventModal}
+                    closeModal={this.closeSupplierModal} />
+
+                {/* View/Update a Service */}
 
                  {/* Add a new Supplier Popup */}
                  <Modal show={this.state.showModal} size="lg" onHide={() => this.setState({showModal: !this.state.showModal})} >

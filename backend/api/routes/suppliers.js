@@ -102,7 +102,7 @@ router.post('/new', upload.single('profileImage'), (req, res, next) => {
 
 // Get all suppliers
 router.get('/all', (req, res, next) => {
-    User.find({ "role": "supplier" })
+    User.find({ "role": "supplier" }).sort({ $natural: -1 })
     .exec()
         .then(suppliers => {
         return res.status(201).json({
@@ -120,9 +120,9 @@ router.patch('/validate/:id', (req, res, next) => {
         $set: { accountValidated: true}
     })
     .exec()
-    .then(suppliers => {
+    .then(supplier => {
         return res.status(201).json({
-            suppliers: suppliers
+            supplier: supplier
         })
     })
     .catch(err => {

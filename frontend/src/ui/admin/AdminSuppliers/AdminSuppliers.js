@@ -102,8 +102,6 @@ class AdminSupplier extends Component {
         })
     }
 
-
-
     render() {
         const { loading, suppliers, supplier, validating, deleting, error, fetcherror, loadinSingle } = this.state;
         return (

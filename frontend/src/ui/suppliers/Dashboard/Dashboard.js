@@ -10,7 +10,7 @@ import Header from '../../globalComponent/Header';
 import ReviewItem from '../../components/Reviews/ReviewItem';
 import Stars from '../../components/Stars/Stars';
 import Upload from '../../components/Forms/Upload';
-import EventForm from './EventForm';
+import EventModal from './EventModal';
 
 class Dashboard extends Component {
     
@@ -179,19 +179,10 @@ class Dashboard extends Component {
                 </section>
 
                 {/* New Event/Annonce */}
-                <Modal show={this.state.showNewEv} onHide={() => this.setState({showNewEv: false})} size="lg" >
-                    <Modal.Header closeButton>
-                    <Modal.Title>Ajouter un nouvel Evènement</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <EventForm closeModal={this.closeEventModal} user={this.props.user} />
-                    </Modal.Body>
-                    <Modal.Footer>
-                    <Button variant="secondary" onClick={() => this.setState({showNewEv: false})}>
-                        Fermer
-                    </Button>
-                    </Modal.Footer>
-                </Modal>
+                <EventModal 
+                    user={this.props.user}
+                    show={this.state.showNewEv} 
+                    closeModal={this.closeEventModal}  />
 
                 {/* New Service */}
                 <Modal show={this.state.showNewAn} onHide={() => this.setState({showNewAn: false})} size="lg" >

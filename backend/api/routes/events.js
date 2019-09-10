@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
         cb(null, './uploads/eventsimages')
     },
     filename: function (req, file, cb) {
-        cb(null, "supplier-" + Date.now() + path.extname(file.originalname))
+        cb(null, "event-" + Date.now() + path.extname(file.originalname))
     }
 })
 
@@ -58,13 +58,71 @@ router.post('/new', upload.single('eventImage'), (req, res, next) => {
     })
 })
 
-// Get all invalidaded events
+// Get all events
 router.get('/all', (req, res, next) => {
-    Event.find({ validated: false})
+    Event.find({}).sort({ $natural: -1 })
     .exec()
         .then(events => {
         return res.status(201).json({
             events: events
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Get last 5 invalidaded events
+router.get('/5', (req, res, next) => {
+    Event.find({}).sort({ $natural: -1 }).limit(5)
+    .exec()
+        .then(events => {
+        return res.status(201).json({
+            events: events
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Get a single event
+router.get('/:id', (req, res, next) => {
+    Event.findById(req.params.id)
+        .exec()
+        .then(event => {
+            return res.status(201).json({
+                event: event
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
+// Validate event
+router.patch('/validate/:id', (req, res, next) => {
+    Event.updateOne({ _id: req.params.id }, {
+        $set: { validated: true }
+    })
+    .exec()
+    .then(event => {
+        return res.status(201).json({
+            event: event
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Delete event
+router.delete('/:id', (req, res, next) => {
+    Event.remove({ _id: req.params.id })
+    .exec()
+    .then(event => {
+        return res.status(201).json({
+            event: event
         })
     })
     .catch(err => {
