@@ -12,6 +12,7 @@ const eventSchema = mongoose.Schema({
     reservations: { type: Array, required: false },
     otherInfos: { type: String, required: false },
     comments: { type: Object, required: false },
+    coupons: { type: Object, required: false },
     validated: { type: Boolean, required: true },
     date: { type: Date, required: false }
 })

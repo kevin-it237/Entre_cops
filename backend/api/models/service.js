@@ -13,6 +13,7 @@ const serviceSchema = mongoose.Schema({
     image: { type: String, required: true },
     video: { type: String, required: false },
     comments: { type: Object, required: false },
+    coupons: { type: Object, required: false },
     reservations: { type: Array, required: false },
     validated: { type: Boolean, required: true },
     date: { type: Date, required: false }
