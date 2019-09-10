@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import {connect} from 'react-redux';
 import './Dashboard.scss';
 import axios from 'axios';
@@ -9,17 +7,14 @@ import Hoc from '../../globalComponent/Hoc';
 import Header from '../../globalComponent/Header';
 import ReviewItem from '../../components/Reviews/ReviewItem';
 import Stars from '../../components/Stars/Stars';
-import Upload from '../../components/Forms/Upload';
 import EventModal from './EventModal';
+import ServiceModal from './ServiceModal';
 
 class Dashboard extends Component {
     
     state = {
         showNewEv: false,
         showNewAn: false,
-        date: new Date(),
-        serviceImage: '',
-        serviceVideo: ''
     }
     
     handleChange = (date) => {
@@ -37,7 +32,7 @@ class Dashboard extends Component {
     }
 
     closeEventModal = () => {
-        this.setState({showNewEv: false});
+        this.setState({showNewEv: false, showNewAn: false});
     }
 
     componentDidMount() {
@@ -45,7 +40,6 @@ class Dashboard extends Component {
     }
 
     render() {
-        const { serviceImage, serviceVideo } = this.state;
         return (
             <Hoc>
                 <Header />
@@ -185,78 +179,10 @@ class Dashboard extends Component {
                     closeModal={this.closeEventModal}  />
 
                 {/* New Service */}
-                <Modal show={this.state.showNewAn} onHide={() => this.setState({showNewAn: false})} size="lg" >
-                    <Modal.Header closeButton>
-                    <Modal.Title>Ajouter un nouveau Service</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <form>
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
-                                        <div className="form-group">
-                                            <label for="name">Nom du Service</label>
-                                            <input type="text" className="form-control is-valid" name="title" placeholder="Nom du Service" required/>
-                                            <div className="valid-feedback">
-                                                Looks good!
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label for="category">Catégorie</label>
-                                            <select id="category" className="form-control">
-                                                <option selected>Choisir...</option>
-                                                <option>Catégorie 1</option>
-                                                <option>Catégorie 2</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label for="name">Problème</label>
-                                            <textarea type="text" className="form-control is-invalid" name="resume" rows={3} placeholder="Problème"></textarea>
-                                            <div className="invalid-feedback">
-                                                Invalid.
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label for="name">Offre</label>
-                                            <textarea type="text" className="form-control is-invalid" name="offre" rows={3} placeholder="Entrer votre offre"></textarea>
-                                            <div className="invalid-feedback">
-                                                Invalid.
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label for="name">Cible</label>
-                                            <input type="text" className="form-control is-valid" name="target" placeholder="Entrer votre cible" required/>
-                                            <div className="valid-feedback">
-                                                Looks good!
-                                            </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label for="name">Durée du service</label>
-                                            <input type="text" className="form-control is-valid" name="duration" placeholder="Exemple: 1 Mois" required/>
-                                            <div className="valid-feedback">
-                                                Looks good!
-                                            </div>
-                                        </div>
-                                        <div className="row mb-4">
-                                            <div className="col-sm-12 col-md-6 col-lg-6">
-                                                <Upload type="image" oldUrl={serviceImage} setFile={(name,file)=>this.setFile(name, file)} name="serviceImage" label={"Importer une image"} />
-                                            </div>
-                                            <div className="col-sm-12 col-md-6 col-lg-6">
-                                                <Upload type="video" oldUrl={serviceVideo} setFile={(name,file)=>this.setFile(name, file )} name="serviceVideo" label={"Importer une video"} />
-                                            </div>
-                                        </div>
-                                        <input className="mt-4" type="submit" name="Valider" value="Ajouter le service" />
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                    <Button variant="secondary" onClick={() => this.setState({showNewAn: false})}>
-                        Fermer
-                    </Button>
-                    </Modal.Footer>
-                </Modal>
+                <ServiceModal 
+                    user={this.props.user}
+                    show={this.state.showNewAn}
+                    closeModal={this.closeEventModal} />
             </Hoc>
         );
     }

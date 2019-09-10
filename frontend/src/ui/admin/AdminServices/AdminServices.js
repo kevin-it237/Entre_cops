@@ -1,123 +1,118 @@
 import React, { Component, Fragment } from 'react';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-
+import axios from 'axios';
+import ServiceModal from '../../suppliers/Dashboard/ServiceModal';
+import Loader from '../../globalComponent/Loader';
 
 class AdminService extends Component {
 
     state = {
-        showModal: false
+        showModal: false,
+        servicesLoading: true,
+        services: [],
+        error: '',
+        service: null,
+        loading: false
+    }
+
+    componentDidMount() {
+        //Get 5 services
+        axios.get('/api/service/all')
+        .then(res => {
+            this.setState({ services: res.data.services, servicesLoading: false, error: '' })
+        })
+        .catch(err => {
+            this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", servicesLoading: false })
+        })
+    }
+
+    getSingleEvent = (id) => {
+        this.setState({ loading: true, showModal: true })
+        axios.get('/api/service/' + id)
+            .then(res => {
+                this.setState({
+                    loading: false,
+                    service: res.data.service,
+                    'error': ''
+                })
+            })
+            .catch(err => {
+                this.setState({
+                    loading: false,
+                    'error': 'Erreur survenue, veuillez actualiser'
+                })
+            })
+    }
+
+    // Refresh view when delete or validate service/service
+    refreshList = (list, name) => {
+        this.setState({
+            [name]: list
+        })
+    }
+
+    closeModal = () => {
+        this.setState({ showModal: false });
     }
 
     render() {
+        const { error, services, servicesLoading } = this.state;
         return (
             <Fragment>
                 <div className="container">
                     <div className="row mt-5">
-                        <div className="col-sm-12">
-                            <h3 className="title">SERVICES</h3>
+                        <div className="col-sm-12 text-center">
+                            <h3 className="title">TOUS LES SERVICES</h3>
                         </div>
-                        <div className="col-sm-12">
-                            <table class="table table-bordered">
-                                <thead class="thead-inverse thead-dark">
-                                    <tr>
-                                    <th>#</th>
-                                    <th>Nom</th>
-                                    <th>Lieux</th>
-                                    <th>Date</th>
-                                    <th>Création</th>
-                                    <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Cours d'Anglais</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3" onClick={() => this.setState({showModal: !this.state.showModal})}>Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Cours d'Anglais</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3" onClick={() => this.setState({showModal: !this.state.showModal})}>Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Cours d'Anglais</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3" onClick={() => this.setState({showModal: !this.state.showModal})}>Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">4</th>
-                                        <td>Cours d'Anglais</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3" onClick={() => this.setState({showModal: !this.state.showModal})}>Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">5</th>
-                                        <td>Cours d'Anglais</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3" onClick={() => this.setState({showModal: !this.state.showModal})}>Afficher</button>
-                                            <button className="btn btn-dark btn-md ml-3">Valider</button>
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                        <div className="col-sm-12 text-center">
+                            {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
+                            {
+                                servicesLoading ? <Loader /> :
+                                    services && services.length ?
+                                    <table className="table table-bordered">
+                                        <thead className="thead-inverse thead-dark">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Titre</th>
+                                                <th>Lieu</th>
+                                                <th>Cible</th>
+                                                <th>Durée</th>
+                                                <th>Etat</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                services.map((event, i) => (
+                                                    <tr key={event._id}>
+                                                        <th scope="row">{i + 1}</th>
+                                                        <td>{event.title}</td>
+                                                        <td>{event.place}</td>
+                                                        <td>{event.target}</td>
+                                                        <td>{event.duration}</td>
+                                                        <td>{event.validated ? <span style={{ color: "green" }}>Validé</span> : <b style={{ color: "red" }}>En attente</b>}</td>
+                                                        <td className="actions">
+                                                            <button onClick={() => this.getSingleEvent(event._id)} className="btn btn-outline-dark btn-md ml-3">Afficher</button>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                    </table> : null
+                            }
                         </div>
                     </div>
                 </div>
 
-                 {/* Add a new Supplier Popup */}
-                 <Modal show={this.state.showModal} size="lg" onHide={() => this.setState({showModal: !this.state.showModal})} >
-                    <Modal.Header closeButton>
-                    <Modal.Title>Détails</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <div className="py-3">
-                            <Button variant="danger" onClick={() => this.setState({showModal: !this.state.showModal})}>
-                                Fermer
-                            </Button>
-                        </div>
-                    </Modal.Footer>
-                </Modal>
+                {/* View/Update An Event */}
+                <ServiceModal
+                    user={null}
+                    isEditing={true}
+                    service={this.state.service}
+                    refreshList={this.refreshList}
+                    services={this.state.services}
+                    loadingAn={this.state.loading}
+                    show={this.state.showModal}
+                    closeModal={this.closeModal} />
             </Fragment>
         );
     }

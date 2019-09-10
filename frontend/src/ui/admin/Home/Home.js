@@ -1,11 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import axios from 'axios';
-import SupplierForm from '../../components/Forms/SuplierForm';
 import Loader from '../../globalComponent/Loader';
 import EventModal from '../../suppliers/Dashboard/EventModal';
+import ServiceModal from '../../suppliers/Dashboard/ServiceModal';
 
 class AdminHome extends Component {
 
@@ -36,6 +34,15 @@ class AdminHome extends Component {
         })
         .catch(err => {
             this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", eventsLoading: false })
+        });
+
+        //Get 5 services
+        axios.get('/api/service/5')
+        .then(res => {
+            this.setState({ services: res.data.services, servicesLoading: false, error: '' })
+        })
+        .catch(err => {
+            this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", servicesLoading: false })
         })
     }
 
@@ -57,6 +64,24 @@ class AdminHome extends Component {
         })
     }
 
+    getSingleService = (id) => {
+        this.setState({ loadinSingleAn: true, showServiceModal: true })
+        axios.get('/api/service/' + id)
+        .then(res => {
+            this.setState({
+                loadinSingleAn: false,
+                service: res.data.service,
+                'error': ''
+            })
+        })
+        .catch(err => {
+            this.setState({
+                loadinSingleEv: false,
+                'error': 'Erreur survenue, veuillez actualiser'
+            })
+        })
+    }
+
     // Refresh view when delete or validate event/service
     refreshList = (list, name) => {
         this.setState({
@@ -65,7 +90,7 @@ class AdminHome extends Component {
     }
 
     render() {
-        const {events, eventsLoading, services, servicesLoading, error, event} = this.state;
+        const {events, eventsLoading, services, servicesLoading, error} = this.state;
         return (
             <Fragment>
                 <div className="container">
@@ -166,31 +191,42 @@ class AdminHome extends Component {
                         <div className="col-sm-12">
                             <h3 className="title">SERVICES RECENTS</h3>
                         </div>
-                        <div className="col-sm-12">
-                            <table className="table table-bordered">
-                                <thead className="thead-inverse thead-dark">
-                                    <tr>
-                                    <th>#</th>
-                                    <th>Nom</th>
-                                    <th>Lieux</th>
-                                    <th>Date</th>
-                                    <th>Création</th>
-                                    <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Cours d'Anglais</td>
-                                        <td>Yaounde</td>
-                                        <td>12 Juin 2020</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-outline-dark btn-md ml-3">Afficher</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div className="col-sm-12 text-center">
+                            {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
+                            {
+                                servicesLoading ? <Loader /> :
+                                    services && services.length ?
+                                    <table className="table table-bordered">
+                                        <thead className="thead-inverse thead-dark">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Titre</th>
+                                                <th>Lieu</th>
+                                                <th>Cible</th>
+                                                <th>Durée</th>
+                                                <th>Etat</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                services.map((service, i) => (
+                                                    <tr key={service._id}>
+                                                        <th scope="row">{i + 1}</th>
+                                                        <td>{service.title}</td>
+                                                        <td>{service.place}</td>
+                                                        <td>{service.target}</td>
+                                                        <td>{service.duration}</td>
+                                                        <td>{service.validated ? <span style={{ color: "green" }}>Validé</span> : <b style={{ color: "red" }}>En attente</b>}</td>
+                                                        <td className="actions">
+                                                            <button onClick={() => this.getSingleService(service._id)} className="btn btn-outline-dark btn-md ml-3">Afficher</button>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                    </table> : null
+                            }
                             <div className="d-flex justify-content-end">
                                 <Link className="btn btn-dark" to="/admin/services">Afficher tous</Link>
                             </div>
@@ -210,25 +246,16 @@ class AdminHome extends Component {
                     closeModal={this.closeSupplierModal} />
 
                 {/* View/Update a Service */}
-
-                 {/* Add a new Supplier Popup */}
-                 <Modal show={this.state.showModal} size="lg" onHide={() => this.setState({showModal: !this.state.showModal})} >
-                    <Modal.Header closeButton>
-                    <Modal.Title>Nouveau Fournisseur</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="container supplier-form">
-                            <SupplierForm closeModal={this.closeSupplierModal} />
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <div className="py-3">
-                            <Button variant="outline" onClick={() => this.setState({showModal: !this.state.showModal})}>
-                                Fermer
-                            </Button>
-                        </div>
-                    </Modal.Footer>
-                </Modal>
+                <ServiceModal
+                    user={null}
+                    isEditing={true}
+                    service={this.state.service}
+                    refreshList={this.refreshList}
+                    services={this.state.services}
+                    loadingAn={this.state.loadinSingleAn}
+                    show={this.state.showServiceModal}
+                    closeModal={this.closeSupplierModal} />
+                
             </Fragment>
         );
     }

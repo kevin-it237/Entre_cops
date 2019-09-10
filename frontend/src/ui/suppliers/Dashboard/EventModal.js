@@ -9,7 +9,7 @@ import Loader from '../../globalComponent/Loader';
 import {rootUrl} from '../../../configs/config';
 import './EventForm.scss';
 
-class EventForm extends Component {
+class EventModal extends Component {
     state = {
         title: '',
         category: '',
@@ -268,7 +268,7 @@ class EventForm extends Component {
                                                     {
                                                         categories && categories.length ?
                                                             categories.map(category => (
-                                                                <option>{category.name}</option>
+                                                                <option key={category._id}>{category.name}</option>
                                                             )) : <option>Loading...</option>
                                                     }
                                                 </select>
@@ -335,4 +335,4 @@ class EventForm extends Component {
     }
 }
 
-export default EventForm;
+export default EventModal;

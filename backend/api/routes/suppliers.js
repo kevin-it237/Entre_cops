@@ -102,7 +102,7 @@ router.post('/new', upload.single('profileImage'), (req, res, next) => {
 
 // Get all suppliers
 router.get('/all', (req, res, next) => {
-    User.find({ "role": "supplier" }).sort({ $natural: -1 })
+    User.find({ "role": "supplier" })
     .exec()
         .then(suppliers => {
         return res.status(201).json({

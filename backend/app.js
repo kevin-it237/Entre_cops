@@ -8,6 +8,7 @@ const userRoutes = require('./api/routes/users');
 const categoryRoutes = require('./api/routes/categories');
 const supplierRoutes = require('./api/routes/suppliers');
 const eventRoutes = require('./api/routes/events');
+const serviceRoutes = require('./api/routes/services');
 
 // Connect to db
 mongoose.connect(config.database, { useNewUrlParser: true });
@@ -39,10 +40,11 @@ app.use((req, res, next) => {
 /* App Routes */
 
 // User routes
-app.use('/api/user', userRoutes)
-app.use('/api', categoryRoutes)
-app.use('/api/supplier', supplierRoutes)
-app.use('/api/event', eventRoutes)
+app.use('/api/user', userRoutes);
+app.use('/api', categoryRoutes);
+app.use('/api/supplier', supplierRoutes);
+app.use('/api/event', eventRoutes);
+app.use('/api/service', serviceRoutes);
 
 // Admin routes
 
