@@ -3,6 +3,7 @@ const path = require("path");
 const router = express.Router()
 const mongoose = require('mongoose')
 const multer = require('multer')
+const bcrypt = require('bcrypt')
 
 const User = require('../models/user');
 
@@ -127,6 +128,31 @@ router.patch('/validate/:id', (req, res, next) => {
     })
     .catch(err => {
         return res.status(500).json({ error: err })
+    })
+})
+
+
+// update account after the acount have been validated
+router.patch('/:id/confirmation', (req, res, next) => {
+    bcrypt.hash(req.body.password, 10, (err, hash) => {
+        if (err) {
+            return res.status(500).json({
+                error: err
+            })
+        } else {
+            User.updateOne({ _id: req.params.id }, {
+                $set: { password: hash}
+            })
+            .exec()
+            .then(supplier => {
+                return res.status(201).json({
+                    supplier: supplier
+                })
+            })
+            .catch(err => {
+                return res.status(500).json({ error: err })
+            })
+        }
     })
 })
 

@@ -72,6 +72,8 @@ class AdminSupplier extends Component {
                 'error': ''
             })
             // Send Email to Supplier with link to set his password
+            const subject = "Validation de votre compte fournisseur";
+            axios.post('/api/user/sendmail/' +supplier.email+ '/' +subject+ '/' +supplier.name+ '/' +supplier._id+ '/validatesupplier');
         })
         .catch(err => {
             this.setState({
@@ -116,8 +118,8 @@ class AdminSupplier extends Component {
                             {
                                 loading ? <div className="p-4 text-center"><Loader /></div> :
                                     suppliers&&suppliers.length ?
-                                    <table class="table table-bordered">
-                                        <thead class="thead-inverse thead-dark">
+                                    <table className="table table-bordered">
+                                        <thead className="thead-inverse thead-dark">
                                             <tr>
                                             <th>#</th>
                                             <th>Nom</th>
@@ -166,8 +168,8 @@ class AdminSupplier extends Component {
                                     {
                                         loadinSingle ? <div className="text-center"><Loader /></div> :
                                             supplier ? 
-                                            <table class="table table-bordered">
-                                                <tbody class="thead-inverse">
+                                            <table className="table table-bordered">
+                                                <tbody className="thead-inverse">
                                                     <tr>
                                                         <th><h4><strong>Nom</strong></h4></th>
                                                         <th><h4>{supplier.name}</h4></th>

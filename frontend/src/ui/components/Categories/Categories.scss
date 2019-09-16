@@ -7,23 +7,49 @@
     background-repeat: no-repeat;
     background-position: bottom;
     
+    .container {
+        @media only screen and(max-width: 992px) {
+            width: 95% !important;
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+        @media only screen and(min-width: 576px) {
+            width: 100% !important;
+        }
+    }
+    
     .categories-wrapper {
-        @media only screen and(max-width: 500px) {
-            display: flex;
-            justify-content: space-between;
-            align-content: space-between;
+        display: flex;
+        justify-content: space-between;
+        align-content: space-between;
+        @media only screen and(max-width: 992px) {
+            flex-wrap: nowrap;
+            overflow-x: scroll;
+            overflow-y: hidden;
+            padding-left: 1.2rem; padding-right: 1.2rem;
+            padding-bottom: 0 !important;
         }
     }
     .wrimagecard{	
-        margin-top: 0;
-        margin-bottom: 1.5rem;
+        margin: 0 .5rem 1.5rem .5rem;
         text-align: left;
         position: relative;
         background: #fff;
         box-shadow: 5px 5px 10px 0px rgba(46,61,73,0.15);
         border-radius: 4px;
         transition: all 0.3s ease;
-        width: 15rem;
+        width: 13rem;
+
+        @media only screen and(max-width: 1200px) {
+            margin: 0 .3rem 1.5rem .3rem;
+            width: 11.5rem;
+        }
+        @media only screen and(max-width: 992px) {
+            width: 11.5rem;
+            margin: 0 .7rem 1.5rem .7rem;
+            flex-shrink: 0 !important;
+        }
 
         &:not(:last-child) {
             margin-right: 1.5rem;
@@ -38,7 +64,7 @@
     }
     .wrimagecard .fa {
         position: relative;
-        font-size: 70px;
+        font-size: 65px;
     }
     .wrimagecard-topimage_header{
         padding: 20px;
@@ -61,19 +87,30 @@
         display: block;
     }
     .wrimagecard-topimage_title {
-        padding: 1.5rem;
+        padding: 1.4rem;
         height: 8rem;
         padding-bottom: 0.75rem;
         position: relative;
-        @media only screen and(max-width: 500px) {
+        @media only screen and(max-width: 900px) {
+            padding: 1.3rem;
+        }
+        @media only screen and(max-width: 600px) {
             height: 7rem;
         }
 
         p {
             text-align: center;
             font-size: 1.4rem;
-            @media only screen and(max-width: 500px) {
-                font-size: 1.15rem;
+            @media only screen and(max-width: 600px) {
+                font-size: 1.25rem;
+            }
+        }
+        .selected {
+            color: $maincolor !important;
+            font-size: 1.4rem;
+            font-weight: bold;
+            @media only screen and(max-width: 600px) {
+                font-size: 1.25rem;
             }
         }
     }

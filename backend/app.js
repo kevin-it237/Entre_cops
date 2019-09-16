@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 
 // User routes
 app.use('/api/user', userRoutes);
-app.use('/api', categoryRoutes);
+app.use('/api/category', categoryRoutes);
 app.use('/api/supplier', supplierRoutes);
 app.use('/api/event', eventRoutes);
 app.use('/api/service', serviceRoutes);
@@ -64,7 +64,7 @@ app.use((error, req, res, next) => {
 })
 
 // Start the app
-const PORT = 3000;
+const PORT = 5000;
 app.listen(PORT, function() {
     console.log("Server started on port " + PORT)
 })

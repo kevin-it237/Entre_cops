@@ -1,15 +1,55 @@
 import React, { Component, Fragment } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import axios from 'axios';
+import Loader from '../../globalComponent/Loader';
 
 
 class AdminUser extends Component {
 
     state = {
-        showModal: false
+        showModal: false,
+        users: [],
+        error: '',
+        loading: true,
+        deleting: false
+    }
+
+    componentWillMount() {
+        try {
+            axios.get('/api/user/all')
+            .then(res => {
+                this.setState({ users: res.data.users, loading: false, error: '' })
+            })
+            .catch(err => {
+                this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", loading: false })
+            })
+        } catch (error) {
+            this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", loading: false })
+        }
+    }
+
+    deleteUser = (id) => {
+        this.setState({ deleting: true, error: '' })
+        axios.delete('api/user/' + id)
+        .then(res => {
+            let users = this.state.users.filter(user => {
+                return user._id !== id;
+            })
+            this.setState({
+                deleting: false,
+                'error': '',
+                users: users
+            })
+            this.setState({ deleting: false, error: '' })
+        })
+        .catch(err => {
+            this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", deleting: false })
+        })
     }
 
     render() {
+        const {error, loading, deleting, users} = this.state;
         return (
             <Fragment>
                 <div className="container">
@@ -17,81 +57,38 @@ class AdminUser extends Component {
                         <div className="col-sm-12">
                             <h3 className="title">UTILISATEURS</h3>
                         </div>
-                        <div className="col-sm-12">
-                            <table class="table table-bordered">
-                                <thead class="thead-inverse thead-dark">
-                                    <tr>
-                                    <th>#</th>
-                                    <th>Nom</th>
-                                    <th>Email</th>
-                                    <th>Tel</th>
-                                    <th>Création</th>
-                                    <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Kev</td>
-                                        <td>@kev</td>
-                                        <td>655487925</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Kev</td>
-                                        <td>@kev</td>
-                                        <td>655487925</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Kev</td>
-                                        <td>@kev</td>
-                                        <td>655487925</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">4</th>
-                                        <td>Kev</td>
-                                        <td>@kev</td>
-                                        <td>655487925</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">5</th>
-                                        <td>Kev</td>
-                                        <td>@kev</td>
-                                        <td>655487925</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">6</th>
-                                        <td>Kev</td>
-                                        <td>@kev</td>
-                                        <td>655487925</td>
-                                        <td className="date">05 Sep 2019</td>
-                                        <td className="actions">
-                                            <button className="btn btn-danger btn-md ml-3">Supprimer</button>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                        <div className="col-sm-12 text-center">
+                            {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
+                            {
+                                loading ? <Loader />:
+                                    users&&users.length ?
+                                    <table className="table table-bordered">
+                                        <thead className="thead-inverse thead-dark">
+                                            <tr>
+                                            <th>#</th>
+                                            <th>Nom</th>
+                                            <th>Email</th>
+                                            <th>Création</th>
+                                            <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {
+                                            users.map((user, id) => (
+                                                <tr key={id}>
+                                                    <th scope="row">{id+1}</th>
+                                                    <td>{user.name}</td>
+                                                    <td>{user.email}</td>
+                                                    <td className="date">{user.date}</td>
+                                                    <td className="actions">
+                                                        <button onClick={() => this.deleteUser(user._id)} className="btn btn-danger btn-md ml-3">{deleting ? <Loader />:"Supprimer"}</button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        }
+                                        </tbody>
+                                    </table>:null
+                            }
                         </div>
                     </div>
                 </div>

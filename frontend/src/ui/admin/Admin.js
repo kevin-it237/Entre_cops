@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import { NavLink, Route } from 'react-router-dom';
+import { NavLink, Route, Redirect } from 'react-router-dom';
+import {connect} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import AdminCoupons from './AdminCoupons/AdminCoupons';
@@ -19,8 +20,10 @@ class Admin extends Component {
     }
 
     render() {
+        const {user} = this.props;
         return (
             <Fragment>
+                {user&&user.role !== "supplier" ? <Redirect to="/" />:null }
                 <section className="admin">
                     <div className="main-container">
                         <div className="left-content d-flex flex-column">
@@ -80,4 +83,10 @@ class Admin extends Component {
     }
 }
 
-export default Admin;
+const mapPropsToState = state => {
+    return {
+        user: state.auth.user
+    }
+}
+
+export default connect(mapPropsToState)(Admin);

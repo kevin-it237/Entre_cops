@@ -165,7 +165,7 @@ class ServiceModal extends Component {
 
     componentWillMount() {
         //Charge categories on form
-        this.getCategories();
+        this.initCategories();
     }
 
     componentDidUpdate(prevProps) {
@@ -188,22 +188,60 @@ class ServiceModal extends Component {
         }
     }
 
-    getCategories = () => {
+    // Fetch categories on the server and update if there is a new one
+    fetchCategories = () => {
+        let categories = JSON.parse(localStorage.getItem("categories"));
+        axios.get("/api/category/all")
+        .then(res => {
+            if(JSON.stringify(categories) !== JSON.stringify(res.data.categories)) {
+                this.setState({ categories: res.data.categories })
+            }
+        })
+        .catch(err => {
+            this.setState({ error: "Erreur de chargement des catégories. Veuillez reéssayer." })
+        })
+    }
+
+    initCategories = () => {
         let categories = JSON.parse(localStorage.getItem("categories"));
         if (categories && categories.length) {
             this.setState({ categories: categories });
+            // Verify is there is a new category
+            this.fetchCategories();
         } else {
             try {
-                axios.get("/api/category/all")
-                    .then(res => {
-                        this.setState({ categories: res.data.categories })
-                    })
-                    .catch(err => {
-                        this.setState({ error: "Erreur de chargement des catégories. Veuillez reéssayer." })
-                    })
+                this.fetchCategories();
             } catch (error) {
                 this.setState({ error: "Erreur de chargement des catégories. Veuillez reéssayer." })
             }
+        }
+    }
+
+    updateService = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        const { serviceImage, serviceVideo } = this.state;
+        formData.append('serviceImage', serviceImage);
+        formData.append('serviceVideo', serviceVideo);
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        };
+        this.setState({ loading: true });
+        try {
+            axios.patch('/api/service/' + this.props.service._id, formData, config)
+                .then(res => {
+                    this.setState({ 
+                        loading: false,
+                     });
+                    this.props.closeModal();
+                })
+                .catch(err => {
+                    this.setState({ error: "Veuillez faire une modification avant d'enregistrer", loading: false });
+                })
+        } catch (error) {
+            this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
         }
     }
 
@@ -334,7 +372,7 @@ class ServiceModal extends Component {
                                                         </div> :
                                                         !this.state.validated ?
                                                             <div className="d-flex justify-content-end">
-                                                                <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer la modification"}</button>
+                                                                <button disabled={loading} type="submit" onClick={(e) => this.updateService(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer la modification"}</button>
                                                             </div> : null
                                                 }
                                             </Fragment>

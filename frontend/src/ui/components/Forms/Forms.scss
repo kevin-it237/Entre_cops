@@ -94,23 +94,22 @@
       min-width: 15rem;
       font-weight: 600;
       box-shadow: 0 5px 10px #e2e2e2;
+      color: white !important;
+      width: auto !important;
+      height: 4.1rem !important;
+
+      div {
+        color: white !important;
+        font-size: 1.3rem;
+      }
 
       @media only screen and (max-width: 600px) {
         margin-bottom: 1rem;
-        width: 100%;
+        width: 100% !important;
+        div {
+          text-align: center !important;
+        }
       }
-    }
-
-    .google, .facebook {
-      font-size: 1.35rem;
-    }
-    .google {
-      background-color: #EA4335 !important;
-      border-color: #EA4335 !important;
-    }
-    .facebook {
-      background-color: #3C5999 !important;
-      border-color: #3C5999 !important;
     }
   }
   

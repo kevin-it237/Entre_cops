@@ -1,14 +1,17 @@
 import React from 'react';
-import img from '../../../assets/images/bg.jpg';
+import {rootUrl} from '../../../configs/config';
 
 const EventItem = (props) => {
+    const textLength = props.event.description.length;
+    const description = textLength <= 95 ? props.event.description:
+        props.event.description.slice(0, 93) + '...';
     return (
-        <a href="/service/details/1" className="home">
-            <img src={img} alt="" className="home__img"/>
-            <h5 className="home_name">Prestation Petit pays à la Sanza</h5>
+        <a href={"/annonce/event/" + props.event._id} className="home mt-5">
+            <img src={rootUrl+'/'+props.event.image} alt="" className="home__img"/>
+            <h5 className="home_name">{props.event.title}</h5>
             <div className="home_content">
                 <center>
-                    <p>Description de l'évènement...</p>
+                    <p>{description}</p>
                 </center>
             </div>
             <button className="btn home__btn">Consulter</button>

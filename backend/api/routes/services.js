@@ -60,6 +60,22 @@ router.post('/new', upload.single('serviceImage'), (req, res, next) => {
     })
 })
 
+// Update service
+router.patch('/:id', upload.single('serviceImage'), (req, res, next) => {
+    Service.updateOne({ _id: req.params.id }, {
+        $set: { image: req.file.path }
+    })
+    .exec()
+    .then(service => {
+        return res.status(201).json({
+            service: service
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
 // Get all services
 router.get('/all', (req, res, next) => {
     Service.find({}).sort({ $natural: -1 })
@@ -74,9 +90,51 @@ router.get('/all', (req, res, next) => {
         })
 })
 
-// Get last 5 invalidaded services
+// Get last 5  services
 router.get('/5', (req, res, next) => {
     Service.find({}).sort({ $natural: -1 }).limit(5)
+        .exec()
+        .then(services => {
+            return res.status(201).json({
+                services: services
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
+// Get all validaded services
+router.get('/validated/all', (req, res, next) => {
+    Service.find({validated: true}).sort({ $natural: -1 })
+        .exec()
+        .then(services => {
+            return res.status(201).json({
+                services: services
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
+// Get services of the same category
+router.get('/category/:name', (req, res, next) => {
+    Service.find({category: req.params.name, validated: true}).sort({ $natural: -1 })
+    .exec()
+    .then(services => {
+        return res.status(201).json({
+            services: services
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Get last 4 validaded services
+router.get('/4', (req, res, next) => {
+    Service.find({validated: true}).sort({ $natural: -1 }).limit(4)
         .exec()
         .then(services => {
             return res.status(201).json({
@@ -100,6 +158,20 @@ router.get('/:id', (req, res, next) => {
         .catch(err => {
             return res.status(500).json({ error: err })
         })
+})
+
+// Get a all events of a supplier
+router.get('/supplier/:id', (req, res, next) => {
+    Service.find({"owner._id" : req.params.id, validated: true})
+    .exec()
+    .then(services => {
+        return res.status(201).json({
+            services: services
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
 })
 
 // Validate service

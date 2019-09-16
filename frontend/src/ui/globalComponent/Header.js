@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
@@ -72,9 +72,15 @@ class Header extends Component {
                             }
                             {
                                 !token ?
-                                    <li className="nav-item">
-                                        <NavLink className="nav-link" to="/auth/#auth"><i className="fa fa-user"></i>Se connecter</NavLink>
-                                    </li>:null
+                                    <Fragment>
+                                        <li className="nav-item">
+                                            <NavLink className="nav-link" to="/auth/signup"><i className="fa fa-user"></i>Créer un compte</NavLink>
+                                        </li>
+                                        <li className="nav-item">
+                                            <NavLink className="nav-link" to="/auth/login"><i className="fa fa-user"></i>Se connecter</NavLink>
+                                        </li>
+                                    </Fragment>
+                                    :null
                             }
                         </ul>
                             {

@@ -14,7 +14,7 @@ const serviceSchema = mongoose.Schema({
     video: { type: String, required: false },
     comments: { type: Object, required: false },
     coupons: { type: Object, required: false },
-    reservations: { type: Array, required: false },
+    rate: { type: Number, required: false },
     validated: { type: Boolean, required: true },
     date: { type: Date, required: false }
 })

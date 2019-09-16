@@ -72,11 +72,53 @@ router.get('/all', (req, res, next) => {
     })
 })
 
-// Get last 5 invalidaded events
+// Get last 5 invalidaded/validaded events
 router.get('/5', (req, res, next) => {
     Event.find({}).sort({ $natural: -1 }).limit(5)
     .exec()
         .then(events => {
+        return res.status(201).json({
+            events: events
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Get last all validated events
+router.get('/validated/all', (req, res, next) => {
+    Event.find({validated: true}).sort({ $natural: -1 })
+    .exec()
+        .then(events => {
+        return res.status(201).json({
+            events: events
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Get last 4 validated events
+router.get('/4', (req, res, next) => {
+    Event.find({validated: true}).sort({ $natural: -1 }).limit(4)
+    .exec()
+        .then(events => {
+        return res.status(201).json({
+            events: events
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Get events of the same category
+router.get('/category/:name', (req, res, next) => {
+    Event.find({category: req.params.name, validated: true}).sort({ $natural: -1 })
+    .exec()
+    .then(events => {
         return res.status(201).json({
             events: events
         })
@@ -100,10 +142,40 @@ router.get('/:id', (req, res, next) => {
         })
 })
 
+// Get a all events of a supplier
+router.get('/supplier/:id', (req, res, next) => {
+    Event.find({"owner._id" : req.params.id, validated: true})
+        .exec()
+        .then(events => {
+            return res.status(201).json({
+                events: events
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
 // Validate event
 router.patch('/validate/:id', (req, res, next) => {
     Event.updateOne({ _id: req.params.id }, {
         $set: { validated: true }
+    })
+    .exec()
+    .then(event => {
+        return res.status(201).json({
+            event: event
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Update event
+router.patch('/:id', upload.single('eventImage'), (req, res, next) => {
+    Event.updateOne({ _id: req.params.id }, {
+        $set: { image: req.file.path }
     })
     .exec()
     .then(event => {

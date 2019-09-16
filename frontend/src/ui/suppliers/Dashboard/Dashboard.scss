@@ -1,5 +1,12 @@
 .dashboard {
     margin-bottom: 7rem;
+
+    .container {
+        @media only screen and (max-width: 900px) {
+            padding: 2rem !important;
+        }
+    }
+
     h2 {
         @media only screen and (max-width: 900px) {
             font-size: 1.5rem;
@@ -86,6 +93,11 @@
             box-shadow: 0px 5px 10px #eee;
             @media only screen and (max-width: 600px) {
                 font-size: 1.15rem;
+            }
+            svg {
+                path {
+                    fill: white !important;
+                }
             }
         }
     }

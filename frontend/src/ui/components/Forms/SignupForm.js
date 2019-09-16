@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import './Forms.scss';
 import { connect } from 'react-redux';
+import {Link} from 'react-router-dom';
 import { signup, renderLoader, clearLoader, clearError } from '../../../store/actions';
 import Loader from '../../globalComponent/Loader';
+import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 
 import userLogo from '../../../assets/images/event.png';
 
@@ -19,11 +21,8 @@ class SignUpForm extends Component {
         formValid: false
     }
 
-    goToSignInForm = (e) => {
-        e.preventDefault();
-        // Clear the error of the global state
+    componentDidMount() {
         this.props.onClearError();
-        this.props.changeForm()
     }
 
     handleInputChange = (e) => {
@@ -107,14 +106,13 @@ class SignUpForm extends Component {
 
                     <p>Ou bien inscrivez vous avec:</p>
                     <div className="d-flex socialWrapper">
-                        <button className="btn btn-danger google">Google</button>
-                        <button className="btn btn-primary facebook">Facebook</button>
+                        <GoogleLoginButton onClick={() => alert("Hello")} iconSize="23px" />
+                        <FacebookLoginButton onClick={() => alert("Hello")} iconSize="23px" />
                     </div>
 
                     <div id="formFooter">
-                    <a className="underlineHover" href="#signin" onClick={(event) => this.goToSignInForm(event)}>Déja inscrit ? Connectez vous.</a>
+                        <Link to="/auth/login" className="underlineHover">Déja inscrit ? Connectez vous.</Link>
                     </div>
-
                 </div>
             </div>
         );

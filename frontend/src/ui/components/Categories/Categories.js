@@ -3,12 +3,12 @@ import CategoryItem from './CategoryItem';
 import './Categories.scss';
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
-import { faAllergies, faAd, faAddressBook, faAdjust, faAirFreshener, faAnchor } from '@fortawesome/free-solid-svg-icons';
+import { faAirFreshener } from '@fortawesome/free-solid-svg-icons';
 
 class Categories extends Component {
     state = {
         selected: false,
-        categories: null,
+        categories: [],
         loading: true,
         error: null
     }
@@ -64,11 +64,15 @@ class Categories extends Component {
 
     render() {
         const { categories, loading } = this.state;
-        let content = <Loader />;
-        if(!loading) {
-            content = categories.map(category => (
-                <CategoryItem key={category._id} category={category} icon={faAirFreshener} />
-            ));
+        let content = <div className="d-block ml-auto mr-auto"><Loader /></div>;
+        if(!loading&&categories.length) {
+            content = categories.map(category => {
+                if(this.props.selected === category.name) {
+                    return <CategoryItem selected={true} key={category._id} category={category} icon={faAirFreshener} />
+                } else {
+                    return <CategoryItem key={category._id} category={category} icon={faAirFreshener} />
+                }
+        });
         }
         return (
             <section className="categories">
@@ -78,7 +82,7 @@ class Categories extends Component {
                             <center><h1 className="pt-4 service-header">Parcourir par catégorie</h1></center>
                         </div>
                     </div>
-                    <div className="row pb-5 justify-content-around categories-wrapper">
+                    <div className="row pb-5 categories-wrapper">
                         {content}
                     </div>
                 </div>

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import './Forms.scss'; 
 import { connect } from 'react-redux';
+import {Link} from 'react-router-dom';
 import { login, renderLoader, clearLoader, clearError } from '../../../store/actions';
 import Loader from '../../globalComponent/Loader';
+import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 
-import userLogo from '../../../assets/images/event.png'
+import userLogo from '../../../assets/images/event.png';
 
 class LoginForm extends Component {
 
@@ -16,6 +18,10 @@ class LoginForm extends Component {
         emailValid: false,
         passwordValid: false,
         formValid: false
+    }
+
+    componentDidMount() {
+        this.props.onClearError();
     }
 
     handleInputChange = (e) => {
@@ -71,13 +77,6 @@ class LoginForm extends Component {
         }
     }
 
-    goToSignUpForm = (e) => {
-        e.preventDefault();
-        // Clear the error of the global state
-        this.props.onClearError();
-        this.props.changeForm();
-    }
-
     render() {
         const { isTyping, emailValid, email, password } = this.state;
         const { error, loader } = this.props;
@@ -98,12 +97,12 @@ class LoginForm extends Component {
                     </form>
                     <p>Ou bien connectez vous avec:</p>
                     <div className="d-flex socialWrapper">
-                        <button className="btn btn-danger google">Google</button>
-                        <button className="btn btn-primary facebook">Facebook</button>
+                        <GoogleLoginButton onClick={() => alert("Hello")} iconSize="23px" />
+                        <FacebookLoginButton onClick={() => alert("Hello")} iconSize="23px" />
                     </div>
 
                     <div id="formFooter">
-                        <a className="underlineHover" href="#signup" onClick={(event) => this.goToSignUpForm(event)}>Ou bien Inscrivez vous Ici.</a>
+                        <Link to="/auth/signup" className="underlineHover">Ou bien Inscrivez vous Ici.</Link>
                     </div>
 
                 </div>

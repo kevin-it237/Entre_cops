@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
+import {Redirect} from 'react-router-dom';
 import './Dashboard.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 import Hoc from '../../globalComponent/Hoc';
@@ -9,12 +12,21 @@ import ReviewItem from '../../components/Reviews/ReviewItem';
 import Stars from '../../components/Stars/Stars';
 import EventModal from './EventModal';
 import ServiceModal from './ServiceModal';
+import Footer from '../../globalComponent/Footer';
+import Loader from '../../globalComponent/Loader';
 
 class Dashboard extends Component {
     
     state = {
         showNewEv: false,
         showNewAn: false,
+
+        services: [],
+        events: [],
+        servicesLoading: true,
+        eventsLoading: true,
+        error: '',
+        error2: ''
     }
     
     handleChange = (date) => {
@@ -35,13 +47,50 @@ class Dashboard extends Component {
         this.setState({showNewEv: false, showNewAn: false});
     }
 
+    componentDidUpdate(prevProps) {
+        if(this.props.user !== prevProps.user) {
+            // get events
+            this.fetchServices()
+            // get services
+            this.fetchEvents()
+        }
+    }
+
     componentDidMount() {
-        
+        if(this.props.user) {
+            // get events
+            this.fetchServices()
+            // get services
+            this.fetchEvents()
+        }
+    }
+
+    fetchEvents = () => {
+        axios.get('/api/event/supplier/'+ this.props.user._id)
+        .then(res => {
+            this.setState({events: res.data.events, eventsLoading: false, error: ''});
+        })
+        .catch(err => {
+            this.setState({eventsLoading: false, error: 'Une erreur s\'est produite. Veuillez reéssayer.'});
+            })
+    }
+
+    fetchServices = () => {
+        axios.get('/api/service/supplier/'+ this.props.user._id)
+        .then(res => {
+            this.setState({services: res.data.services, servicesLoading: false, error: ''});
+        })
+        .catch(err => {
+            this.setState({servicesLoading: false, error: 'Une erreur s\'est produite. Veuillez reéssayer.'});
+        })
     }
 
     render() {
+        const { events, services, eventsLoading, servicesLoading, error, error2 } = this.state;
+        const {user} = this.props;
         return (
             <Hoc>
+                {user&&user.role !== "supplier" ? <Redirect to="/" />:null }
                 <Header />
                 <section className="dashboard mt-5">
                     <div className="container p-5">
@@ -55,102 +104,135 @@ class Dashboard extends Component {
                                 <hr/>
                             </div>
                         </div>
+                        {/* Events */}
+                        <div className="row mt-2"><div className="col-sm-12 mt-2"><h3>MES EVENEMENTS</h3></div></div>
                         <div className="row mt-4 pb-5">
                             <div className="col-sm-12 col-md-12 col-lg-4 mt-2">
-                                <div className="list-group" id="list-tab" role="tablist">
-                                    <a className="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">
-                                        After Work - Prestation (3)
-                                        <br/>
-                                        <Stars isSupplierDashboard />
-                                    </a>
-                                    <a className="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">
-                                        Miss & Master Etudiant 2020 (1)
-                                        <br/>
-                                        <Stars isSupplierDashboard />
-                                    </a>
-                                    <a className="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">
-                                        Formation Wordpress débutant (1)
-                                        <br/>
-                                        <Stars isSupplierDashboard />
-                                    </a>
-                                    <a className="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">
-                                        Cours d'Allemand rapide (1)
-                                        <br/>
-                                        <Stars isSupplierDashboard />
-                                    </a>
-                                </div>
+                            {
+                                eventsLoading ? <div className="d-flex justify-content-center"><Loader /></div>:
+                                    events && events.length ? 
+                                        <div className="list-group" id="list-tab" role="tablist">
+                                        {
+                                            events.map((event, i) => (
+                                                <a key={event._id} className={i===0 ?"list-group-item list-group-item-action active":"list-group-item list-group-item-action"} id={event._id+"list-home-list"} data-toggle="list" href={event._id} role="tab" aria-controls="home">
+                                                    {event.title} ({event.reservations&&event.reservations.length ? event.reservations.length: 0})
+                                                    <br/>
+                                                    <Stars isSupplierDashboard />
+                                                </a>
+                                            ))
+                                        }
+                                        </div>
+                                    : <h5 className="">Vous n'avez aucun Evènement actif</h5>
+                            }
                             </div>
                             <div className="col-sm-12 col-md-12 col-lg-8 mt-2 d-flex flex-column justify-content-between">
+                                {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
                                 <div className="tab-content" id="nav-tabContent">
-                                    <div className="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
-                                        <table className="table">
-                                            <tbody>
-                                                <tr>
-                                                <th scope="row">1</th>
-                                                <td>Mark</td>
-                                                <td>@Otto.com</td>
-                                                <td>655881562</td>
-                                                <td className="date">05 Sep 2019</td>
-                                                </tr>
-                                                <tr>
-                                                <th scope="row">2</th>
-                                                <td>Jacob</td>
-                                                <td>@Thornton.com</td>
-                                                <td>655881562</td>
-                                                <td className="date">05 Sep 2019</td>
-                                                </tr>
-                                                <tr>
-                                                <th scope="row">3</th>
-                                                <td>Larry</td>
-                                                <td>theBird.com</td>
-                                                <td>655881562</td>
-                                                <td className="date">05 Sep 2019</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div className="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
-                                        <table className="table">
-                                            <tbody>
-                                                <tr>
-                                                <th scope="row">1</th>
-                                                <td>Mark</td>
-                                                <td>@Otto.com</td>
-                                                <td>655881562</td>
-                                                <td className="date">05 Sep 2019</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div className="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
-                                        <table className="table">
-                                            <tbody>
-                                                <tr>
-                                                <th scope="row">1</th>
-                                                <td>Larry</td>
-                                                <td>theBird.com</td>
-                                                <td>655881562</td>
-                                                <td className="date">05 Sep 2019</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div className="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
-                                        <table className="table">
-                                            <tbody>
-                                                <tr>
-                                                <th scope="row">1</th>
-                                                <td>Jacob</td>
-                                                <td>@Thornton.com</td>
-                                                <td>655881562</td>
-                                                <td className="date">05 Sep 2019</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    {
+                                        eventsLoading ? null :
+                                            events && events.length ?
+                                                events.map((event, i) => (
+                                                    event.reservations && event.reservations.length ?
+                                                    (
+                                                        <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={event._id} role="tabpanel" aria-labelledby="list-home-list">
+                                                            <table className="table">
+                                                            <tbody>
+                                                                {events.reservations.map((event, i) => (
+                                                                    <tr>
+                                                                        <th scope="row">1</th>
+                                                                        <td>Mark</td>
+                                                                        <td>@Otto.com</td>
+                                                                        <td>655881562</td>
+                                                                        <td className="date">05 Sep 2019</td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                            </table>
+                                                        </div>
+                                                    ): 
+                                                    <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={event._id} role="tabpanel" aria-labelledby="list-home-list">
+                                                        <h3 className="text-center">Aucune reservation sur cet évènement.</h3>
+                                                    </div>
+                                                ))
+                                            : null
+                                    }
                                 </div>
                                 <div className="deleteWrapper d-flex">
-                                    <button className="btn btn-danger ml-auto mt-3">Supprimer l'Evenement/Service</button>
+                                    {
+                                        events.reservations && events.reservations.length ?
+                                        <button className="btn btn-dark ml-auto mt-3">Télécharger la liste&nbsp; 
+                                            <FontAwesomeIcon icon={faDownload} size={"1x"} /></button>:null
+                                    }
+                                    {
+                                        events&&events.length ? 
+                                        <button className={events.reservations && events.reservations.length?"btn btn-danger ml-3 mt-3":"btn btn-danger ml-auto mt-3" }>Supprimer l'évenement</button>:null
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        {/* Services */}
+                        <div className="row mt-2"><div className="col-sm-12 mt-2"><h3>MES SERVICES</h3></div></div>
+                        <div className="row mt-4 pb-5">
+                            <div className="col-sm-12 col-md-12 col-lg-4 mt-2">
+                            {
+                                servicesLoading ? <div className="d-flex justify-content-center"><Loader /></div>:
+                                    services && services.length ? 
+                                        <div className="list-group" id="list-tab" role="tablist">
+                                        {
+                                            services.map((service, i) => (
+                                                <a key={service._id} className={i===0 ?"list-group-item list-group-item-action active":"list-group-item list-group-item-action"} id={service._id+"list-home-list"} data-toggle="list" href={service._id} role="tab" aria-controls="home">
+                                                    {service.title} ({service.reservations&&service.reservations.length ? service.reservations.length: 0})
+                                                    <br/>
+                                                    <Stars isSupplierDashboard />
+                                                </a>
+                                            ))
+                                        }
+                                        </div>
+                                    : <h5 className="">Vous n'avez aucun Service actif</h5>
+                            }
+                            </div>
+                            <div className="col-sm-12 col-md-12 col-lg-8 mt-2 d-flex flex-column justify-content-between">
+                                {error2 && error2.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
+                                <div className="tab-content" id="nav-tabContent">
+                                {
+                                    servicesLoading ? null :
+                                        services && services.length ?
+                                            services.map((service, i) => (
+                                                service.reservations && service.reservations.length ?
+                                                (
+                                                    <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={service._id} role="tabpanel" aria-labelledby="list-home-list">
+                                                        <table className="table">
+                                                        <tbody>
+                                                            {services.reservations.map((service, i) => (
+                                                                <tr>
+                                                                    <th scope="row">1</th>
+                                                                    <td>Mark</td>
+                                                                    <td>@Otto.com</td>
+                                                                    <td>655881562</td>
+                                                                    <td className="date">05 Sep 2019</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                        </table>
+                                                    </div>
+                                                ): 
+                                                <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={service._id} role="tabpanel" aria-labelledby="list-home-list">
+                                                    <h3 className="text-center">Aucune reservation sur cet évènement.</h3>
+                                                </div>
+                                            ))
+                                            : null
+                                    }
+                                </div>
+                                <div className="deleteWrapper d-flex">
+                                    {
+                                        services.reservations && services.reservations.length ?
+                                        <button className="btn btn-dark ml-auto mt-3">Télécharger la liste&nbsp; 
+                                            <FontAwesomeIcon icon={faDownload} size={"1x"} /></button>:null
+                                    }
+                                    {
+                                        services&&services.length ? 
+                                        <button className={services.reservations && services.reservations.length?"btn btn-danger ml-3 mt-3":"btn btn-danger ml-auto mt-3" }>Supprimer le service</button>:null
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -171,6 +253,7 @@ class Dashboard extends Component {
                         </div>
                     </div>
                 </section>
+                <Footer />
 
                 {/* New Event/Annonce */}
                 <EventModal 

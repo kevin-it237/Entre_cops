@@ -140,4 +140,37 @@ router.delete('/:userId', (req, res, next) => {
         })
 });
 
+// send mail
+router.post('/sendmail/:email/:subject/:name/:id/:to', (req, res, next) => {
+    var sendmail = null;
+    if(req.params.to == "validatesupplier") {
+        sendmail = require('../mailing/validate_supplier_email');
+    }
+    try {
+        sendmail(req.params.email, req.params.subject, req.params.name, req.params.id);
+        return res.status(201).json({
+            mail: "Email sent",
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            "error": error
+        })  
+    }
+})
+
+// Get all users
+router.get('/all', (req, res, next) => {
+    User.find({role: "user"}).sort({ $natural: -1 })
+    .exec()
+        .then(users => {
+        return res.status(201).json({
+            users: users
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
 module.exports = router;

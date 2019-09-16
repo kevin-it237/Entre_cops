@@ -1,11 +1,20 @@
 @import '../../utils/utils.scss';
 
+.container {
+    @media only screen and (max-width: 992px) {
+        max-width: 100% !important;
+    }
+}
+
 #projectdetails  {
     margin-top: 2rem;
     margin-bottom: 5rem;
 }
 #projectdetails .left {
     padding: 2rem;
+    @media only screen and (max-width: 600px) {
+        padding: 1rem !important;
+    }
 
     textarea {
         font-size: 1.5rem;
@@ -261,6 +270,14 @@
         }
         h3 {
             font-weight: 600;
+        }
+
+        .owner {
+            @media only screen and (max-width: 768px) {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                justify-content: flex-start !important;
+            }
         }
     }
 

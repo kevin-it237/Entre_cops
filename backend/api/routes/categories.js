@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const Category = require('../models/category');
 
 // Create a category
-router.post('/category/new', (req, res, next) => {
+router.post('/new', (req, res, next) => {
     const category = new Category({
         _id: mongoose.Types.ObjectId(),
         name: req.body.name
@@ -23,7 +23,7 @@ router.post('/category/new', (req, res, next) => {
 
 
 // Get all categories
-router.get('/category/all', (req, res, next) => {
+router.get('/all', (req, res, next) => {
     Category.find({})
     .exec()
     .then(categories => {
@@ -37,7 +37,7 @@ router.get('/category/all', (req, res, next) => {
 })
 
 // Delete a category
-router.delete('/category/:categoryId', (req, res, next) => {
+router.delete('/:categoryId', (req, res, next) => {
     Category.remove({ _id: req.params.categoryId })
     .exec()
     .then(result => {

@@ -7,6 +7,7 @@ import Services from '../ui/components/Services/Services';
 import Categories from '../ui/components/Categories/Categories';
 import Caroussel from '../ui/components/Caroussel/Caroussel';
 import SupplierBaner from '../ui/components/Supplier/SupplierBanner';
+import Footer from './globalComponent/Footer';
 
 class Home extends Component {
     render() {
@@ -18,6 +19,7 @@ class Home extends Component {
                 <Events eventType="Evènements" isHomePage={true} />
                 <Services eventType="Services" isHomePage={true} />
                 <SupplierBaner />
+                <Footer />
             </Hoc>
         );
     }
