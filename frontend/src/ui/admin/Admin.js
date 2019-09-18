@@ -23,7 +23,7 @@ class Admin extends Component {
         const {user} = this.props;
         return (
             <Fragment>
-                {user&&user.role !== "supplier" ? <Redirect to="/" />:null }
+                {user&&user.role !== "admin" ? <Redirect to="/" />:null }
                 <section className="admin">
                     <div className="main-container">
                         <div className="left-content d-flex flex-column">
