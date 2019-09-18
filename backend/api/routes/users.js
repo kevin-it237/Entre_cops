@@ -140,6 +140,22 @@ router.delete('/:userId', (req, res, next) => {
         })
 });
 
+
+// Get  a single user
+router.get('/:userId', (req, res, next) => {
+    User.findOne({ _id: req.params.userId })
+        .exec()
+        .then(user => {
+            return res.status(200).json({
+                user: user
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ error: err })
+        })
+});
+
 // send mail
 router.post('/sendmail/:email/:subject/:name/:id/:to', (req, res, next) => {
     var sendmail = null;
@@ -159,8 +175,24 @@ router.post('/sendmail/:email/:subject/:name/:id/:to', (req, res, next) => {
     }
 })
 
+// Make a recommandation
+router.patch('/:id/recommand', (req, res, next) => {
+    User.updateOne({ _id: req.params.id }, {
+        $push: { recommandations: req.body.rec }
+    })
+    .exec()
+    .then(user => {
+        return res.status(201).json({
+            user: user
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
 // Get all users
-router.get('/all', (req, res, next) => {
+router.get('/', (req, res, next) => {
     User.find({role: "user"}).sort({ $natural: -1 })
     .exec()
         .then(users => {

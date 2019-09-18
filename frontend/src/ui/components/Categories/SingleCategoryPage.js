@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Header from '../../globalComponent/Header';
 import Hoc from '../../globalComponent/Hoc';
-import Footer from '../../globalComponent/Footer';
 import Categories from './Categories';
 import Events from '../Events/Events';
 import Services from '../Services/Services';
@@ -72,7 +71,6 @@ class Home extends Component {
                     loadingServices ? <div className="d-flex justify-content-center py-5"><Loader/></div>:  
                     <Services services={services} isCategoryPage={true} eventType="Services" isHomePage={false} />
                 }
-                <Footer />
             </Hoc>
         );
     }

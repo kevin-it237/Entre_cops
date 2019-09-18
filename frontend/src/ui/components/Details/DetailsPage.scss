@@ -12,6 +12,8 @@
 }
 #projectdetails .left {
     padding: 2rem;
+    padding-left: 0 !important;
+
     @media only screen and (max-width: 600px) {
         padding: 1rem !important;
     }
@@ -29,6 +31,7 @@
 
 #projectdetails .right {
     padding: 2rem;
+    padding-right: 0 !important;
 }
 
 #projectdetails .left img{
@@ -152,9 +155,17 @@
     padding: 0 1.6rem;
     margin-top: 2.5rem;
 
+    input {
+        font-size: 1.4rem;
+    }
+
     textarea {
         font-size: 1.4rem;
         border-radius: 5px;
+    }
+
+    p {
+        font-size: 1.35rem;
     }
 }
 #projectdetails .left .reviews p {

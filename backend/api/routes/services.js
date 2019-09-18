@@ -31,7 +31,7 @@ const upload = multer({
     fileFilter: fileFilter
 })
 
-// Supplier registration
+// Service creation
 router.post('/new', upload.single('serviceImage'), (req, res, next) => {
     // Save new supplier
     const service = new Service({
@@ -46,6 +46,8 @@ router.post('/new', upload.single('serviceImage'), (req, res, next) => {
         duration: req.body.duration,
         place: req.body.place,
         validated: false,
+        comments: [],
+        reservations: [],
         date: new Date(),
     })
     service.save()
@@ -188,6 +190,38 @@ router.patch('/validate/:id', (req, res, next) => {
         .catch(err => {
             return res.status(500).json({ error: err })
         })
+})
+
+// Make a reservation
+router.patch('/:id/makereservation', (req, res, next) => {
+    Service.updateOne({ _id: req.params.id }, {
+        $push: { reservations: req.body.reservation }
+    })
+    .exec()
+    .then(service => {
+        return res.status(201).json({
+            service: service
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Submit a comment
+router.patch('/:id/comment', (req, res, next) => {
+    Service.updateOne({ _id: req.params.id }, {
+        $push: { comments: req.body.comment }
+    })
+    .exec()
+    .then(service => {
+        return res.status(201).json({
+            service: service
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
 })
 
 // Delete service

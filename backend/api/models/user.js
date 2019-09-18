@@ -12,6 +12,7 @@ const userSchema = mongoose.Schema({
     accountValidated: { type: Boolean, required: false },
     otherInfos: { type: String, required: false },
     role: { type: String, required: true },
+    recommandations: { type: Array, required: false },
     date: { type: Date, required: false },
 })
 

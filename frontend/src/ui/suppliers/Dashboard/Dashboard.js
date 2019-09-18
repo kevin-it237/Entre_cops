@@ -12,7 +12,6 @@ import ReviewItem from '../../components/Reviews/ReviewItem';
 import Stars from '../../components/Stars/Stars';
 import EventModal from './EventModal';
 import ServiceModal from './ServiceModal';
-import Footer from '../../globalComponent/Footer';
 import Loader from '../../globalComponent/Loader';
 
 class Dashboard extends Component {
@@ -85,6 +84,24 @@ class Dashboard extends Component {
         })
     }
 
+    generateCSV = (data, announce) => {
+        let csvContent = "data:text/csv;charset=utf-8,";
+        // Format our csv file content
+        csvContent += "id , name, email, tel, places \r\n";
+        data.forEach(function (rowArray, i) {
+            let row = (i + 1) + " , " + rowArray.name + " , " + rowArray.email + " , " + rowArray.tel + " , " + rowArray.numberOfPlaces;
+            csvContent += row + "\r\n";
+        });
+
+        // Creating the file
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        let fileName = announce.split(' ').join('-');
+        link.setAttribute("download", fileName + ".csv");
+        link.click();
+    }
+
     render() {
         const { events, services, eventsLoading, servicesLoading, error, error2 } = this.state;
         const {user} = this.props;
@@ -106,6 +123,7 @@ class Dashboard extends Component {
                         </div>
                         {/* Events */}
                         <div className="row mt-2"><div className="col-sm-12 mt-2"><h3>MES EVENEMENTS</h3></div></div>
+
                         <div className="row mt-4 pb-5">
                             <div className="col-sm-12 col-md-12 col-lg-4 mt-2">
                             {
@@ -114,7 +132,7 @@ class Dashboard extends Component {
                                         <div className="list-group" id="list-tab" role="tablist">
                                         {
                                             events.map((event, i) => (
-                                                <a key={event._id} className={i===0 ?"list-group-item list-group-item-action active":"list-group-item list-group-item-action"} id={event._id+"list-home-list"} data-toggle="list" href={event._id} role="tab" aria-controls="home">
+                                                <a key={i} className={i===0 ?"list-group-item list-group-item-action active":"list-group-item list-group-item-action"} data-toggle="list" href={`#item${i}`} role="tab">
                                                     {event.title} ({event.reservations&&event.reservations.length ? event.reservations.length: 0})
                                                     <br/>
                                                     <Stars isSupplierDashboard />
@@ -134,44 +152,40 @@ class Dashboard extends Component {
                                                 events.map((event, i) => (
                                                     event.reservations && event.reservations.length ?
                                                     (
-                                                        <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={event._id} role="tabpanel" aria-labelledby="list-home-list">
+                                                        <div key={i} className={i === 0 ? "tab-pane fade show active" : "tab-pane fade"} id={`item${i}`} role="tabpanel">
                                                             <table className="table">
-                                                            <tbody>
-                                                                {events.reservations.map((event, i) => (
-                                                                    <tr>
-                                                                        <th scope="row">1</th>
-                                                                        <td>Mark</td>
-                                                                        <td>@Otto.com</td>
-                                                                        <td>655881562</td>
-                                                                        <td className="date">05 Sep 2019</td>
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
+                                                                <tbody>
+                                                                    {event.reservations.map((reservation, i) => (
+                                                                        <tr key={i}>
+                                                                            <th scope="row">{i+1}</th>
+                                                                            <td>{reservation.name}</td>
+                                                                            <td>{reservation.email}</td>
+                                                                            <td>{reservation.tel}</td>
+                                                                            <td>Places: {reservation.numberOfPlaces}</td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
                                                             </table>
+                                                            <div className="deleteWrapper d-flex mt-auto">
+                                                                    <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(event.reservations, event.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
+                                                                <button className={event.reservations.length ? "btn btn-danger ml-3 mt-3" : "btn btn-danger ml-auto mt-3"}>Supprimer l'évenement</button>
+                                                            </div>
                                                         </div>
                                                     ): 
-                                                    <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={event._id} role="tabpanel" aria-labelledby="list-home-list">
+                                                    <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={`item${i}`} role="tabpanel" >
                                                         <h3 className="text-center">Aucune reservation sur cet évènement.</h3>
+                                                        <button className="btn btn-danger d-block ml-auto mt-3">Supprimer l'évenement</button>
                                                     </div>
                                                 ))
                                             : null
                                     }
                                 </div>
-                                <div className="deleteWrapper d-flex">
-                                    {
-                                        events.reservations && events.reservations.length ?
-                                        <button className="btn btn-dark ml-auto mt-3">Télécharger la liste&nbsp; 
-                                            <FontAwesomeIcon icon={faDownload} size={"1x"} /></button>:null
-                                    }
-                                    {
-                                        events&&events.length ? 
-                                        <button className={events.reservations && events.reservations.length?"btn btn-danger ml-3 mt-3":"btn btn-danger ml-auto mt-3" }>Supprimer l'évenement</button>:null
-                                    }
-                                </div>
                             </div>
                         </div>
+                        
+                        <hr/>
                         {/* Services */}
-                        <div className="row mt-2"><div className="col-sm-12 mt-2"><h3>MES SERVICES</h3></div></div>
+                        <div className="row mt-5"><div className="col-sm-12 mt-2"><h3>MES SERVICES</h3></div></div>
                         <div className="row mt-4 pb-5">
                             <div className="col-sm-12 col-md-12 col-lg-4 mt-2">
                             {
@@ -180,7 +194,7 @@ class Dashboard extends Component {
                                         <div className="list-group" id="list-tab" role="tablist">
                                         {
                                             services.map((service, i) => (
-                                                <a key={service._id} className={i===0 ?"list-group-item list-group-item-action active":"list-group-item list-group-item-action"} id={service._id+"list-home-list"} data-toggle="list" href={service._id} role="tab" aria-controls="home">
+                                                <a key={service._id} className={i===0 ?"list-group-item list-group-item-action active":"list-group-item list-group-item-action"} data-toggle="list" href={`#service${i}`} role="tab">
                                                     {service.title} ({service.reservations&&service.reservations.length ? service.reservations.length: 0})
                                                     <br/>
                                                     <Stars isSupplierDashboard />
@@ -200,38 +214,32 @@ class Dashboard extends Component {
                                             services.map((service, i) => (
                                                 service.reservations && service.reservations.length ?
                                                 (
-                                                    <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={service._id} role="tabpanel" aria-labelledby="list-home-list">
+                                                        <div key={i} className={i === 0 ? "tab-pane fade show active" : "tab-pane fade"} id={`service${i}`} role="tabpanel" >
                                                         <table className="table">
-                                                        <tbody>
-                                                            {services.reservations.map((service, i) => (
-                                                                <tr>
-                                                                    <th scope="row">1</th>
-                                                                    <td>Mark</td>
-                                                                    <td>@Otto.com</td>
-                                                                    <td>655881562</td>
-                                                                    <td className="date">05 Sep 2019</td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
+                                                            <tbody>
+                                                                {service.reservations.map((reservation, i) => (
+                                                                    <tr key={i}>
+                                                                        <th scope="row">{i + 1}</th>
+                                                                        <td>{reservation.name}</td>
+                                                                        <td>{reservation.email}</td>
+                                                                        <td>{reservation.tel}</td>
+                                                                        <td>Places: {reservation.numberOfPlaces}</td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
                                                         </table>
+                                                        <div className="deleteWrapper d-flex mt-auto">
+                                                                <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(service.reservations, service.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
+                                                            <button className={service.reservations.length ? "btn btn-danger ml-3 mt-3" : "btn btn-danger ml-auto mt-3"}>Supprimer l'évenement</button>
+                                                        </div>
                                                     </div>
                                                 ): 
-                                                <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={service._id} role="tabpanel" aria-labelledby="list-home-list">
-                                                    <h3 className="text-center">Aucune reservation sur cet évènement.</h3>
+                                                <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={`service${i}`} role="tabpanel">
+                                                    <h3 className="text-center">Aucune reservation sur ce service.</h3>
+                                                    <button className="btn btn-danger d-block ml-auto mt-3">Supprimer le service</button>
                                                 </div>
                                             ))
                                             : null
-                                    }
-                                </div>
-                                <div className="deleteWrapper d-flex">
-                                    {
-                                        services.reservations && services.reservations.length ?
-                                        <button className="btn btn-dark ml-auto mt-3">Télécharger la liste&nbsp; 
-                                            <FontAwesomeIcon icon={faDownload} size={"1x"} /></button>:null
-                                    }
-                                    {
-                                        services&&services.length ? 
-                                        <button className={services.reservations && services.reservations.length?"btn btn-danger ml-3 mt-3":"btn btn-danger ml-auto mt-3" }>Supprimer le service</button>:null
                                     }
                                 </div>
                             </div>
@@ -243,17 +251,16 @@ class Dashboard extends Component {
                         <div className="row pt-3 align-items-start">
                             <div className="col-sm-12 col-md-12 col-lg-8">
                                 <h3 className="pt-3 mb-5">Messages sur l'évènement</h3>
+                                {/* <ReviewItem/>
                                 <ReviewItem/>
-                                <ReviewItem/>
-                                <ReviewItem/>
+                                <ReviewItem/> */}
                             </div>
                             <div className="col-sm-12 col-md-12 col-lg-4">
-                                <h2>Other things here</h2>
+                                <h2></h2>
                             </div>
                         </div>
                     </div>
                 </section>
-                <Footer />
 
                 {/* New Event/Annonce */}
                 <EventModal 

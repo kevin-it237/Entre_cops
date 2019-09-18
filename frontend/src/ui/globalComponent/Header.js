@@ -12,7 +12,7 @@ import Recommandations from '../users/Recommantions/Recommandations';
 class Header extends Component {
     
     render() {
-        const { name, token, role, accountValidated } = this.props;
+        const { name, token, role, accountValidated, user } = this.props;
         return (
             <nav  className={this.props.home ? "navbar navbar-expand-lg navbar-light bg-light": "navbar navbar-expand-lg navbar-light bg-light navbar-shadow" }>
                 <div className="container">
@@ -27,10 +27,12 @@ class Header extends Component {
                         token ?
                         <div className="dropdown-mobile mt-2">
                             <a href="/recommandations" className=""  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <FontAwesomeIcon icon={faBookmark} size={"1x"}/><sup className="ml-1">1</sup>
+                                <FontAwesomeIcon icon={faBookmark} size={"1x"} /><sup className="ml-1">{user.recommandations && user.recommandations.length ? user.recommandations.length:0}</sup>
                             </a>
                             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <Recommandations />
+                                {user.recommandations && user.recommandations.length ? 
+                                    <Recommandations recommandations={user.recommandations} />: null
+                                }
                             </div>
                         </div>:null
                             
@@ -61,10 +63,12 @@ class Header extends Component {
                                 <li className="nav-item rec-item-desktop">
                                     <div className="dropdown mt-2">
                                         <a href="/recommandations" className=""  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <FontAwesomeIcon icon={faBookmark} size={"1x"}/><sup className="ml-1">1</sup>
+                                            <FontAwesomeIcon icon={faBookmark} size={"1x"} /><sup className="ml-1">{user.recommandations && user.recommandations.length ? user.recommandations.length : 0}</sup>
                                         </a>
                                         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <Recommandations />
+                                            {user.recommandations && user.recommandations.length ?
+                                                <Recommandations recommandations={user.recommandations} /> : null
+                                            }
                                         </div>
                                     </div>
                                 </li>: null
@@ -106,7 +110,8 @@ const mapStateToProps = state => {
         name: state.auth.name,
         token: state.auth.token,
         role: state.auth.role,
-        accountValidated: state.auth.accountValidated
+        accountValidated: state.auth.accountValidated,
+        user: state.auth.user
     }
 }
 

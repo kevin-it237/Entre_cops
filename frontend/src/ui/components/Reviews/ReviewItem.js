@@ -10,9 +10,8 @@ const ReviewItem = (props) => {
                 <div className="box-head d-flex">
                     <FontAwesomeIcon icon={faUserCircle} size={"3x"} />
                     <div className="box-body">
-                        <h5>@kevinit</h5>
-                        <p className="mt-3 pb-3">I hate loosing my music when I can’t pay and this just so happened
-                        to come up worked with no issues to come up worked with no issues</p>
+                        <h5>@{props.comment.name}</h5>
+                        <p className="mt-3 pb-3">{props.comment.message}</p>
                     </div>
                 </div>
             </div>

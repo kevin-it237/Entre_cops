@@ -17,7 +17,7 @@ class AdminUser extends Component {
 
     componentWillMount() {
         try {
-            axios.get('/api/user/all')
+            axios.get('/api/user/')
             .then(res => {
                 this.setState({ users: res.data.users, loading: false, error: '' })
             })

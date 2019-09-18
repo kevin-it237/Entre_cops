@@ -6,7 +6,12 @@ import './UserSearchResult.scss';
 class UserSearchResult extends Component {
 
     state = {
-        recommand: false
+        recommand: this.props.recommanded
+    }
+
+    applyRecommandation = () => {
+        this.setState({ recommand: true })
+        this.props.makeRecommandation();
     }
 
     render() {
@@ -14,13 +19,12 @@ class UserSearchResult extends Component {
             <div className="d-flex align-items-center justify-content-between userSearchResult-item">
                 <div className="d-flex align-items-center">
                     <FontAwesomeIcon icon={faUserCircle} size={"2x"} />
-                    <h6>@yourname</h6>
+                    <h6>{this.props.name}</h6>
                 </div>
                 {
                     this.state.recommand ?
-                    <button className="btn btn-outline-dark">Recommandé <FontAwesomeIcon icon={faCheck} /></button>:
-                    <button className="btn btn-dark" onClick={() => this.setState({ recommand: true})}>Recommander</button>
-
+                    <button className="btn btn-outline-dark" disabled>Recommandé <FontAwesomeIcon icon={faCheck} /></button>:
+                    <button className="btn btn-dark" onClick={this.applyRecommandation}>Recommander</button>
                 }
             </div>
         );

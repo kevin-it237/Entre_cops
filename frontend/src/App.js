@@ -21,8 +21,11 @@ import {PrivateRoute} from './ui/utils/PrivateRoute';
 
 class App extends Component {
   componentDidMount() {
-    this.props.onAutoSiginIn()
+    if(!this.props.user) {
+      this.props.onAutoSiginIn();
+    }
   }
+
   render() {
       return (
         <BrowserRouter>
@@ -44,10 +47,17 @@ class App extends Component {
   }
 }
 
+const mapPropsToState = state => {
+  return {
+    user: state.auth.user,
+    token: state.auth.token
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     onAutoSiginIn: () => dispatch(autoSignIn())
   }
 }
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapPropsToState, mapDispatchToProps)(App);

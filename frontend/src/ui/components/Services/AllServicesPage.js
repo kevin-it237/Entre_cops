@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Hoc from '../../globalComponent/Hoc';
 import Header from '../../globalComponent/Header';
-import Footer from '../../globalComponent/Footer';
 import Services from './Services';
 import Categories from '../Categories/Categories';
 
@@ -13,7 +12,6 @@ class AllServicesPage extends Component {
                 <Header />
                 <Categories />
                 <Services eventType="Tous les Services" isHomePage={false} />
-                <Footer/>
             </Hoc>
         );
     }

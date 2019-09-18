@@ -31,7 +31,7 @@ const upload = multer({
     fileFilter: fileFilter
 })
 
-// Supplier registration
+// Event creation
 router.post('/new', upload.single('eventImage'), (req, res, next) => {
     // Save new supplier
     const event = new Event({
@@ -45,6 +45,8 @@ router.post('/new', upload.single('eventImage'), (req, res, next) => {
         otherInfos: req.body.otherInfos,
         validated: false,
         date: req.body.date,
+        comments: [],
+        reservations: []
     })
     event.save()
     .then(event => {
@@ -176,6 +178,40 @@ router.patch('/validate/:id', (req, res, next) => {
 router.patch('/:id', upload.single('eventImage'), (req, res, next) => {
     Event.updateOne({ _id: req.params.id }, {
         $set: { image: req.file.path }
+    })
+    .exec()
+    .then(event => {
+        return res.status(201).json({
+            event: event
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+
+// Make a reservation
+router.patch('/:id/makereservation', (req, res, next) => {
+    Event.updateOne({ _id: req.params.id }, {
+        $push: { reservations: req.body.reservation }
+    })
+    .exec()
+    .then(event => {
+        return res.status(201).json({
+            event: event
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+
+// Submit a comment
+router.patch('/:id/comment', (req, res, next) => {
+    Event.updateOne({ _id: req.params.id }, {
+        $push: { comments: req.body.comment }
     })
     .exec()
     .then(event => {

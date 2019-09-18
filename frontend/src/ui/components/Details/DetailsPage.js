@@ -2,13 +2,13 @@ import React, { Component, Fragment } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import {connect} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapMarked, faSearch, faComment, faFileDownload, faAnchor } from '@fortawesome/free-solid-svg-icons';
 import './DetailsPage.scss';
 
 import Header from '../../globalComponent/Header';
 import Hoc from '../../globalComponent/Hoc';
-import Footer from '../../globalComponent/Footer';
 import ReviewItem from '../Reviews/ReviewItem';
 import SearchResultItem from '../UserSearchResult/UserSearchResult';
 import Stars from '../Stars/Stars';
@@ -30,44 +30,210 @@ class DetailsPage extends Component {
 
         announce: null,
         loading: true,
-        error: ''
+        error: '',
+        /* When leaving a comment */
+        userMessage: '',
+        userEmail: this.props.user ? this.props.user.email : '',
+        userName: this.props.user ? this.props.user.name : '',
+        sendingComment: false,
+        messageValid: false,
+        commentError: '',
 
-    }
+        /* When making a reservation */
+        tel: '',
+        numberOfPlaces: '',
+        name: this.props.user ? this.props.user.name : '',
+        email: this.props.user ? this.props.user.email : '',
+        formValid: false,
+        reserving: false,
+        reservationError: '',
 
-    componentWillMount() {
-        const {anounceType, id} = this.props.match.params;
-        // get data from event/service
-        if(anounceType === "event") {
-            axios.get('/api/event/'+ id)
-            .then(res => {
-                this.setState({announce: res.data.event, loading: false, error: ''})
-            })
-            .catch(err => {
-                this.setState({loading: false, error: 'Une érreur s\'est produite. Veuillez recharger la page.'})
-            })
-        } else if(anounceType === "service") {
-            axios.get('/api/service/'+ id)
-            .then(res => {
-                this.setState({announce: res.data.service, loading: false, error: ''})
-            })
-            .catch(err => {
-                this.setState({loading: false, error: 'Une érreur s\'est produite. Veuillez recharger la page.'})
-            })
-        }
+        /* when searching user */
+        searchingUser: false,
+        userList: [],
+        search: '',
+        /* when making recommandations */
+        recError: '',
     }
 
     handleInputChange = (e) => {
         e.preventDefault();
-        const message = e.target.message;
+        const name = e.target.name;
         const value = e.target.value;
-        console.log(value);
         this.setState({
-            [message]: value
+            [name]: value
+        }, this.validate);
+    }
+
+    validate = () => {
+        const { name, email, tel, numberOfPlaces, userEmail, userName, userMessage } = this.state;
+        this.setState({ 
+            formValid: name.trim().length > 0 && 
+                email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) 
+                && tel.trim().length > 0 && numberOfPlaces.trim().length > 0,
+            messageValid: userName.trim().length > 0 && 
+                userEmail.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) &&
+                userMessage.trim().length > 0
+         })
+    }
+
+    searchUser = (e) => {
+        e.preventDefault();
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState({
+            [name]: value,
+            searchingUser: true
         });
+        axios.get('/api/user/')
+        .then(res => {
+            const userList = res.data.users.filter(user => (
+                user.name.includes(this.state.search) || user.email.includes(this.state.search)
+            ))
+            this.setState({ searchingUser: false, userList: userList })
+        })
+        .catch(err => {
+            this.setState({ searchingUser: false})
+        })
+    }
+
+    openRecommandationModal = () => {
+        if(this.props.user) {
+            this.setState({showRecModal: true})
+        } else {
+            this.props.history.push('/auth/login');
+        }
+    }
+
+    // Make a reccommandation
+    makeRecommadation = (id) => {
+        const rec = { 
+            title: this.state.announce.title, 
+            link: '/annonce/' + this.props.match.params.anounceType + '/' + this.props.match.params.id,
+            name: this.props.user.name 
+        }
+        try {
+            axios.patch('/api/user/'+id+'/recommand', { rec: rec })
+                .then(res => {
+                    this.setState({ recError: '' })
+                })
+                .catch(err => {
+                    this.setState({ recError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+                })
+        } catch (error) {
+            this.setState({ recError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+        }
+    }
+
+    // When make a reservation
+    makeReservation = (e) => {
+        e.preventDefault();
+        this.setState({reserving: true})
+        const { anounceType, id } = this.props.match.params;
+        let url = "";
+        if(anounceType === "event") {
+            url = "/api/event/" + id + "/makereservation";
+        } else 
+        if (anounceType === "service"){
+            url = "/api/service/" + id + "/makereservation";
+        }
+        try {
+            const reservation = {
+                name: this.state.name,
+                email: this.state.email,
+                tel: this.state.tel,
+                numberOfPlaces: this.state.numberOfPlaces
+            }
+            axios.patch(url, { reservation: reservation })
+            .then(res => {
+                this.setState({ reserving: false, reservationError: '', showReservationModal: false })
+            })
+            .catch(err => {
+                this.setState({ reserving: false, reservationError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+            })
+        } catch (error) {
+            this.setState({ reserving: false, reservationError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+        }
+    }
+
+    openReservationModal = () => {
+        if(this.props.user) {
+            this.setState({showReservationModal: true})
+        } else {
+            this.props.history.push('/auth/login');
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if(prevProps.user !== this.props.user) {
+            this.setState({ 
+                name: this.props.user.name, 
+                email: this.props.user.email, 
+                userEmail: this.props.user.email, 
+                userName: this.props.user.name})
+        }
+    }
+
+    componentDidMount() {
+        const {anounceType, id} = this.props.match.params;
+        // get data from event/service
+        try {
+            if(anounceType === "event") {
+                axios.get('/api/event/'+ id)
+                .then(res => {
+                    this.setState({announce: res.data.event, loading: false, error: ''})
+                })
+                .catch(err => {
+                    this.setState({loading: false, error: 'Une érreur s\'est produite. Veuillez recharger la page.'})
+                })
+            } else if(anounceType === "service") {
+                axios.get('/api/service/'+ id)
+                .then(res => {
+                    this.setState({announce: res.data.service, loading: false, error: ''})
+                })
+                .catch(err => {
+                    this.setState({loading: false, error: 'Une érreur s\'est produite. Veuillez recharger la page.'})
+                })
+            }
+        } catch (error) {
+            this.setState({ loading: false, error: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+        }
+    }
+
+    submitComment = (e) => {
+        e.preventDefault();
+        this.setState({ sendingComment: true })
+        const { anounceType, id } = this.props.match.params;
+        let url = "";
+        if (anounceType === "event") {
+            url = "/api/event/" + id + "/comment";
+        } else
+            if (anounceType === "service") {
+                url = "/api/service/" + id + "/comment";
+            }
+        try {
+            const comment = {
+                name: this.state.userName,
+                email: this.state.userEmail,
+                message: this.state.userMessage
+            }
+            axios.patch(url, { comment: comment })
+            .then(res => {
+                let newAnnounce = {...this.state.announce};
+                newAnnounce.comments.push(comment);
+                this.setState({ sendingComment: false, commentError: '', userEmail: '', userName: '', userMessage: '', announce: newAnnounce })
+            })
+            .catch(err => {
+                this.setState({ sendingComment: false, commentError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+            })
+        } catch (error) {
+            this.setState({ sendingComment: false, commentError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+        }
     }
 
     displayToast = () => {
         this.setState({showToast: true});
+        navigator.clipboard.writeText(window.location.href);
         setTimeout(() => {
             this.setState({showToast: false});
         }, 2000)
@@ -80,7 +246,8 @@ class DetailsPage extends Component {
     }
 
     render() {
-        const { documentPreview, announce, error, loading } = this.state;
+        const { documentPreview, announce, error, loading, name, email, tel, messageValid,
+                numberOfPlaces, formValid, reservationError, recError, sendingComment, userEmail, userName, userMessage } = this.state;
         const {anounceType} = this.props.match.params;
         return (
             <Hoc>
@@ -147,9 +314,9 @@ class DetailsPage extends Component {
                                                 }
                                                     <hr />
                                                     <button className="button mt-3 book" 
-                                                        onClick={() => this.setState({showReservationModal: !this.state.showRecModal})}>Reserver</button>
+                                                        onClick={this.openReservationModal}>Reserver</button>
                                                     <button className="button mt-3 reccommand" 
-                                                        onClick={() => this.setState({showRecModal: !this.state.showRecModal})}>Recommander</button>
+                                                        onClick={this.openRecommandationModal}>Recommander</button>
                                                 </div>
 
                                                 <div className="other-infos mt-4">
@@ -222,17 +389,36 @@ class DetailsPage extends Component {
                                             </div>
                                             <div className="moreinfos">
                                                 <div className="content">
-                                                    <ReviewItem />
-                                                    <ReviewItem />
+                                                    {
+                                                            announce.comments&&announce.comments.length ?
+                                                            announce.comments.reverse().map((comment, i) => (
+                                                                <ReviewItem key={i} comment={comment} />
+                                                            ))
+                                                        : <h5 className="text-center py-3">Aucun commentaire</h5>
+                                                    }
                                                 </div>
                                             </div>
                                             <div className="form-content mb-5">
                                                 <p>Laissez un commentaire</p>
                                                 <form className="input__form">
-                                                    <div className="form-group">
-                                                        <textarea placeholder="Entrer votre commentaire" className="form-control" onChange={(e) => this.setState({message: e.target.value})} id="textmessage" rows="2"></textarea>
+                                                    <div className="row">
+                                                        <div className="col-sm-6">
+                                                            <div className="form-group">
+                                                                    <input placeholder="Votre nom" value={userName} className="form-control" name="userName" onChange={(e) => this.handleInputChange(e)} />
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-sm-6">
+                                                            <div className="form-group">
+                                                                    <input placeholder="Adresse email" value={userEmail} className="form-control" name="userEmail" onChange={(e) => this.handleInputChange(e)} />
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-sm-12 my-2">
+                                                            <div className="form-group">
+                                                                    <textarea placeholder="Entrer votre commentaire" value={userMessage} name="userMessage" className="form-control" onChange={(e) => this.handleInputChange(e)} id="textmessage" rows="3"></textarea>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <button className="btn btn-danger send-btn" type="submit">Publier</button>
+                                                    <button disabled={sendingComment || !messageValid} onClick={(e) => this.submitComment(e)} className="btn btn-danger send-btn" type="submit">Publier {sendingComment ? <Loader color="white"/>:null}</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -277,9 +463,9 @@ class DetailsPage extends Component {
                                             }
                                                 <hr />
                                                 <button className="button mt-3 book" 
-                                                    onClick={() => this.setState({showReservationModal: !this.state.showRecModal})}>Reserver</button>
+                                                    onClick={() => this.openReservationModal()}>Reserver</button>
                                                 <button className="button mt-3 reccommand" 
-                                                    onClick={() => this.setState({showRecModal: !this.state.showRecModal})}>Recommander</button>
+                                                    onClick={() => this.openRecommandationModal()}>Recommander</button>
                                             </div>
 
                                             <div className="other-infos mt-4">
@@ -318,8 +504,6 @@ class DetailsPage extends Component {
                     </div>
                 </section>
 
-                <Footer />
-
                 {/* Reservation */}
                 <Modal show={this.state.showReservationModal} onHide={() => this.setState({showReservationModal: !this.state.showReservationModal})} >
                     <Modal.Header closeButton>
@@ -329,21 +513,23 @@ class DetailsPage extends Component {
                         <div className="container">
                             <div className="row">
                                 <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
-                                    <div class="form-group">
+                                    {!formValid ? <div className="alert alert-danger">Veuillez remplir tous les champs</div>:null}
+                                    {reservationError.length ? <div className="alert alert-danger">{reservationError}</div>:null}
+                                    <div className="form-group">
                                         <label for="name">Nom complet</label>
-                                        <input type="text" class="form-control" value="Yves Roland" name="nom" id="name" placeholder="Nom complet"/>
+                                        <input type="text" className="form-control" onChange={(e) => this.handleInputChange(e)} value={name} name="name" id="name" placeholder="Nom complet"/>
                                     </div>
-                                    <div class="form-group">
+                                    <div className="form-group">
                                         <label for="email">Email address</label>
-                                        <input type="email" class="form-control" value="yves@gmail.com" name="email" id="email" placeholder="Adresse Email"/>
+                                        <input type="email" className="form-control" onChange={(e) => this.handleInputChange(e)} value={email} name="email" id="email" placeholder="Adresse Email"/>
                                     </div>
-                                    <div class="form-group">
+                                    <div className="form-group">
                                         <label for="tel">Numero de Téléphone (Whatsapp)</label>
-                                        <input type="tel" class="form-control" name="tel" id="tel" pattern="[0-9]{9}" placeholder="Numero de Téléphone"/>
+                                        <input type="tel" className="form-control" value={tel} onChange={(e) => this.handleInputChange(e)} name="tel" id="tel" pattern="[0-9]{9}" placeholder="Numero Whatsapp"/>
                                     </div>
-                                    <div class="form-group">
+                                    <div className="form-group">
                                         <label for="places">Nombre de places</label>
-                                        <input type="number" class="form-control" name="numplaces" id="places" placeholder="Nombre de places"/>
+                                        <input type="number" className="form-control" value={numberOfPlaces} onChange={(e) => this.handleInputChange(e)} name="numberOfPlaces" id="places" placeholder="Nombre de places"/>
                                     </div>
                                 </div>
                             </div>
@@ -351,8 +537,11 @@ class DetailsPage extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="py-3">
-                            <Button variant="danger" onClick={() => this.setState({showReservationModal: !this.state.showReservationModal})}>
+                            <Button variant="danger" disabled={!formValid} onClick={(e) => this.makeReservation(e) }>
                                 Valider la Reservation
+                            </Button>
+                            <Button variant="default" onClick={() => this.setState({showReservationModal: !this.state.showReservationModal})}>
+                                Fermer
                             </Button>
                         </div>
                     </Modal.Footer>
@@ -367,17 +556,30 @@ class DetailsPage extends Component {
                         <div className="container">
                             <div className="row">
                                 <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
+                                    {recError.length ? <div className="alert alert-danger">{recError}</div>:null}
                                     <div className="d-flex flex-row search align-items-center">
-                                        <input type="text" className="form-control searchInput" name="search" placeholder="Rechercher un membre"/>
+                                        <input type="text" className="form-control searchInput" value={this.state.search} onChange={(e) => this.searchUser(e)} name="search" placeholder="Rechercher un membre"/>
                                         <FontAwesomeIcon icon={faSearch} />
                                     </div>
                                     {/* Results */}
-                                    <div className="results py-5">
-                                        <SearchResultItem/>
-                                        <SearchResultItem/>
-                                        <SearchResultItem/>
-                                        <SearchResultItem/>
-                                    </div>
+                                    {
+                                        this.state.searchingUser ? <div className="d-block mr-auto ml-auto text-center mt-3"><Loader/></div>:
+                                            this.state.userList.length ?
+                                            <div className="results py-5">
+                                                {
+                                                    this.state.userList.map((user, i) => {
+                                                        const item = user.recommandations.filter(ev => (
+                                                            ev.title === announce.title
+                                                        ))
+                                                        if (item.length) {
+                                                            return <SearchResultItem key={i} recommanded={true} makeRecommandation={() => this.makeRecommadation(user._id)} name={user.name} email={user.email} />
+                                                        } else {
+                                                            return <SearchResultItem key={i} recommanded={false} makeRecommandation={() => this.makeRecommadation(user._id)} name={user.name} email={user.email} />
+                                                        }
+                                                    })
+                                                }
+                                            </div>:<h5 className="text-center d-block mr-auto ml-auto mt-3">Aucun utilisateur trouvé.</h5>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -449,4 +651,10 @@ class DetailsPage extends Component {
     }
 }
 
-export default DetailsPage;
+const mapPropsToState = state => {
+    return {
+        user: state.auth.user
+    }
+}
+
+export default connect(mapPropsToState)(DetailsPage);

@@ -90,8 +90,18 @@ export const autoSignIn = () => {
         if (authData && authData.token) {
             const parsedExpiryDate = new Date(parseInt(authData.expiresDate));
             if (parsedExpiryDate > now) {
-                console.log("Auto sign")
-                dispatch(startLogin(authData));
+                // Get user data and update the local storage/ The localstorage can be outdated
+                axios.get('/api/user/' + authData.user._id)
+                .then(res => {
+                    const newAuthData = {...authData};
+                    newAuthData.user = res.data.user;
+                    localStorage.setItem("authData", JSON.stringify(newAuthData));
+                    dispatch(startLogin(newAuthData));
+                    console.log("Auto sign")
+                })
+                .catch(err => {
+
+                })
             } else {
                 // Generate a new token and login the user
                 const user = {
