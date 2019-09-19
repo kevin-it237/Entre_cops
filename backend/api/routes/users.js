@@ -205,4 +205,18 @@ router.get('/', (req, res, next) => {
     })
 })
 
+// count all users
+router.get('/count/all', (req, res, next) => {
+    User.find({ role: "user" }).count()
+        .exec()
+        .then(n => {
+            return res.status(201).json({
+                n: n
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
 module.exports = router;

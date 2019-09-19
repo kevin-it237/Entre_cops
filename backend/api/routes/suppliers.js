@@ -171,4 +171,18 @@ router.get('/:id', (req, res, next) => {
     })
 })
 
+// count supplier
+router.get('/count/all', (req, res, next) => {
+    User.find({role: "supplier", accountValidated: true}).count()
+    .exec()
+    .then(n => {
+        return res.status(201).json({
+            n: n
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
 module.exports = router;

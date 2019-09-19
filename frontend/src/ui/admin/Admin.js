@@ -9,6 +9,9 @@ import AdminAnnonces from './AdminAnnonces/AdminAnnonces';
 import AdminServices from './AdminServices/AdminServices';
 import AdminSuppliers from './AdminSuppliers/AdminSuppliers';
 import AdminUsers from './AdminUsers/AdminUsers';
+import Loader from '../globalComponent/Loader';
+import { logout } from '../../store/actions'
+import axios from 'axios';
 import './Admin.scss';
 import logo from '../../assets/images/logo.png';
 
@@ -16,11 +19,37 @@ import logo from '../../assets/images/logo.png';
 class Admin extends Component {
 
     state = {
-        showModal: false
+        showModal: false,
+        nSuppliers: null,
+        nUsers: null,
+        loadingSuppliers: true,
+        loadingUsers: true,
+        error: ''
+    }
+
+    componentDidMount() {
+        //Get number of supplier
+        axios.get('/api/supplier/count/all')
+            .then(res => {
+                this.setState({ nSuppliers: res.data.n, loadingSuppliers: false, error: '' })
+            })
+            .catch(err => {
+                this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", loadingSuppliers: false })
+            })
+
+        //Get number of users
+        axios.get('/api/user/count/all')
+            .then(res => {
+                this.setState({ nUsers: res.data.n, loadingUsers: false, error: '' })
+            })
+            .catch(err => {
+                this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", loadingUsers: false })
+            })
     }
 
     render() {
         const {user} = this.props;
+        const {nSuppliers, nUsers, loadingSuppliers, loadingUsers} = this.state;
         return (
             <Fragment>
                 {user&&user.role !== "admin" ? <Redirect to="/" />:null }
@@ -49,7 +78,7 @@ class Admin extends Component {
                                 <NavLink className="navbar-brand" to="/admin/users">
                                     <h3 className="d-inline align-middle">UTILISATEURS</h3>
                                 </NavLink>
-                                <a href="/auth" className="mt-auto btn btn-outline-light btn-lg logout">Logout</a> 
+                                <a href="#logout" onClick={this.props.onLogout} className="mt-auto btn btn-outline-light btn-lg logout">Logout</a> 
                             </div>
                         </div>
                         <div className="right-content">
@@ -58,11 +87,11 @@ class Admin extends Component {
                                     <div className="col d-flex justify-content-end mb-3">
                                         <div className="stat-item">
                                             <FontAwesomeIcon icon={faUserCircle} size={"2x"} />
-                                            <h4>50 Fournisseurs</h4>
+                                            {loadingSuppliers ? <Loader /> : <h4>{nSuppliers} Fournisseurs</h4>}
                                         </div>
                                         <div className="stat-item">
                                             <FontAwesomeIcon icon={faUserFriends} size={"2x"} />
-                                            <h4>1250 Utilisateurs</h4>
+                                            {loadingUsers ? <Loader /> : <h4>{nUsers} Utilisateurs</h4>}
                                         </div>
                                     </div>
                                 </div>
@@ -89,4 +118,10 @@ const mapPropsToState = state => {
     }
 }
 
-export default connect(mapPropsToState)(Admin);
+const mapDispatchToState = dispatch => {
+    return {
+        onLogout: () => dispatch(logout())
+    }
+}
+
+export default connect(mapPropsToState, mapDispatchToState)(Admin);

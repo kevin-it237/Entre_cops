@@ -88,7 +88,8 @@ class DetailsPage extends Component {
         axios.get('/api/user/')
         .then(res => {
             const userList = res.data.users.filter(user => (
-                user.name.includes(this.state.search) || user.email.includes(this.state.search)
+                user.name.toLowerCase().includes(this.state.search.toLowerCase()) || 
+                user.email.toLowerCase().includes(this.state.search.toLowerCase())
             ))
             this.setState({ searchingUser: false, userList: userList })
         })
@@ -246,7 +247,7 @@ class DetailsPage extends Component {
     }
 
     render() {
-        const { documentPreview, announce, error, loading, name, email, tel, messageValid,
+        const { documentPreview, announce, error, loading, name, email, tel, messageValid, reserving,
                 numberOfPlaces, formValid, reservationError, recError, sendingComment, userEmail, userName, userMessage } = this.state;
         const {anounceType} = this.props.match.params;
         return (
@@ -537,8 +538,8 @@ class DetailsPage extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="py-3">
-                            <Button variant="danger" disabled={!formValid} onClick={(e) => this.makeReservation(e) }>
-                                Valider la Reservation
+                            <Button variant="danger" disabled={!formValid || reserving} onClick={(e) => this.makeReservation(e) }>
+                                Valider la Reservation {reserving ? <Loader />: null}
                             </Button>
                             <Button variant="default" onClick={() => this.setState({showReservationModal: !this.state.showReservationModal})}>
                                 Fermer
