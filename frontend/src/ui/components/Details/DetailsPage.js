@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import socketIOClient from "socket.io-client";
 import {connect} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapMarked, faSearch, faComment, faFileDownload, faAnchor } from '@fortawesome/free-solid-svg-icons';
@@ -108,14 +109,19 @@ class DetailsPage extends Component {
 
     // Make a reccommandation
     makeRecommadation = (id) => {
-        const rec = { 
+        const rec = {
+            to: id, 
             title: this.state.announce.title, 
             link: '/annonce/' + this.props.match.params.anounceType + '/' + this.props.match.params.id,
             name: this.props.user.name 
         }
         try {
+            // Send notification with socketio
+            const socket = socketIOClient(rootUrl);
+            // save in database
             axios.patch('/api/user/'+id+'/recommand', { rec: rec })
-                .then(res => {
+            .then(res => {
+                    socket.emit("new notification", {notification: rec});
                     this.setState({ recError: '' })
                 })
                 .catch(err => {

@@ -3,12 +3,17 @@ const mongoose = require('mongoose');
 const config = require('./config/database');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const http = require('http');
+const socketIo = require("socket.io");;
 
 const userRoutes = require('./api/routes/users');
 const categoryRoutes = require('./api/routes/categories');
 const supplierRoutes = require('./api/routes/suppliers');
 const eventRoutes = require('./api/routes/events');
 const serviceRoutes = require('./api/routes/services');
+
+// Model
+const User = require('./api/models/user');
 
 // Connect to db
 mongoose.connect(config.database, { useNewUrlParser: true });
@@ -21,6 +26,7 @@ db.once('open', function() {
 
 // App initialization
 const app = express();
+const server = http.createServer(app);
 
 app.use(morgan('dev'))
 app.use('/uploads', express.static('uploads'))
@@ -63,8 +69,23 @@ app.use((error, req, res, next) => {
     })
 })
 
+
+var io = socketIo.listen(server);
+
+io.on('connection', function (socket) {
+    // let client = socket.request._query
+    console.log("un client vient de se connecter");
+    
+    // Notification for recommandation
+    socket.on('new notification', function (data) {
+        io.emit('display notification',  data)
+    })
+
+    socket.on("disconnect", () => console.log("Client disconnected"));
+})
+
 // Start the app
 const PORT = 5000;
-app.listen(PORT, function() {
+server.listen(PORT, function() {
     console.log("Server started on port " + PORT)
 })

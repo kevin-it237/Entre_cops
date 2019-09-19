@@ -6,10 +6,25 @@ import { logout } from '../../store/actions';
 import { faSearch, faBookmark } from '@fortawesome/free-solid-svg-icons';
 import './Header.scss';
 import logo from '../../assets/images/logo.png';
+import socketIOClient from 'socket.io-client';
 
 import Recommandations from '../users/Recommantions/Recommandations';
+import { rootUrl } from '../../configs/config';
+import {autoSignIn} from '../../store/actions'
 
 class Header extends Component {
+
+    componentDidMount() {
+        const socket = socketIOClient(rootUrl);
+        socket.on('display notification', data => {
+            const authData = JSON.parse(localStorage.getItem("authData"));
+            if (authData&&authData.user) {
+                if (authData.user._id === data.notification.to) {
+                    this.props.onAutoSign();
+                }
+            }
+        })
+    }
     
     render() {
         const { name, token, role, accountValidated, user } = this.props;
@@ -29,11 +44,11 @@ class Header extends Component {
                             <a href="/recommandations" className=""  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <FontAwesomeIcon icon={faBookmark} size={"1x"} /><sup className="ml-1">{user.recommandations && user.recommandations.length ? user.recommandations.length:0}</sup>
                             </a>
-                            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 {user.recommandations && user.recommandations.length ? 
-                                    <Recommandations recommandations={user.recommandations} />: null
+                                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <Recommandations recommandations={user.recommandations} />
+                                    </div> : null
                                 }
-                            </div>
                         </div>:null
                             
                     }
@@ -117,7 +132,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToState = dispatch => {
     return {
-        onLogout: () => dispatch(logout())
+        onLogout: () => dispatch(logout()),
+        onAutoSign: () => dispatch(autoSignIn())
     }
 }
 
