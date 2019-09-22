@@ -224,6 +224,39 @@ router.patch('/:id/comment', (req, res, next) => {
     })
 })
 
+// Set coupons
+router.patch('/:id/add/coupon', (req, res, next) => {
+    Service.updateOne({ _id: req.params.id }, {
+        $set: { coupons: req.body.coupon }
+    })
+    .exec()
+    .then(service => {
+        return res.status(201).json({
+            service: service
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+
+// Remove coupons
+router.patch('/:id/remove/coupon', (req, res, next) => {
+    Service.updateOne({ _id: req.params.id }, {
+        $set: { coupons: {} }
+    })
+    .exec()
+    .then(service => {
+        return res.status(201).json({
+            service: service
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
 // Delete service
 router.delete('/:id', (req, res, next) => {
     Service.remove({ _id: req.params.id })

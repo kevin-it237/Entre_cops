@@ -1,9 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
+import html2pdf from 'html2pdf.js';
+import { rootUrl } from '../../../configs/config';
 
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Loader from '../../globalComponent/Loader';
+import logo from '../../../assets/images/logo.png';
 
 class AdminCoupons extends Component {
 
@@ -11,6 +14,8 @@ class AdminCoupons extends Component {
         showModal: false,
         error: '',
         loading: false,
+        selectedAnnonce: null,
+        eventType: '',
         
         event: null,
         events: [],
@@ -18,7 +23,34 @@ class AdminCoupons extends Component {
 
         services: [],
         service: null,
-        servicesLoading: true
+        servicesLoading: true,
+
+        nCoupons: '',
+        infos: '',
+        datelimite: '',
+        montant: '',
+        couponValid: false,
+        couponError: '',
+        removing: false
+    }
+
+    handleInputChange = (e) => {
+        e.preventDefault();
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState({
+            [name]: value
+        }, this.validate);
+    }
+
+    validate = () => {
+        const { nCoupons, infos, datelimite, montant} = this.state;
+        this.setState({
+            couponValid: nCoupons.trim().length > 0
+                            && infos.trim().length > 0
+                            && datelimite.trim().length > 0
+                            && montant.trim().length > 0
+        })
     }
 
     componentDidMount() {
@@ -42,18 +74,89 @@ class AdminCoupons extends Component {
     }
 
     openModal = (id, type) => {
-        this.setState({showModal: true, loading: true});
-        let url = "";
-        if(type === "event") {
-            url = "/api/event/" + id;
-        } else 
-        if(type === "service") {
-            url = "/api/service/" + id;
-        }
+        this.setState({showModal: true, loading: true, eventType: type});
+        let url = "/api/" + type + "/" + id;
+        axios.get(url)
+        .then(res => {
+            const data = type === "event" ? res.data.event : res.data.service;
+            this.setState({ selectedAnnonce: data, loading: false })
+        })
+        .catch(err => {
+            this.setState({error: 'Une erreur s\'est produite. Veuillez reéssayer.', loading: false})
+        })
     }
 
+    generateCoupon = () => {
+        const {nCoupons, montant, datelimite, infos, eventType, selectedAnnonce} = this.state;
+        this.setState({loading: true});
+        const coupon = {
+            nCoupons: nCoupons,
+            montant: montant,
+            datelimite: datelimite,
+            infos: infos,
+            clients: [...selectedAnnonce.coupons.clients]
+        };
+        axios.patch(rootUrl + '/api/' + eventType + '/' + selectedAnnonce._id + '/add/coupon', { coupon: coupon })
+        .then(res => {
+            const data = eventType === "event" ? this.state.events : this.state.services;
+            let newEvents = data.filter(event => {
+                if (event._id === selectedAnnonce._id) {
+                    event.coupons = coupon;
+                }
+                return event;
+            })
+            let element =
+                `<div class="bg-light py-5 pr-4 pl-4" style="height: auto" id="admincouponstodownload">
+                    <div class="d-flex flex-row text-dark" style={display: flex}>
+                        <img class="mr-3" src=${logo} width="200" alt="" />
+                        <div>
+                            <h3>${infos}</h3>
+                            <h4>Coupon de réduction de ${montant}</h4>
+                            <h3>Pour cette Annonce: ${selectedAnnonce.title}</h3>
+                            <p>Offre valable jusqu'à ${datelimite} sous présentation au guichet.</p>
+                        </div>
+                    </div>
+                </div>`;
+            let opt = {
+                margin: 1,
+                filename: selectedAnnonce.title.split(' ').join('-'),
+                image: { type: 'png', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+            };
+            // Generate the pdf
+            html2pdf().set(opt).from(element).save()
+            .then(doc => {
+                this.setState({ loading: false, showModal: false, [eventType+"s"]: newEvents })
+            });
+        })
+        .catch(err => {
+            this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
+        })
+    }
+
+    removeCoupon = (id, type) => {
+        this.setState({ removing: true });
+        let url = rootUrl + '/api/' + type + '/' + id + '/remove/coupon';
+        axios.patch(url)
+        .then(res => {
+            const data = type === "event" ? this.state.events : this.state.services;
+            let newEvents = data.filter(event => {
+                if (event._id === id) {
+                    event.coupons = null;
+                }
+                return event;
+            })
+            this.setState({ removing: false, [type + "s"]: newEvents })
+        })
+        .catch(err => {
+            this.setState({ error: 'Une erreur s\'est produite. Veuillez reéssayer.', loading: false })
+        })
+    }
+
+
     render() {
-        const { error, events, eventsLoading, services, servicesLoading } = this.state;
+        const { error, events, eventsLoading, services, servicesLoading, selectedAnnonce, loading, removing } = this.state;
         return (
             <Fragment>
                 <div className="container admin-coupons mt-4">
@@ -75,9 +178,9 @@ class AdminCoupons extends Component {
                         <div className="col-sm-12">
                             {error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
                             {
-                                eventsLoading ? <Loader /> :
+                                eventsLoading ? <div className="d-block mr-auto ml-auto text-center"><Loader /></div> :
                                     events && events.length ?
-                                    <table className="table table-bordered">
+                                    <table className="table table-bordered" id="thetable">
                                         <thead className="thead-inverse thead-dark">
                                             <tr>
                                             <th>#</th>
@@ -92,10 +195,10 @@ class AdminCoupons extends Component {
                                                     <tr key={event._id}>
                                                         <th scope="row">{i + 1}</th>
                                                         <td>{event.title}</td>
-                                                        <td>{event.coupons ? event.coupons.length : 0}</td>
+                                                        <td>{event.coupons ? event.coupons.nCoupons : 0}</td>
                                                         <td className="actions">
                                                             <button className="btn btn-danger btn-lg mr-3" onClick={() => this.openModal(event._id, "event")}>Générer des coupons</button>
-                                                            <button className="btn btn-dark btn-lg">Annuler coupons</button>
+                                                            <button className="btn btn-dark btn-lg" onClick={() => this.removeCoupon(event._id, "event")}>Annuler coupons</button>
                                                         </td>
                                                     </tr>
                                                 ))
@@ -114,7 +217,7 @@ class AdminCoupons extends Component {
                         <div className="col-sm-12">
                             {error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
                             {
-                                servicesLoading ? <Loader /> :
+                                servicesLoading ? <div className="d-block mr-auto ml-auto text-center"><Loader /></div> :
                                     services && services.length ?
                                         <table className="table table-bordered">
                                             <thead className="thead-inverse thead-dark">
@@ -131,10 +234,10 @@ class AdminCoupons extends Component {
                                                         <tr key={service._id}>
                                                             <th scope="row">{i + 1}</th>
                                                             <td>{service.title}</td>
-                                                            <td>{service.coupons ? service.coupons.length : 0}</td>
+                                                            <td>{service.coupons ? service.coupons.nCoupons : 0}</td>
                                                             <td className="actions">
                                                                 <button className="btn btn-danger btn-lg mr-3" onClick={() => this.openModal(service._id, "service")}>Générer des coupons</button>
-                                                                <button className="btn btn-dark btn-lg">Annuler coupons</button>
+                                                                <button className="btn btn-dark btn-lg" onClick={() => this.removeCoupon(service._id, "service")}>Annuler coupons</button>
                                                             </td>
                                                         </tr>
                                                     ))
@@ -154,23 +257,42 @@ class AdminCoupons extends Component {
                     <Modal.Body>
                         <div className="container">
                             <div className="row">
-                                <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
-                                    <div className="form-group">
-                                        <label for="name">Code</label>
-                                        <input type="text" className="form-control" name="code" id="code" placeholder="Code"/>
-                                    </div>
-                                    <div className="form-group">
-                                        <label for="ncoupons">Numero de Téléphone</label>
-                                        <input type="number" className="form-control" name="ncoupons" id="ncoupons"  placeholder="Nombre de coupons"/>
-                                    </div>
-                                </div>
+                                {
+                                    loading ? <div className="d-block mr-auto ml-auto text-center"><Loader /></div>:
+                                    selectedAnnonce ?
+                                    <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
+                                        {!this.state.couponValid ? <div className="alert alert-danger mb-4">Veuillez remplis tous les champs</div>:null}
+                                        <div className="pb-3">
+                                            <h4>Coupons pour: &nbsp;<b>{selectedAnnonce.title}</b></h4>
+                                        </div>
+                                        <div className="form-group">
+                                            <label for="name">Infos sur la réduction</label>
+                                            <input type="text" onChange={(e) => this.handleInputChange(e)} value={this.state.infos} name="infos" className="form-control" placeholder="Informations"/>
+                                        </div>
+                                        <div className="form-group">
+                                            <label for="name">Montant / Poucentage de reduction</label>
+                                            <input type="text" onChange={(e) => this.handleInputChange(e)} value={this.state.montant} name="montant" className="form-control" placeholder="Montant / Pourcentage"/>
+                                        </div>
+                                        <div className="form-group">
+                                            <label for="name">Date limite de validité</label>
+                                            <input type="text" onChange={(e) => this.handleInputChange(e)} value={this.state.datelimite} name="datelimite" className="form-control" placeholder="Date limite de validité"/>
+                                        </div>
+                                        <div className="form-group">
+                                            <label for="ncoupons">Nombre de coupons</label>
+                                            <input type="number" onChange={(e) => this.handleInputChange(e)} value={this.state.nCoupons} name="nCoupons" className="form-control" placeholder="Nombre de coupons"/>
+                                        </div>
+                                    </div>:null
+                                }
                             </div>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="py-3">
-                            <Button variant="danger" onClick={() => this.setState({showModal: !this.state.showModal})}>
+                            <Button disabled={!this.state.couponValid} variant="danger" onClick={this.generateCoupon}>
                                 Générer
+                            </Button>
+                            <Button variant="default" className="ml-4" onClick={() => this.setState({showModal: false})}>
+                                Fermer
                             </Button>
                         </div>
                     </Modal.Footer>

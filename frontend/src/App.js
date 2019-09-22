@@ -12,6 +12,7 @@ import DetailsPage from './ui/components/Details/DetailsPage';
 import SupplierDashboard from './ui/suppliers/Dashboard/Dashboard';
 import SupplierRevervation from './ui/components/Supplier/SupplierRegistration';
 import SupplierConfirmationForm from './ui/components/Supplier/SupplierConfirmationForm';
+import Gallery from './ui/users/Gallery/GalleryPage';
 
 import {autoSignIn} from './store/actions';
 
@@ -38,6 +39,7 @@ class App extends Component {
             <Route path="/supplier/:id/account/confirmation" exact component={SupplierConfirmationForm}  />
             <Route path="/category/:id" exact component={SingleCategoryPage}  />
             <Route path="/annonce/:anounceType/:id" exact component={DetailsPage}  />
+            <Route path="/gallery" exact component={Gallery}  />
             <PrivateRoute path="/dashboard/reservations" exact component={SupplierDashboard}  />
     
             {/* Admin Routes */}

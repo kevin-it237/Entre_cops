@@ -1,0 +1,99 @@
+.updload-section {
+    padding-top: 3rem;
+
+    .container {
+        background-color: white;
+        padding: 4rem 0;
+        border-radius: 8px;
+
+        .upload {
+            @media only screen and (max-width: 768px) {
+
+            }
+        }
+
+        svg {
+            margin-right: 1.5rem;
+            @media only screen and (max-width: 768px) {
+                font-size: 3rem;
+            }
+        }
+    
+        textarea {
+            width: 65%;
+            margin-right: 1.5rem;
+            border-radius: 10px;
+            font-size: 1.4rem;
+            padding: .3rem 2rem;
+            @media only screen and (max-width: 800px) {
+                width: 50%;
+            }
+        }
+    
+        button {
+            width: 20%;
+            @media only screen and (max-width: 800px) {
+                width: 30%;
+                padding: 1rem .2rem;
+            }
+            svg {
+                @media only screen and (max-width: 800px) {
+                    font-size: 1.6rem !important;
+                    margin: 0;
+                    padding: 0;
+                }
+                path {
+                    fill: white;
+                }
+            }
+        }
+
+    }
+
+}
+
+.publications-section {
+    margin-top: 3rem;
+    margin-bottom: 10rem;
+
+    .container {
+        background-color: white;
+        padding: 7rem 6rem;
+        border-radius: 8px;
+
+        @media only screen and (max-width:900px) {
+            padding: 5rem 2rem;
+        }
+    }
+}
+
+.gallery-item {
+    &:not(:first-child) {
+        padding-top: 3rem;
+        margin-top: 4.5rem;
+        border-top: solid 1px #eee;
+    }
+
+    .header {
+        margin-bottom: 1rem;
+        svg {
+            margin-right: 1rem;
+        }
+        h5 {
+            margin-bottom: 0 !important;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+    }
+
+    .body {
+        img {
+            height: 100%;
+            width: 100%;
+        }
+        .col {
+            padding: 2px !important;
+            max-height: 55rem;
+        }
+    }
+}

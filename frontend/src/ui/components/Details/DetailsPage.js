@@ -3,6 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import socketIOClient from "socket.io-client";
+import html2pdf from 'html2pdf.js';
 import {connect} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapMarked, faSearch, faComment, faFileDownload, faAnchor } from '@fortawesome/free-solid-svg-icons';
@@ -15,8 +16,8 @@ import SearchResultItem from '../UserSearchResult/UserSearchResult';
 import Stars from '../Stars/Stars';
 import Loader from '../../globalComponent/Loader';
 import {rootUrl} from '../../../configs/config';
+import logo from '../../../assets/images/logo.png';
 
-import coupon from '../../../assets/coupons/coupon.pdf';
 
 class DetailsPage extends Component {
     state = {
@@ -26,7 +27,7 @@ class DetailsPage extends Component {
         couponGenerated: false,
         showVideo: false,
         showToast: false,
-        documentPreview: coupon,
+        downloadingCoupon: false,
         coupon: '',
 
         announce: null,
@@ -86,17 +87,19 @@ class DetailsPage extends Component {
             [name]: value,
             searchingUser: true
         });
-        axios.get('/api/user/')
-        .then(res => {
-            const userList = res.data.users.filter(user => (
-                user.name.toLowerCase().includes(this.state.search.toLowerCase()) || 
-                user.email.toLowerCase().includes(this.state.search.toLowerCase())
-            ))
-            this.setState({ searchingUser: false, userList: userList })
-        })
-        .catch(err => {
-            this.setState({ searchingUser: false})
-        })
+        if(value.length > 1) {
+            axios.get('/api/user/')
+            .then(res => {
+                const userList = res.data.users.filter(user => (
+                    user.name.toLowerCase().includes(this.state.search.toLowerCase()) || 
+                    user.email.toLowerCase().includes(this.state.search.toLowerCase())
+                ))
+                this.setState({ searchingUser: false, userList: userList })
+            })
+            .catch(err => {
+                this.setState({ searchingUser: false})
+            })
+        }
     }
 
     openRecommandationModal = () => {
@@ -238,9 +241,60 @@ class DetailsPage extends Component {
         }
     }
 
+    getCoupon = () => {
+        if (this.state.announce.coupons && this.state.announce.coupons.clients) {
+            // Verify if i have not already download the this coupons
+            if (this.state.announce.coupons.clients.includes(this.props.user._id)) {
+                alert("Vous avez déja télécharger le coupon.");
+            } else {
+                this.setState({downloadingCoupon: true})
+                // update the the remainings coupons
+                let url = rootUrl + '/api/' + this.props.match.params.anounceType + '/' + this.state.announce._id + '/add/coupon';
+                let coupon = { ...this.state.announce.coupons};
+                coupon.nCoupons = Number(coupon.nCoupons) - 1;
+                coupon.clients.push(this.props.user._id);
+                axios.patch(url, { coupon: coupon })
+                .then(res => {
+                    let newAnnounce = {...this.state.announce}
+                    newAnnounce.coupons.clients.push(this.props.user._id)
+                    let element = 
+                        `<div class="bg-light py-5 pr-4 pl-4" style="min-heigth: 30rem" id="couponstodownload">
+                            <div class="d-flex flex-row" style={display: flex}>
+                                <img class="mr-3" src=${logo} width="200" alt="" />
+                                <div>
+                                    <h3>${coupon.infos}</h3>
+                                    <h4>Coupon de réduction de ${coupon.montant}</h4>
+                                    <h3>Pour cette Annonce: ${this.state.announce.title}</h3>
+                                    <p>Offre valable jusqu'à ${coupon.datelimite} sous présentation au guichet.</p>
+                                </div>
+                                <div className="mr-3">
+                                    
+                                </div>
+                            </div>
+                        </div>`;
+                    let opt = {
+                        margin: 1,
+                        filename: this.state.announce.title.split(' ').join('-'),
+                        image: { type: 'png', quality: 0.98 },
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+                    };
+                    // Generate the pdf
+                    html2pdf().set(opt).from(element).save()
+                    .then(doc => {
+                        this.setState({ downloadingCoupon: false, announce: newAnnounce });
+                    });
+                })
+                .catch(err => {
+                    this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
+                })
+            }
+        }
+    }
+
     displayToast = () => {
         this.setState({showToast: true});
-        navigator.clipboard.writeText(window.location.href);
+        navigator.clipboard.writeText('http://entrecops.co/annonce/' + this.props.match.params.anounceType + '/' + this.props.match.params.id,);
         setTimeout(() => {
             this.setState({showToast: false});
         }, 2000)
@@ -253,7 +307,7 @@ class DetailsPage extends Component {
     }
 
     render() {
-        const { documentPreview, announce, error, loading, name, email, tel, messageValid, reserving,
+        const { documentPreview, announce, error, loading, name, email, tel, messageValid, reserving, downloadingCoupon,
                 numberOfPlaces, formValid, reservationError, recError, sendingComment, userEmail, userName, userMessage } = this.state;
         const {anounceType} = this.props.match.params;
         return (
@@ -327,10 +381,21 @@ class DetailsPage extends Component {
                                                 </div>
 
                                                 <div className="other-infos mt-4">
-                                                    <div className="d-flex flex-column py-2">
-                                                        <h3>Coupon de réductions de 10% pour cet évènement.</h3><br/>
-                                                        <button className="button mt-2 book" onClick={() => this.setState({showCouponModal: true})}>Télécharger le Coupon</button>
-                                                    </div>
+                                                    {announce.coupons ?
+                                                        Number(announce.coupons.nCoupons) > 0 ?
+                                                            <div className="d-flex flex-column py-2">
+                                                                <h3 className="pb-3">Coupon  disponible !!</h3>
+                                                                <h3 style={{ color: "#DC3545" }}>{announce.coupons.infos}</h3><br />
+                                                                <h4>Coupon de réduction de <strong>{announce.coupons.montant}</strong>.</h4><br />
+                                                                    <button className="button mt-2 book" onClick={this.getCoupon}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white"/>:null}</button>
+                                                            </div> :
+                                                            <div className="d-flex flex-column py-2">
+                                                                <h3>Pas de Coupons de réductions disponible pour cet annonce.</h3>
+                                                            </div> :
+                                                        <div className="d-flex flex-column py-2">
+                                                            <h3>Pas de Coupons de réductions disponible pour cet annonce.</h3>
+                                                        </div>
+                                                    }
                                                 </div>
                                                 <div className="moreinfos d-flex justify-content-between mb-3">
                                                     <div className="headers d-flex align-items-center py-4">
@@ -397,10 +462,10 @@ class DetailsPage extends Component {
                                             <div className="moreinfos">
                                                 <div className="content">
                                                     {
-                                                            announce.comments&&announce.comments.length ?
-                                                            announce.comments.reverse().map((comment, i) => (
-                                                                <ReviewItem key={i} comment={comment} />
-                                                            ))
+                                                        announce.comments&&announce.comments.length ?
+                                                        announce.comments.reverse().map((comment, i) => (
+                                                            <ReviewItem key={i} comment={comment} />
+                                                        ))
                                                         : <h5 className="text-center py-3">Aucun commentaire</h5>
                                                     }
                                                 </div>
@@ -476,10 +541,21 @@ class DetailsPage extends Component {
                                             </div>
 
                                             <div className="other-infos mt-4">
-                                                <div className="d-flex flex-column py-2">
-                                                    <h3>Coupon de réductions de 10% pour cet évènement.</h3><br/>
-                                                    <button className="button mt-2 book" onClick={() => this.setState({showCouponModal: true})}>Télécharger le Coupon</button>
-                                                </div>
+                                                {announce.coupons ?
+                                                    Number(announce.coupons.nCoupons) > 0 ?
+                                                    <div className="d-flex flex-column py-2">
+                                                        <h3 className="pb-3">Coupon  disponible !!</h3>
+                                                        <h3 style={{ color: "#DC3545"}}>{announce.coupons.infos}</h3><br/>
+                                                        <h4>Coupon de réduction de <strong>{announce.coupons.montant}</strong>.</h4><br/>
+                                                                <button className="button mt-2 book" onClick={this.getCoupon}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
+                                                    </div>:
+                                                    <div className="d-flex flex-column py-2">
+                                                        <h3>Pas de Coupons de réductions disponible pour cet annonce.</h3>
+                                                    </div>:
+                                                    <div className="d-flex flex-column py-2">
+                                                        <h3>Pas de Coupons de réductions disponible pour cet annonce.</h3>
+                                                    </div>
+                                                }
                                             </div>
                                             <div className="other-infos mt-4">
                                                 <div className="d-flex flex-column">
