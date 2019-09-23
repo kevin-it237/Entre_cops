@@ -669,9 +669,9 @@ class DetailsPage extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         {this.state.showToast ? <h4 className="mr-3">Lien de partage Copié !!!</h4> : null}
-                        <Button variant="outline-dark" onClick={this.displayToast}>
+                        {/* <Button variant="outline-dark" onClick={this.displayToast}>
                             Copier le lien de partage
-                        </Button>
+                        </Button> */}
                         <Button variant="default" onClick={() => this.setState({showRecModal: !this.state.showRecModal})}>
                             Fermer
                         </Button>

@@ -94,7 +94,7 @@ class AdminCoupons extends Component {
             montant: montant,
             datelimite: datelimite,
             infos: infos,
-            clients: [...selectedAnnonce.coupons.clients]
+            clients: selectedAnnonce.coupons && selectedAnnonce.coupons.clients ? [...selectedAnnonce.coupons.clients]: []
         };
         axios.patch(rootUrl + '/api/' + eventType + '/' + selectedAnnonce._id + '/add/coupon', { coupon: coupon })
         .then(res => {
@@ -165,13 +165,13 @@ class AdminCoupons extends Component {
                             <h1>Genérer des coupons de réduction</h1>
                         </div>
                     </div>
-                    <div className="row">
+                    {/* <div className="row">
                         <div className="col-sm-12 col-md-8 col-lg-8">
                             <input type="text" placeholder="Rechercher un service / Evènement" id="searchbar" />
                         </div>
-                    </div>
+                    </div> */}
                     {/* Evenement */}
-                    <div className="row mt-4">
+                    <div className="row">
                         <div className="col-sm-12 py-3">
                             <h4 className="mt-3">Liste des Evènements</h4>
                         </div>
