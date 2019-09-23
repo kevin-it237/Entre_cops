@@ -94,7 +94,7 @@ class AdminCoupons extends Component {
             montant: montant,
             datelimite: datelimite,
             infos: infos,
-            clients: selectedAnnonce.coupons && selectedAnnonce.coupons.clients ? [...selectedAnnonce.coupons.clients]: []
+            clients: selectedAnnonce.coupons ? [...selectedAnnonce.coupons.clients]: []
         };
         axios.patch(rootUrl + '/api/' + eventType + '/' + selectedAnnonce._id + '/add/coupon', { coupon: coupon })
         .then(res => {
