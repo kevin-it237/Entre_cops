@@ -390,10 +390,10 @@ class DetailsPage extends Component {
                                                                     <button className="button mt-2 book" onClick={this.getCoupon}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white"/>:null}</button>
                                                             </div> :
                                                             <div className="d-flex flex-column py-2">
-                                                                <h3>Pas de Coupons de réductions disponible pour cet annonce.</h3>
+                                                                <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
                                                             </div> :
                                                         <div className="d-flex flex-column py-2">
-                                                            <h3>Pas de Coupons de réductions disponible pour cet annonce.</h3>
+                                                            <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
                                                         </div>
                                                     }
                                                 </div>
@@ -550,10 +550,10 @@ class DetailsPage extends Component {
                                                                 <button className="button mt-2 book" onClick={this.getCoupon}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
                                                     </div>:
                                                     <div className="d-flex flex-column py-2">
-                                                        <h3>Pas de Coupons de réductions disponible pour cet annonce.</h3>
+                                                        <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
                                                     </div>:
                                                     <div className="d-flex flex-column py-2">
-                                                        <h3>Pas de Coupons de réductions disponible pour cet annonce.</h3>
+                                                        <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
                                                     </div>
                                                 }
                                             </div>
