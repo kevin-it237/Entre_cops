@@ -88,13 +88,19 @@ class AdminCoupons extends Component {
 
     generateCoupon = () => {
         const {nCoupons, montant, datelimite, infos, eventType, selectedAnnonce} = this.state;
+        let clients = [];
+        if (selectedAnnonce.coupons) {
+            if (selectedAnnonce.coupons.clients) {
+                clients = [...clients, ...selectedAnnonce.coupons.clients];
+            }
+        }
         this.setState({loading: true});
         const coupon = {
             nCoupons: nCoupons,
             montant: montant,
             datelimite: datelimite,
             infos: infos,
-            clients: selectedAnnonce.coupons ? [...selectedAnnonce.coupons.clients]: []
+            clients: clients
         };
         axios.patch(rootUrl + '/api/' + eventType + '/' + selectedAnnonce._id + '/add/coupon', { coupon: coupon })
         .then(res => {
