@@ -15,7 +15,7 @@ class Home extends Component {
                 <Header home={true} />
                 <Caroussel />
                 <Categories />
-                <Events eventType="Evènements" isHomePage={true} />
+                <Events eventType="Actualités" isHomePage={true} />
                 <Services eventType="Services" isHomePage={true} />
                 <SupplierBaner />
             </Hoc>

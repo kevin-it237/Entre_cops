@@ -24,7 +24,8 @@ class Admin extends Component {
         nUsers: null,
         loadingSuppliers: true,
         loadingUsers: true,
-        error: ''
+        error: '',
+        redirect: false
     }
 
     componentDidMount() {
@@ -47,12 +48,18 @@ class Admin extends Component {
             })
     }
 
+    logout = () => {
+        this.props.onLogout();
+        this.setState({ redirect: true })
+    }
+
     render() {
         const {user} = this.props;
         const {nSuppliers, nUsers, loadingSuppliers, loadingUsers} = this.state;
         return (
             <Fragment>
                 {user&&user.role !== "admin" ? <Redirect to="/" />:null }
+                {this.state.redirect ? <Redirect to="/" /> : null}
                 <section className="admin">
                     <div className="main-container">
                         <div className="left-content d-flex flex-column">
@@ -78,7 +85,7 @@ class Admin extends Component {
                                 <NavLink className="navbar-brand" to="/admin/users">
                                     <h3 className="d-inline align-middle">UTILISATEURS</h3>
                                 </NavLink>
-                                <a href="#logout" onClick={this.props.onLogout} className="mt-auto btn btn-outline-light btn-lg logout">Logout</a> 
+                                <a href="#logout" onClick={this.logout} className="mt-auto btn btn-outline-light btn-lg logout">Logout</a> 
                             </div>
                         </div>
                         <div className="right-content">

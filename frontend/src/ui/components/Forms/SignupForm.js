@@ -13,6 +13,7 @@ class SignUpForm extends Component {
         email: '',
         password: '',
         name: '',
+        tel: '',
         isTyping: false,
         formErrors: {email: '', password: '', name: ''},
         emailValid: false,
@@ -75,7 +76,8 @@ class SignUpForm extends Component {
             const data = {
                 name: this.state.name,
                 email: this.state.email,
-                password: this.state.password
+                password: this.state.password,
+                tel: this.state.tel
             }
             // Launch the signup
             this.props.onSignUp(data);
@@ -85,7 +87,7 @@ class SignUpForm extends Component {
     }
 
     render() {
-        const { isTyping, emailValid, passwordValid, nameValid , name, email, password } = this.state;
+        const { isTyping, emailValid, passwordValid, nameValid , name, email, password, tel } = this.state;
         const { error, loader } = this.props;
         return (
             <div className="wrapper fadeInDown">
@@ -101,6 +103,7 @@ class SignUpForm extends Component {
                         {isTyping&&!emailValid ? <div style={{color: "red"}}>Email non valide.</div>:null}
                         <input type="password" value={password} onChange={(e) => this.handleInputChange(e)} id="password" className="fadeIn third" name="password" placeholder="Mot de passe"/>
                         {isTyping&&!passwordValid ? <div style={{color: "red"}}>Invalide. Min 6 caratères</div>:null}
+                        <input type="text" value={tel} onChange={(e) => this.handleInputChange(e)} id="tel" className="fadeIn second" name="tel" placeholder="Numéro de Téléphone" />
                         <button disabled={loader} type="submit" onClick={(e) => this.handleSubmit(e)} id="signBtn" className="button fadeIn fourth mt-4 mb-5">{this.props.loader ? <Loader color="white" />:"S'inscrire"}</button>
                     </form>
 

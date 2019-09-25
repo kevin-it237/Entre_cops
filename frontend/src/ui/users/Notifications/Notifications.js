@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import './Recommandations.scss';
+import './Notifications.scss';
 
-class Recommandation extends Component {
+class Notifications extends Component {
     render() {
         return (
             <div className="recommandations d-flex flex-column">
             {
-                this.props.recommandations.map((rec, i) =>(
-                    <div key={i} className="rec-item">
+                this.props.recommandations.slice(0,5).map((rec, i) =>(
+                    <div key={i} className={!rec.visited ? "notvisited rec-item" : "rec-item"}>
                         <a href={rec.link}>
                             <h4>{rec.title}</h4>
                             <div className="d-flex">
@@ -28,4 +28,4 @@ class Recommandation extends Component {
     }
 }
 
-export default Recommandation;
+export default Notifications;

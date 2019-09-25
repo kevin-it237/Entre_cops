@@ -116,7 +116,11 @@ class DetailsPage extends Component {
             to: id, 
             title: this.state.announce.title, 
             link: '/annonce/' + this.props.match.params.anounceType + '/' + this.props.match.params.id,
-            name: this.props.user.name 
+            image: rootUrl +'/'+ this.state.announce.image,
+            name: this.props.user.name,
+            visited: false,
+            projectId: this.props.match.params.id,
+            date: new Date() 
         }
         try {
             // Send notification with socketio
@@ -124,7 +128,7 @@ class DetailsPage extends Component {
             // save in database
             axios.patch('/api/user/'+id+'/recommand', { rec: rec })
             .then(res => {
-                    socket.emit("new notification", {notification: rec});
+                    socket.emit("new notification", rec);
                     this.setState({ recError: '' })
                 })
                 .catch(err => {
@@ -149,6 +153,7 @@ class DetailsPage extends Component {
         }
         try {
             const reservation = {
+                userId: this.props.user._id,
                 name: this.state.name,
                 email: this.state.email,
                 tel: this.state.tel,
@@ -186,28 +191,45 @@ class DetailsPage extends Component {
 
     componentDidMount() {
         const {anounceType, id} = this.props.match.params;
+        let url = "";
+        if(anounceType === "event") {
+            url = '/api/event/' + id;
+        } else if(anounceType === "service") {
+            url = '/api/service/' + id;
+        }
         // get data from event/service
         try {
-            if(anounceType === "event") {
-                axios.get('/api/event/'+ id)
-                .then(res => {
-                    this.setState({announce: res.data.event, loading: false, error: ''})
-                })
-                .catch(err => {
-                    this.setState({loading: false, error: 'Une érreur s\'est produite. Veuillez recharger la page.'})
-                })
-            } else if(anounceType === "service") {
-                axios.get('/api/service/'+ id)
-                .then(res => {
-                    this.setState({announce: res.data.service, loading: false, error: ''})
-                })
-                .catch(err => {
-                    this.setState({loading: false, error: 'Une érreur s\'est produite. Veuillez recharger la page.'})
-                })
-            }
+            axios.get(url)
+            .then(res => {
+                let data = anounceType === "event" ? res.data.event: res.data.service;
+                this.setState({announce: data, loading: false, error: ''})
+                // The way to update visited notification
+                const authData = JSON.parse(localStorage.getItem("authData"));
+                if (authData&&authData.user.recommandations) {
+                    let notifications = [...authData.user.recommandations];
+                    authData.user.recommandations.forEach((not, i) => {
+                        if (not.projectId === this.props.match.params.id && !not.visited) {
+                            let updateOne = {...not};
+                            updateOne.visited = true;
+                            notifications[i] = updateOne;
+                            axios.patch('/api/user/' + authData.user._id + '/notification/seen', { rec: notifications})
+                            .then(res => {
+                                this.setState({ recError: '' })
+                            })
+                            .catch(err => {
+                                this.setState({ recError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+                            })
+                        }
+                    });
+                }
+            })
+            .catch(err => {
+                this.setState({loading: false, error: 'Une érreur s\'est produite. Veuillez recharger la page.'})
+            })
         } catch (error) {
             this.setState({ loading: false, error: 'Une érreur s\'est produite. Veuillez recharger la page.' })
         }
+
     }
 
     submitComment = (e) => {
@@ -315,8 +337,10 @@ class DetailsPage extends Component {
                 <Header />
                 <section className="project-details">
                     <div className="container" id="projectdetails">
-                        <div className="row pb-5 pt-3">
+                        <div className="row">
                             {error.length ? <div className="alert alert-danger d-block mr-auto ml-auto">{error}</div>:null}
+                        </div>
+                        <div className="row pb-5 pt-3">
                             {
                                 loading ? <div className="d-block mr-auto ml-auto py-5 mt-5"><Loader /></div>:
                                 <Fragment>

@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import DatePicker from "react-datepicker";
 import Upload from '../../components/Forms/Upload';
 import axios from 'axios';
+import socketIOClient from 'socket.io-client';
 import "react-datepicker/dist/react-datepicker.css";
 import Loader from '../../globalComponent/Loader';
 import {rootUrl} from '../../../configs/config';
@@ -243,7 +244,20 @@ class EventModal extends Component {
                     validating: false,
                     'error': ''
                 })
-                // Send Email to Supplier with link to set his password
+                // Send a notification
+                const not = {
+                    to: "all",
+                    title: event.title,
+                    image: rootUrl + '/' + event.image,
+                    link: '/annonce/event/' + event._id,
+                    name: "Le Fournisseur",
+                    visited: false,
+                    projectId: event._id,
+                    date: new Date()
+                }
+                const socket = socketIOClient(rootUrl);
+                socket.emit("new anounce notification", not);
+                // Send Email to Supplier
             })
             .catch(err => {
                 this.setState({

@@ -42,7 +42,7 @@ class Services extends Component {
         const {error, services, loading} = this.state;
         return (
             <section className={this.props.isHomePage || this.props.isCategoryPage ? "services" : "services bg-white"}>
-                <div className="container">
+                <div className="container pt-3">
                     <div className="row pt-5">
                         <div className="col">
                             <center><h1 className="pt-4 pb-4 service-header">{this.props.eventType}</h1></center>

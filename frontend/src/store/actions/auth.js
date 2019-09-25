@@ -7,7 +7,8 @@ export const signup = (data) => {
             axios.post('/api/user/signup', {
                 "email": data.email,
                 "password": data.password,
-                "name": data.name
+                "name": data.name,
+                "tel": data.tel
             })
             .then(res => {
                 // Save in localstorage

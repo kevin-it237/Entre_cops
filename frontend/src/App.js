@@ -10,9 +10,12 @@ import AllEventsPage from './ui/components/Events/AllEventsPage';
 import SingleCategoryPage from './ui/components/Categories/SingleCategoryPage';
 import DetailsPage from './ui/components/Details/DetailsPage';
 import SupplierDashboard from './ui/suppliers/Dashboard/Dashboard';
-import SupplierRevervation from './ui/components/Supplier/SupplierRegistration';
+import SupplierRegistration from './ui/components/Supplier/SupplierRegistration';
 import SupplierConfirmationForm from './ui/components/Supplier/SupplierConfirmationForm';
 import Gallery from './ui/users/Gallery/GalleryPage';
+import Profile from './ui/users/Profile/Profile';
+import Notifications from './ui/users/Notifications/NotificationsPage';
+import UserReservations from './ui/users/Reservations/Reservations';
 
 import {autoSignIn} from './store/actions';
 
@@ -35,12 +38,19 @@ class App extends Component {
             <Route path="/auth/signup" exact component={SignupPage}  />
             <Route path="/events" exact component={AllEventsPage}  />
             <Route path="/services" exact component={AllServicesPage}  />
-            <Route path="/supplier" exact component={SupplierRevervation}  />
+            <Route path="/supplier" exact component={SupplierRegistration}  />
             <Route path="/supplier/:id/account/confirmation" exact component={SupplierConfirmationForm}  />
             <Route path="/category/:id" exact component={SingleCategoryPage}  />
             <Route path="/annonce/:anounceType/:id" exact component={DetailsPage}  />
             <Route path="/gallery" exact component={Gallery}  />
+
+            {/* Supplier Routes */}
             <PrivateRoute path="/dashboard/reservations" exact component={SupplierDashboard}  />
+
+            {/* User Routes */}
+            <PrivateRoute path="/user/profile" exact component={Profile}  />
+            <PrivateRoute path="/user/notifications" exact component={Notifications}  />
+            <PrivateRoute path="/user/reservations" exact component={UserReservations}  />
     
             {/* Admin Routes */}
             <PrivateRoute path="/admin" component={Admin} />

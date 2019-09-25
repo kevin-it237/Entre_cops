@@ -3,6 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Upload from '../../components/Forms/Upload';
 import axios from 'axios';
+import socketIOClient from 'socket.io-client';
 import Loader from '../../globalComponent/Loader';
 import { rootUrl } from '../../../configs/config';
 import './EventForm.scss';
@@ -262,7 +263,20 @@ class ServiceModal extends Component {
                     validating: false,
                     'error': ''
                 })
-                // Send Email to Supplier with link to set his password
+                // Send a notification
+                const not = {
+                    to: "all",
+                    title: service.title,
+                    image: rootUrl + '/' + service.image,
+                    link: '/annonce/service/' + service._id,
+                    name: "Le Fournisseur",
+                    visited: false,
+                    projectId: service._id,
+                    date: new Date()
+                }
+                const socket = socketIOClient(rootUrl);
+                socket.emit("new anounce notification", not);
+                // Send Email to Supplier 
             })
             .catch(err => {
                 this.setState({

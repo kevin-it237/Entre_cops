@@ -40,7 +40,7 @@ class Events extends Component {
     render() {
         const {error, events, loading} = this.state;
         return (
-            <section className="events" id="events">
+            <section className="events pt-3" id="events">
                 <div className="container pb-5 pt-3">
                     <div className="row pt-5">
                         <div className="col">
@@ -58,7 +58,7 @@ class Events extends Component {
                                         </div>
                                     )): null
                         }
-                        {!loading&&events.length === 0 &&!error.length ? <div className="d-block ml-auto mr-auto justify-content-center"><h5>Aucun évènement</h5></div>:null}
+                        {!loading&&events.length === 0 &&!error.length ? <div className="d-block ml-auto mr-auto justify-content-center"><h5>Aucune Actualité</h5></div>:null}
                     </div>
                     <div className="row pb-5">
                         {

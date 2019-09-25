@@ -1,7 +1,7 @@
 import React from 'react';
 import bg1 from '../../../assets/images/afterallfaceban.png';
-import bg2 from '../../../assets/images/afterall05.png';
-import bg3 from '../../../assets/images/afterall06.png';
+// import bg2 from '../../../assets/images/afterall05.png';
+// import bg3 from '../../../assets/images/afterall06.png';
 import './Caroussel.scss';
 
 const Caroussel = (props) => {
@@ -24,12 +24,12 @@ const Caroussel = (props) => {
                             </div>
                         </div>
                     </div>
-                    <div className="carousel-item">
+                    {/* <div className="carousel-item">
                         <img className="d-block w-100" src={bg2} alt="Second slide"/>
                     </div>
                     <div className="carousel-item">
                         <img className="d-block w-100" src={bg3} alt="Third slide"/>
-                    </div>
+                    </div> */}
                 </div>
                 <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
                     <span className="carousel-control-prev-icon" aria-hidden="true"></span>

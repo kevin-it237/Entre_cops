@@ -27,7 +27,7 @@ router.post('/signup', (req, res, next) => {
                             name: req.body.name,
                             email: req.body.email,
                             profileImage: '',
-                            tel: '',
+                            tel: req.body.tel,
                             location: '',
                             accountValidated: false,
                             role: "user",
@@ -179,6 +179,23 @@ router.post('/sendmail/:email/:subject/:name/:id/:to', (req, res, next) => {
 router.patch('/:id/recommand', (req, res, next) => {
     User.updateOne({ _id: req.params.id }, {
         $push: { recommandations: req.body.rec }
+    })
+    .exec()
+    .then(user => {
+        return res.status(201).json({
+            user: user
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+
+// Set a visited notification to true
+router.patch('/:id/notification/seen', (req, res, next) => {
+    User.updateOne({ _id: req.params.id }, {
+        $set: { recommandations: req.body.rec }
     })
     .exec()
     .then(user => {

@@ -11,7 +11,7 @@ class AllEventsPage extends Component {
             <Hoc>
                 <Header />
                 <Categories />
-                <Events eventType="Tous les Evènements" isHomePage={false} />
+                <Events eventType="Toutes les Actualités" isHomePage={false} />
             </Hoc>
         );
     }

@@ -78,7 +78,10 @@ io.on('connection', function (socket) {
     
     // Notification for recommandation
     socket.on('new notification', function (data) {
-        io.emit('display notification',  data)
+        socket.broadcast.emit('display notification',  data)
+    })
+    socket.on('new anounce notification', function (data) {
+        socket.broadcast.emit('display anounce notification',  data)
     })
 
     socket.on("disconnect", () => console.log("Client disconnected"));

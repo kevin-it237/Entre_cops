@@ -47,9 +47,9 @@ class AdminCoupons extends Component {
         const { nCoupons, infos, datelimite, montant} = this.state;
         this.setState({
             couponValid: nCoupons.trim().length > 0
-                            && infos.trim().length > 0
-                            && datelimite.trim().length > 0
-                            && montant.trim().length > 0
+                        && infos.trim().length > 0
+                        && datelimite.trim().length > 0
+                        && montant.trim().length > 0
         })
     }
 
