@@ -31,12 +31,15 @@ class Reservation extends Component {
                                 {
                                     this.state.loading ? <div className="d-block ml-auto mr-auto text-center"><Loader /></div> :
                                         this.state.notifications.map((notification, id) => (
-                                            <a key={id} href={notification.link} className={(id + 1) % 2 !== 0 ? "noti-link d-flex justify-content-between notvisited" : "noti-link d-flex justify-content-between"}>
-                                                <div>
-                                                    <h3>{notification.title}</h3>
-                                                    <span>{notification.name}</span>
+                                            <a key={id} href={notification.link} className={notification.visited ? "noti-link d-flex" : "noti-link d-flex notvisited"}>
+                                                <img src={notification.image} className="rounded-circle img-fluid" alt="" />
+                                                <div className="d-flex d-flex justify-content-between flex-grow-1">
+                                                    <div className="mr-auto">
+                                                        <h3>{notification.title}</h3>
+                                                        <span>Recommandé par: {notification.name}</span>
+                                                    </div>
+                                                    <h6>{notification.date ? notification.date : null}</h6>
                                                 </div>
-                                                <h6>{notification.date ? notification.date : null}</h6>
                                             </a>
                                         ))
                                 }
