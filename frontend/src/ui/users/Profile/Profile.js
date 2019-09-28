@@ -112,7 +112,8 @@ class Profile extends Component {
             this.setState({ loading: true });
             const { name, email, tel, location, profileImage } = this.state;
             let url = '/api/user/' + this.props.user._id;
-            if(profileImage !== "" && typeof(profileImage) === Object ) {
+            console.log(profileImage)
+            if(profileImage.type) {
                 const formData = new FormData();
                 formData.append('name', name);
                 formData.append('email', email);
