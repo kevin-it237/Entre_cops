@@ -5,7 +5,7 @@
 .services {
     background-color: #F5F8FA;
     .service-header {
-        font-size: 3.2rem;
+        font-size: 2.6rem;
 
         @media only screen and (max-width: 900px){
             font-size: 1.9rem;
@@ -32,6 +32,17 @@
         padding:20px;
         box-sizing:border-box;
         width:100%;
+
+        .custom-badge {
+            position: absolute;
+            top: 0;
+            right: 2rem;
+            color: white;
+            z-index: 10;
+            font-size: 1.15rem;
+            margin-bottom: 0 !important;
+            padding-bottom: .5rem;
+        }
     }
     .card .box .img {
         // width:120px;
@@ -110,6 +121,23 @@
         svg {
             font-size: 1.3rem;
             margin-top: .3rem;
+        }
+    }
+
+    .header-wrapper {
+         @media only screen and (max-width: 900px){
+            flex-direction: column !important;
+            .filter {
+                margin-top: 1.5rem;
+            }
+        }
+    }
+
+    .filter {
+        min-width: 20rem;
+        h6 {
+            min-width: 5rem;
+            margin-bottom: 0 !important;
         }
     }
 }

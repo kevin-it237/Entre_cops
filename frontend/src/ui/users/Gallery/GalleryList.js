@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import './Gallery.scss';
 import GalleryItem from './GalleryItem';
 
@@ -21,17 +21,28 @@ class GalleryList extends Component {
 
     render() {
         return (
-            <section className="publications-section">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-sm-12">
-                            <GalleryItem image={[img1, img2]} />
-                            <GalleryItem image={[img]} />
-                            <GalleryItem image={[img, img1, img2]} />
+            <Fragment>
+                <section className="publications-section-banner">
+                    <div className="container">
+                        <div className="row my-5">
+                            <div className="col-12 text-center">
+                                <h2>Galerie</h2>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+                <section className="publications-section">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-sm-12">
+                                <GalleryItem image={[img1, img2]} />
+                                <GalleryItem image={[img]} />
+                                <GalleryItem image={[img, img1, img2]} />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </Fragment>
         );
     }
 }

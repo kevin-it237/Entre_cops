@@ -115,8 +115,11 @@ class SupplierForm extends Component {
                     }
                 })
                 .catch(err => {
-                    console.log(err);
-                    this.setState({ error: "Adresse Email déja utilisée", loading: false });
+                    if (err.response.data.message === 'EMAIL_EXIST') {
+                        this.setState({ error: "Adresse Email déja utilisée", loading: false });
+                    } else {
+                        this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
+                    }
                 })
             } catch (error) {
                 this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });

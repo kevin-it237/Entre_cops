@@ -3,7 +3,8 @@ import CategoryItem from './CategoryItem';
 import './Categories.scss';
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
-import { faAirFreshener } from '@fortawesome/free-solid-svg-icons';
+import { faAirFreshener, faCamera } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 class Categories extends Component {
     state = {
@@ -84,6 +85,16 @@ class Categories extends Component {
                     </div>
                     <div className="row pb-5 categories-wrapper">
                         {content}
+                        <div className="wrimagecard wrimagecard-topimage">
+                            <a href="/gallery">
+                                <div className="wrimagecard-topimage_header">
+                                    <center><FontAwesomeIcon icon={faCamera} size={"3x"} /></center>
+                                </div>
+                                <div className="wrimagecard-topimage_title">
+                                    <p className={"text-center"}>Galerie</p>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </section>

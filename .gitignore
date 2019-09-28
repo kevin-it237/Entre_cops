@@ -3,6 +3,12 @@
 # dependencies
 /backend/node_modules
 /frontend/node_modules
+/backend/uploads/videos
+/backend/uploads/eventsimages
+/backend/uploads/servicesimages
+/backend/uploads/suppliersImages
+/backend/uploads/usersImages
+
 node_modules
 /.pnp
 .pnp.js

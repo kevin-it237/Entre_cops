@@ -1,10 +1,37 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const path = require("path");
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const multer = require('multer')
 
 const User = require('../models/user');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/usersImages')
+    },
+    filename: function (req, file, cb) {
+        cb(null, "user-profile-" + Date.now() + path.extname(file.originalname))
+    }
+})
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
+        cb(null, true)
+    } else {
+        cb(null, false)
+    }
+}
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+})
 
 // Create a user
 router.post('/signup', (req, res, next) => {
@@ -53,7 +80,6 @@ router.post('/signup', (req, res, next) => {
                                     expiresDate: expiresDate
                                 })
                             }).catch(err => {
-                                console.log(err)
                                 return res.status(500).json({ error: err })
                             })
                     }
@@ -97,7 +123,7 @@ router.post('/login', (req, res, next) => {
                     })
                 }
                 res.status(401).json({
-                    message: 'Auth Fail, Password'
+                    message: 'WRONG_PASSWORD'
                 })
             })
         })
@@ -124,6 +150,122 @@ router.post('/generatetoken', (req, res, next) => {
         expiresDate: expiresDate
     })
 })
+
+//Update profile without image
+router.patch('/:userId', (req, res, next) => {
+    User.findById(req.params.userId)
+    .exec()
+    .then(user => {
+        if(user) {
+            User.updateOne({ _id: user._id }, {
+                $set: {
+                    name: req.body.name,
+                    email: req.body.email,
+                    tel: req.body.tel,
+                    location: req.body.location,
+                }
+            })
+            .then(user => {
+                res.status(201).json({
+                    message: 'User updated',
+                    user: user
+                })
+            })
+            .catch(err => {
+                res.status(500).json({ error: err })
+            })
+        } else {
+            res.status(500).json({ error: err })
+        }
+    })
+    .catch(err => {
+        res.status(500).json({ error: err })
+    })
+});
+
+//Update profile with image
+router.patch('/:userId/image', upload.single('profileImage'), (req, res, next) => {
+    User.findById(req.params.userId)
+        .exec()
+        .then(user => {
+            if (user) {
+                User.updateOne({ _id: user._id }, {
+                    $set: {
+                        name: req.body.name,
+                        profileImage: req.file.path,
+                        email: req.body.email,
+                        tel: req.body.tel,
+                        location: req.body.location
+                    }
+                })
+                .then(user => {
+                    res.status(201).json({
+                        message: 'User updated successfully',
+                        user: user
+                    })
+                })
+                .catch(err => {
+                    res.status(500).json({ error: err })
+                })
+            } else {
+                res.status(500).json({ error: err })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ error: err })
+        })
+});
+
+
+//Update password
+router.patch('/:userId/password/update', (req, res, next) => {
+    User.findById(req.params.userId)
+        .exec()
+        .then(user => {
+            if (!user) {
+                return res.status(401).json({
+                    message: 'EMAIL_NOT_EXIST'
+                })
+            }
+            bcrypt.compare(req.body.password, user.password, (err, result) => {
+                if (err) {
+                    return res.status(401).json({
+                        message: 'WRONG_PASSWORD'
+                    })
+                }
+                if (result) {
+                    bcrypt.hash(req.body.newpassword, 10, (err, hash) => {
+                        if (err) {
+                            return res.status(500).json({
+                                error: err
+                            })
+                        } else {
+                            User.updateOne({ _id: user._id }, {
+                                $set: {password: hash}
+                            })
+                            .then(user => {
+                                res.status(201).json({
+                                    message: 'User updated',
+                                    user: user
+                                })
+                            })
+                            .catch(err => {
+                                res.status(500).json({ error: err })
+                            })
+                        }
+                    })
+                } else {
+                    res.status(401).json({
+                        message: 'WRONG_PASSWORD'
+                    })
+                }
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            return res.status(500).json({ error: err })
+        })
+});
 
 // delete a user
 router.delete('/:userId', (req, res, next) => {

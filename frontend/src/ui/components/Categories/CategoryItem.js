@@ -5,7 +5,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const CategoryItem = (props) => {
     const {category} = props;
     const categoryName = category.name.split(" ").join("-");
-    const url = categoryName === "Galerie" ? "/gallery" : "/category/" + categoryName;
+    let url = "";
+    if (window.location.pathname.split('/')[1] === "events") {
+        url = "/events/category/" + categoryName;
+    } else if (window.location.pathname.split('/')[1] === "services") {
+        url = "/services/category/" + categoryName;
+    } else {
+        url = "/category/" + categoryName;
+    }
     return (
         <div className="wrimagecard wrimagecard-topimage">
             <NavLink to={url}>

@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Header from '../../globalComponent/Header';
 import { connect } from 'react-redux';
-import UploadImage from './UploadImage';
 import GalleryList from './GalleryList';
 
 
@@ -18,7 +17,6 @@ class Gallery extends Component {
         return (
             <Fragment>
                 <Header />
-                <UploadImage />
                 <GalleryList />
             </Fragment>
         );

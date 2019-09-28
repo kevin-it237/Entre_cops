@@ -245,7 +245,7 @@ router.patch('/:id/add/coupon', (req, res, next) => {
 // Remove coupons
 router.patch('/:id/remove/coupon', (req, res, next) => {
     Event.updateOne({ _id: req.params.id }, {
-        $set: { coupons: {} }
+        $set: { "coupons.nCoupons": 0 }
     })
     .exec()
     .then(event => {

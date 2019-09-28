@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
+import {connect} from 'react-redux';
 import Loader from '../../globalComponent/Loader';
 import EventModal from '../../suppliers/Dashboard/EventModal';
 
@@ -11,18 +12,29 @@ class AdminAnnonce extends Component {
         events: [],
         error: '',
         event: null,
-        loading: false
+        loading: false,
+        showCreationModal: false
     }
 
     componentDidMount() {
-        //Get 5 events
+        //Get all events
+        this.getAllServices();
+    }
+    
+    getAllServices = () => {
+        //Get all events
         axios.get('/api/event/all')
-        .then(res => {
-            this.setState({ events: res.data.events, eventsLoading: false, error: '' })
-        })
-        .catch(err => {
-            this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", eventsLoading: false })
-        })
+            .then(res => {
+                this.setState({ events: res.data.events, eventsLoading: false, error: '' })
+            })
+            .catch(err => {
+                this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", eventsLoading: false })
+            })
+    }
+
+    refreshEventList = () => {
+        this.setState({ eventsLoading: true })
+        this.getAllServices();
     }
 
     getSingleEvent = (id) => {
@@ -51,7 +63,7 @@ class AdminAnnonce extends Component {
     }
 
     closeModal = () => {
-        this.setState({showModal:false});
+        this.setState({ showModal: false, showCreationModal: false});
     }
 
     render() {
@@ -60,8 +72,9 @@ class AdminAnnonce extends Component {
             <Fragment>
                 <div className="container">
                     <div className="row mt-5">
-                        <div className="col-sm-12">
-                            <h3 className="title">TOUS LES EVENEMENTS</h3>
+                        <div className="col-sm-12 d-flex justify-content-between align-items-center mb-5">
+                            <h3 className="title">TOUTES LES ACTUALITES</h3>
+                            <button onClick={() => this.setState({showCreationModal: true})} className="button">Ajouter une Actualité</button>
                         </div>
                         <div className="col-sm-12 text-center">
                             {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
@@ -114,9 +127,21 @@ class AdminAnnonce extends Component {
                     show={this.state.showModal}
                     closeModal={this.closeModal} />
 
+                {/* New Event/Annonce */}
+                <EventModal
+                    user={this.props.user}
+                    show={this.state.showCreationModal}
+                    closeModal={this.closeModal}
+                    refreshEventList={this.refreshEventList} />
+
             </Fragment>
         );
     }
 }
 
-export default AdminAnnonce;
+const mapPropsToState = state => {
+    return {
+        user: state.auth.user
+    }
+}
+export default connect(mapPropsToState)(AdminAnnonce);

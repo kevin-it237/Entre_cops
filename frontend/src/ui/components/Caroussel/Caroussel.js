@@ -1,5 +1,5 @@
 import React from 'react';
-import bg1 from '../../../assets/images/afterallfaceban.png';
+import bg1 from '../../../assets/images/photo.jpeg';
 // import bg2 from '../../../assets/images/afterall05.png';
 // import bg3 from '../../../assets/images/afterall06.png';
 import './Caroussel.scss';
@@ -18,8 +18,8 @@ const Caroussel = (props) => {
                         <img className="d-block w-100" src={bg1} alt="First slide"/>
                         <div className="container">
                             <div className="carousel-caption d-none d-sm-block text-bottom mb-5">
-                                {/* <h1 className="">SOYEZ A L'ACTU DE TOUS LES EVENEMENTS ET SERVICES</h1> */}
-                                {/* <p>Réservez directement vos places.</p> */}
+                                <h1 className="">SOYEZ A L'ACTU DE TOUS LES EVENEMENTS ET SERVICES</h1>
+                                <p>Réservez directement vos places.</p>
                                 <a href="#events" className="btn btn-danger btn-lg">Parcourir les Evènements</a>
                             </div>
                         </div>

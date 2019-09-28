@@ -113,6 +113,11 @@
                 a {
                     font-size: 1.3rem;
                 }
+                .upload-btn {
+                    svg {
+                        path {fill: white;}
+                    }
+                }
             }
         }
     }
@@ -175,4 +180,58 @@
         vertical-align: middle !important;
         border-radius: 50%;
     }
+}
+
+/* Upload modal */
+.updload-section {
+    .container {
+        background-color: white;
+        border-radius: 8px;
+
+        .upload {
+            @media only screen and (max-width: 768px) {
+
+            }
+        }
+
+        svg {
+            margin-right: 1.5rem;
+            @media only screen and (max-width: 768px) {
+                font-size: 3rem;
+            }
+        }
+
+        label {
+            font-size: 1.5rem;
+        }
+    
+        textarea {
+            border-radius: 10px;
+            font-size: 1.4rem;
+            padding: .3rem 2rem;
+            @media only screen and (max-width: 800px) {
+                width: 50%;
+            }
+        }
+    
+        button {
+            width: 20%;
+            @media only screen and (max-width: 800px) {
+                width: 30%;
+                padding: 1rem .2rem;
+            }
+            svg {
+                @media only screen and (max-width: 800px) {
+                    font-size: 1.6rem !important;
+                    margin: 0;
+                    padding: 0;
+                }
+                path {
+                    fill: white;
+                }
+            }
+        }
+
+    }
+
 }

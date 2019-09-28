@@ -7,6 +7,9 @@ import SupplierForm from '../../components/Forms/SuplierForm';
 import Loader from '../../globalComponent/Loader';
 import EventModal from '../../suppliers/Dashboard/EventModal';
 import ServiceModal from '../../suppliers/Dashboard/ServiceModal';
+import Upload from '../../components/Forms/Upload';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
 
 class AdminHome extends Component {
 
@@ -22,7 +25,13 @@ class AdminHome extends Component {
         loadinSingleEv: false,
         loadinSingleAn: false,
         event: null,
-        service: null
+        service: null,
+        /* For uploading images to gallery */
+        userMessage: '',
+        uploadError: '',
+        loading: false,
+        showUploadModal: false,
+        images: null
     }
 
     closeSupplierModal = () => {
@@ -92,6 +101,22 @@ class AdminHome extends Component {
         })
     }
 
+    handleInputChange = (e) => {
+        e.preventDefault();
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState({
+            [name]: value
+        }, this.validate);
+    }
+
+    setFile(name, file) {
+        this.setState({
+            [name]: file,
+            error: ''
+        });
+    }
+
     render() {
         const { events, eventsLoading, services, servicesLoading, error } = this.state;
         return (
@@ -117,9 +142,9 @@ class AdminHome extends Component {
                         <div className="col-md-6 col-lg-3 col-sm-6 mb-2">
                             <div className="card text-center">
                                 <div className="card-body">
-                                    <h5 className="card-title">Evènements</h5>
-                                    <p className="card-text">Valider/Supprimer Evènements.</p>
-                                    <Link className="btn btn-dark btn-block" to="/admin/annonces">Gérer les Evènements</Link>
+                                    <h5 className="card-title">Actualités</h5>
+                                    <p className="card-text">Valider/Supprimer Actualité.</p>
+                                    <Link className="btn btn-dark btn-block" to="/admin/annonces">Gérer les Actualités</Link>
                                 </div>
                             </div>
                         </div>
@@ -137,9 +162,9 @@ class AdminHome extends Component {
                         <div className="col-md-6 col-lg-3 col-sm-6 mb-2">
                             <div className="card text-center">
                                 <div className="card-body">
-                                    <h5 className="card-title">Créer des coupons</h5>
-                                    <p className="card-text">Créer des coupons de réduction.</p>
-                                    <Link to='/admin/coupons' className="btn btn-dark btn-block">Générer des coupons</Link>
+                                    <h5 className="card-title">Galerie</h5>
+                                    <p className="card-text">Ajouter du contenu dans la Galerie</p>
+                                    <Link onClick={() => this.setState({ showUploadModal: true })} className="btn btn-dark btn-block upload-btn">Publier dans la Galerie &nbsp; <FontAwesomeIcon icon={faCamera} size={"1x"} /></Link>
                                 </div>
                             </div>
                         </div>
@@ -147,7 +172,7 @@ class AdminHome extends Component {
 
                     <div className="row mt-5">
                         <div className="col-sm-12">
-                            <h3 className="title">EVENEMENTS RECENTS</h3>
+                            <h3 className="title">ACTUALITES RECENTES</h3>
                         </div>
                         <div className="col-sm-12 text-center">
                             {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
@@ -272,6 +297,44 @@ class AdminHome extends Component {
                     <Modal.Footer>
                         <div className="py-3">
                             <Button variant="outline" onClick={() => this.setState({ showModal: !this.state.showModal })}>
+                                Fermer
+                            </Button>
+                        </div>
+                    </Modal.Footer>
+                </Modal>
+
+                {/* Publish on gallery modal */}
+                <Modal show={this.state.showUploadModal} onHide={() => this.setState({ showUploadModal: false })} size="lg" >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Importer des Images</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <section className="updload-section">
+                            <div className="container">
+                                <div className="row">
+                                    <div className="col-sm-12">
+                                        <div className="upload d-flex flex-column justify-content-center align-items-center">
+                                            <label>Entrez un message pour votre publication</label>
+                                            <textarea placeholder="Exprimez vous"
+                                                value={this.state.userMessage} name="userMessage"
+                                                className="form-control" onChange={(e) => this.handleInputChange(e)} rows="2"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <div className="row text-center mt-3">
+                            <div className="col-sm-12">
+                                <Upload type="image" oldUrl={this.state.images} setFile={(name, file) => this.setFile(name, file)} name="images" label={"Importer des Images"} />
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <div className="py-3">
+                            <Button variant="danger" onClick={() => this.setState({ showUploadModal: false })}>
+                                Publier
+                            </Button>
+                            <Button variant="default" onClick={() => this.setState({ showUploadModal: false })}>
                                 Fermer
                             </Button>
                         </div>

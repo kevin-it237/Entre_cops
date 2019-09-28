@@ -120,6 +120,9 @@ class EventModal extends Component {
                             eventImage: '',
                             eventVideo: ''
                          });
+                        if (this.props.refreshEventList) {
+                            this.props.refreshEventList();
+                        }
                         this.props.closeModal();
                     })
                     .catch(err => {

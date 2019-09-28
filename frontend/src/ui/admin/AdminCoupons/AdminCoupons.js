@@ -91,7 +91,7 @@ class AdminCoupons extends Component {
         let clients = [];
         if (selectedAnnonce.coupons) {
             if (selectedAnnonce.coupons.clients) {
-                clients = [...clients, ...selectedAnnonce.coupons.clients];
+                clients = [...selectedAnnonce.coupons.clients];
             }
         }
         this.setState({loading: true});
@@ -99,8 +99,10 @@ class AdminCoupons extends Component {
             nCoupons: nCoupons,
             montant: montant,
             datelimite: datelimite,
+            title: selectedAnnonce.title,
             infos: infos,
-            clients: clients
+            clients: clients,
+            image: rootUrl + '/' + selectedAnnonce.image,
         };
         axios.patch(rootUrl + '/api/' + eventType + '/' + selectedAnnonce._id + '/add/coupon', { coupon: coupon })
         .then(res => {

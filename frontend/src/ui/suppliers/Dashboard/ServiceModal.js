@@ -142,6 +142,10 @@ class ServiceModal extends Component {
                             duration: '',
                             place: ''
                         });
+                        // For admin when he creates service
+                        if (this.props.refreshServiceList) {
+                            this.props.refreshServiceList();
+                        }
                         this.props.closeModal();
                     })
                     .catch(err => {

@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import ServiceModal from '../../suppliers/Dashboard/ServiceModal';
 import Loader from '../../globalComponent/Loader';
 
@@ -11,18 +12,28 @@ class AdminService extends Component {
         services: [],
         error: '',
         service: null,
-        loading: false
+        loading: false,
+        showCreationModal: false
     }
 
     componentDidMount() {
-        //Get 5 services
+        this.getAllServices();
+    }
+
+    getAllServices = () => {
+        //Get all services
         axios.get('/api/service/all')
-        .then(res => {
-            this.setState({ services: res.data.services, servicesLoading: false, error: '' })
-        })
-        .catch(err => {
-            this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", servicesLoading: false })
-        })
+            .then(res => {
+                this.setState({ services: res.data.services, servicesLoading: false, error: '' })
+            })
+            .catch(err => {
+                this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", servicesLoading: false })
+            })
+    }
+
+    refreshServiceList = () => {
+        this.setState({ servicesLoading: true })
+        this.getAllServices();
     }
 
     getSingleEvent = (id) => {
@@ -51,7 +62,7 @@ class AdminService extends Component {
     }
 
     closeModal = () => {
-        this.setState({ showModal: false });
+        this.setState({ showModal: false, showCreationModal: false });
     }
 
     render() {
@@ -60,8 +71,9 @@ class AdminService extends Component {
             <Fragment>
                 <div className="container">
                     <div className="row mt-5">
-                        <div className="col-sm-12 text-center">
+                        <div className="col-sm-12 text-center d-flex justify-content-between align-items-center mb-5">
                             <h3 className="title">TOUS LES SERVICES</h3>
+                            <button onClick={() => this.setState({ showCreationModal: true })} className="button">Ajouter un service</button>
                         </div>
                         <div className="col-sm-12 text-center">
                             {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
@@ -113,9 +125,22 @@ class AdminService extends Component {
                     loadingAn={this.state.loading}
                     show={this.state.showModal}
                     closeModal={this.closeModal} />
+
+                {/* New Service */}
+                <ServiceModal
+                    user={this.props.user}
+                    show={this.state.showCreationModal}
+                    closeModal={this.closeModal}
+                    refreshServiceList={this.refreshServiceList} />
+
             </Fragment>
         );
     }
 }
 
-export default AdminService;
+const mapPropsToState = state => {
+    return {
+        user: state.auth.user
+    }
+}
+export default connect(mapPropsToState)(AdminService);

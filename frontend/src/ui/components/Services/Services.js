@@ -41,12 +41,24 @@ class Services extends Component {
     render() {
         const {error, services, loading} = this.state;
         return (
-            <section className={this.props.isHomePage || this.props.isCategoryPage ? "services" : "services bg-white"}>
+            <section className={this.props.isHomePage ? "services" : "services bg-white"}>
                 <div className="container pt-3">
                     <div className="row pt-5">
-                        <div className="col">
-                            <center><h1 className="pt-4 pb-4 service-header">{this.props.eventType}</h1></center>
-                        </div>
+                        {this.props.isHomePage ?
+                            <div className="col">
+                                <h1 className="pt-4 pb-4 service-header text-center">{this.props.eventType}</h1>
+                            </div>:
+                            <div className="col d-flex align-items-center justify-content-between header-wrapper">
+                                <h1 className="pt-4 pb-4 service-header">{this.props.eventType}</h1>
+                                <div className="d-flex align-items-center filter">
+                                    <h6>Filtrer par: </h6>
+                                    <select className="form-control">
+                                        <option>Lieu</option>
+                                        <option>Date</option>
+                                    </select>
+                                </div>
+                            </div>
+                        }
                     </div>
                     <div className={loading || error.length || this.props.isHomePage? "row pb-5 mb-2 justify-content-center":"row pb-5 mb-2"}>
                         {error.length ? <div className="alert alert-danger">{error}</div>:null}

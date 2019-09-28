@@ -13,6 +13,7 @@ const userSchema = mongoose.Schema({
     otherInfos: { type: String, required: false },
     role: { type: String, required: true },
     recommandations: { type: Array, required: false },
+    reservations: { type: Array, required: false },
     date: { type: Date, required: false },
 })
 

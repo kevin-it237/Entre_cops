@@ -17,7 +17,11 @@ export const signup = (data) => {
             })
             .catch(err => {
                 // User already Exist
-                dispatch(authError("Adresse Email déja utilisée"))
+                if (err.response.data.message === 'EMAIL_EXIST') {
+                    dispatch(authError("Adresse Email déja utilisée"))
+                } else {
+                    dispatch(authError("Une érreur s'est produite, Veuillez reéssayer"))
+                }
             })
         } catch (error) {
             dispatch(authError("Problème de connection."))
@@ -46,7 +50,12 @@ export const login = (data) => {
                 dispatch(startLogin(res.data))
             })
             .catch(err => {
-                dispatch(authError("Vos informations sont Incorrectes."))
+                if (err.response.data.message === 'WRONG_PASSWORD'
+                    || err.response.data.message === 'EMAIL_NOT_EXIST') {
+                    dispatch(authError("Vos informations sont Incorrectes."))
+                } else {
+                    dispatch(authError("Une érreur s'est produite, Veuillez reéssayer"))
+                }
             })
         } catch (error) {
             dispatch(authError("Erreur de connexion. Veuillez reéssayer."))

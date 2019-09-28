@@ -40,6 +40,7 @@ class App extends Component {
             <Route path="/services" exact component={AllServicesPage}  />
             <Route path="/supplier" exact component={SupplierRegistration}  />
             <Route path="/supplier/:id/account/confirmation" exact component={SupplierConfirmationForm}  />
+            <Route path="/:AnounceType/category/:id" exact component={SingleCategoryPage}  />
             <Route path="/category/:id" exact component={SingleCategoryPage}  />
             <Route path="/annonce/:anounceType/:id" exact component={DetailsPage}  />
             <Route path="/gallery" exact component={Gallery}  />

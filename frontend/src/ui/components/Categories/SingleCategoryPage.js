@@ -59,17 +59,20 @@ class Home extends Component {
     render() {
         const {events, services, loadingEvents, loadingServices} = this.state;
         const category = this.props.match.params.id.split("-").join(" ");
+        const hisAllAnoucesPage = window.location.pathname.split('/')[1] === "category";
         return (
             <Hoc>
                 <Header />
                 <Categories selected={category} />
                 {
+                    this.props.match.params.AnounceType === "events" || hisAllAnoucesPage ?
                     loadingEvents ? <div className="d-flex justify-content-center py-5"><Loader/></div>:
-                    <Events events={events} isCategoryPage={true} eventType="Evènements" isHomePage={false} />  
+                    <Events events={events} isCategoryPage={true} eventType="Evènements" isHomePage={false} /> : null 
                 }
                 {
+                    this.props.match.params.AnounceType === "services" || hisAllAnoucesPage ?
                     loadingServices ? <div className="d-flex justify-content-center py-5"><Loader/></div>:  
-                    <Services services={services} isCategoryPage={true} eventType="Services" isHomePage={false} />
+                    <Services services={services} isCategoryPage={true} eventType="Services" isHomePage={false} /> :null
                 }
             </Hoc>
         );

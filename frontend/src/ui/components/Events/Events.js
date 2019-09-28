@@ -43,9 +43,22 @@ class Events extends Component {
             <section className="events pt-3" id="events">
                 <div className="container pb-5 pt-3">
                     <div className="row pt-5">
-                        <div className="col">
-                            <center><h1 className="pt-3 event-header">{this.props.eventType}</h1></center>
-                        </div>
+                        {
+                            this.props.isHomePage ?
+                            <div className="col-sm-12">
+                                <h3 className="pt-3 event-header text-center">{this.props.eventType}</h3>
+                            </div>:
+                            <div className="col-sm-12 d-flex align-items-center justify-content-between header-wrapper">
+                                <h3 className="pt-3 event-header">{this.props.eventType}</h3>
+                                <div className="d-flex align-items-center filter">
+                                    <h6>Filtrer par: </h6>
+                                    <select className="form-control">
+                                        <option>Lieu</option>
+                                        <option>Date</option>
+                                    </select>
+                                </div>
+                            </div>
+                        }
                     </div>
                     <div className={loading || error.length || this.props.isHomePage? "row pb-5 mb-2 justify-content-center":"row pb-5 mb-2"}>
                         {error&&error.length ? <div className="alert alert-danger">{error}</div>:null}

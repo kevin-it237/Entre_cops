@@ -104,8 +104,7 @@ body{
   }
   
   input[type=text]:focus,input[type=email]:focus,input[type=password]:focus, input[type=tel]:focus, input[type=number]:focus {
-    background-color: #fff;
-    border-bottom: 2px solid $fontColor !important;
+    background-color: #fff;outline: none !important;
   }
   
   input[type=text]:placeholder,input[type=email]:placeholder,input[type=password]:placeholder, input[type=tel]:placeholder, input[type=number]:placeholder {

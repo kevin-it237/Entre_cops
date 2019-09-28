@@ -157,7 +157,12 @@ class DetailsPage extends Component {
                 name: this.state.name,
                 email: this.state.email,
                 tel: this.state.tel,
-                numberOfPlaces: this.state.numberOfPlaces
+                numberOfPlaces: this.state.numberOfPlaces,
+                image: rootUrl + '/' + this.state.announce.image,
+                title: this.state.announce.title,
+                link: '/annonce/' + this.props.match.params.anounceType + '/' + this.props.match.params.id,
+                projectId: this.props.match.params.id,
+                date: new Date()
             }
             axios.patch(url, { reservation: reservation })
             .then(res => {
@@ -214,6 +219,10 @@ class DetailsPage extends Component {
                             notifications[i] = updateOne;
                             axios.patch('/api/user/' + authData.user._id + '/notification/seen', { rec: notifications})
                             .then(res => {
+                                // Update local storage
+                                // let newAuthData = {...authData};
+                                // newAuthData.user.recommandations = notifications;
+                                // localStorage.setItem("authData", newAuthData);
                                 this.setState({ recError: '' })
                             })
                             .catch(err => {
@@ -645,7 +654,7 @@ class DetailsPage extends Component {
                     <Modal.Footer>
                         <div className="py-3">
                             <Button variant="danger" disabled={!formValid || reserving} onClick={(e) => this.makeReservation(e) }>
-                                Valider la Reservation {reserving ? <Loader />: null}
+                                Valider la Reservation {reserving ? <Loader color="white" />: null}
                             </Button>
                             <Button variant="default" onClick={() => this.setState({showReservationModal: !this.state.showReservationModal})}>
                                 Fermer
