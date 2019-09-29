@@ -7,7 +7,6 @@ import SupplierForm from '../../components/Forms/SuplierForm';
 import Loader from '../../globalComponent/Loader';
 import EventModal from '../../suppliers/Dashboard/EventModal';
 import ServiceModal from '../../suppliers/Dashboard/ServiceModal';
-import Upload from '../../components/Forms/Upload';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 
@@ -30,8 +29,14 @@ class AdminHome extends Component {
         userMessage: '',
         uploadError: '',
         loading: false,
+        
+        /* When publish on gallery */
         showUploadModal: false,
-        images: null
+        images: null,
+        content: '',
+        publishing: false,
+        succesPublish: false,
+        publishError: false
     }
 
     closeSupplierModal = () => {
@@ -107,14 +112,51 @@ class AdminHome extends Component {
         const value = e.target.value;
         this.setState({
             [name]: value
-        }, this.validate);
+        });
     }
 
-    setFile(name, file) {
-        this.setState({
-            [name]: file,
-            error: ''
-        });
+    preview = (e) => {
+        let images = Array.from(e.target.files).map(file => URL.createObjectURL(file));
+        this.setState({ previewImages: images, images: e.target.files });
+    }
+    
+    // Publish in gallery
+    publish = (e) => {
+        e.preventDefault();
+        this.setState({publishing: true, showUploadModal: true})
+        const { images, content } = this.state;
+        if(images&&content.length) {
+            const formData = new FormData();
+            formData.append('content', content);
+            Array.from(images).forEach(file => {
+                formData.append('images', file);
+            });
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            };
+            try {
+                axios.post('/api/gallery/publish', formData, config)
+                    .then(res => {
+                        this.setState({
+                            publishing: false,
+                            succesPublish: true,
+                            publishError: false,
+                            content: '',
+                            images: null,
+                            previewImages: null
+                        });
+                    })
+                    .catch(err => {
+                        this.setState({ publishError: "Une érreur s'est produite. Veuillez reéssayer.", publishing: false });
+                    })
+            } catch (error) {
+                this.setState({ publishError: "Erreur de connexion. Veuillez reéssayer", publishing: false });
+            }
+        } else {
+            alert("Veuillez entrer toutes les informations")
+        }
     }
 
     render() {
@@ -311,28 +353,46 @@ class AdminHome extends Component {
                     <Modal.Body>
                         <section className="updload-section">
                             <div className="container">
-                                <div className="row">
+                                <div className="row justify-content-center">
                                     <div className="col-sm-12">
+                                        {this.state.publishError.length && <div className="alert alert-danger">{this.state.publishError}</div>}
+                                        {this.state.succesPublish && <div className="alert alert-success">Publié avec succès</div>}
                                         <div className="upload d-flex flex-column justify-content-center align-items-center">
-                                            <label>Entrez un message pour votre publication</label>
+                                            <label className="mt-3 mb-4">Entrez un message pour votre publication</label>
                                             <textarea placeholder="Exprimez vous"
-                                                value={this.state.userMessage} name="userMessage"
+                                                value={this.state.content} name="content"
                                                 className="form-control" onChange={(e) => this.handleInputChange(e)} rows="2"></textarea>
                                         </div>
                                     </div>
                                 </div>
+                                <div className="row text-center mt-3 justify-content-center">
+                                    <div className="col-sm-6">
+                                        <form className="mt-3 mb-4">
+                                            <div className="custom-file">
+                                                <input onChange={(e) => this.preview(e)} type="file" className="custom-file-input" accept="image/*" id="customFile" multiple />
+                                                <label className="custom-file-label" for="customFile">Choisir les images</label>
+                                            </div>
+                                        </form>
+                                    </div>
+                                <div className="container mt-2">
+                                        <div className="row justify-content-center">
+                                            {this.state.previewImages ? 
+                                                this.state.previewImages.map((image, id) => (
+                                                    <div key={id} className="col-4 mt-2">
+                                                        <img src={image} className="img-fluid" alt="" /> 
+                                                    </div>
+                                                )) : null
+                                            }
+                                        </div>
+                                </div>
+                                </div>
                             </div>
                         </section>
-                        <div className="row text-center mt-3">
-                            <div className="col-sm-12">
-                                <Upload type="image" oldUrl={this.state.images} setFile={(name, file) => this.setFile(name, file)} name="images" label={"Importer des Images"} />
-                            </div>
-                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="py-3">
-                            <Button variant="danger" onClick={() => this.setState({ showUploadModal: false })}>
-                                Publier
+                            <Button variant="danger" onClick={(e) => this.publish(e)}>
+                                Publier {this.state.publishing&&<Loader color="white"/>}
                             </Button>
                             <Button variant="default" onClick={() => this.setState({ showUploadModal: false })}>
                                 Fermer

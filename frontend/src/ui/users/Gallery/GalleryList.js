@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import './Gallery.scss';
 import GalleryItem from './GalleryItem';
+import axios from 'axios';
+import Loader from '../../globalComponent/Loader';
 
 import img1 from '../../../assets/images/art-birthday-bright-796605.jpg';
 import img from '../../../assets/images/bg3.jpg';
@@ -9,15 +11,21 @@ import img2 from '../../../assets/images/bg2.jpg';
 class GalleryList extends Component {
 
     state = {
-        publications: '',
+        publications: [],
         error: '',
+        loading: true
     };
 
-    componentDidMount() {
+    componentWillMount() {
+        axios.get('/api/gallery/all')
+        .then(res => {
+            console.log(res.data)
+            this.setState({ loading: false, publications: res.data.publications })
+        })
+        .catch(err => {
 
+        })
     }
-
-
 
     render() {
         return (
@@ -35,9 +43,12 @@ class GalleryList extends Component {
                     <div className="container">
                         <div className="row">
                             <div className="col-sm-12">
-                                <GalleryItem image={[img1, img2]} />
-                                <GalleryItem image={[img]} />
-                                <GalleryItem image={[img, img1, img2]} />
+                                    {
+                                    this.state.loading ? <div className="d-flex justify-content-center"><Loader /></div> :
+                                        this.state.publications.map(pub => (
+                                            <GalleryItem content={pub.content} images={pub.images} date={pub.date} />
+                                        ))
+                                    }
                             </div>
                         </div>
                     </div>

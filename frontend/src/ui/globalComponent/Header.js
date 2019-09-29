@@ -35,6 +35,8 @@ class Header extends Component {
                 accountValidated: authData.user.accountValidated
             })
         }
+
+        // WHen user send a recommandattion to another
         const socket = socketIOClient(rootUrl);
         socket.on('display notification', data => {
             const authData = JSON.parse(localStorage.getItem("authData"));
@@ -45,6 +47,7 @@ class Header extends Component {
             }
         })
 
+        // When admin validate an anounce
         socket.on('display anounce notification', data => {
             const authData = JSON.parse(localStorage.getItem("authData"));
             if (authData && authData.user) {

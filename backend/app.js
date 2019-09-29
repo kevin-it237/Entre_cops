@@ -11,6 +11,7 @@ const categoryRoutes = require('./api/routes/categories');
 const supplierRoutes = require('./api/routes/suppliers');
 const eventRoutes = require('./api/routes/events');
 const serviceRoutes = require('./api/routes/services');
+const galleryRoutes = require('./api/routes/galleries');
 
 // Model
 const User = require('./api/models/user');
@@ -51,6 +52,7 @@ app.use('/api/category', categoryRoutes);
 app.use('/api/supplier', supplierRoutes);
 app.use('/api/event', eventRoutes);
 app.use('/api/service', serviceRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 // Admin routes
 

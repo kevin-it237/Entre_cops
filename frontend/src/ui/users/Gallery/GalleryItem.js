@@ -2,12 +2,19 @@ import React from 'react';
 import './Gallery.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import {rootUrl} from '../../../configs/config';
 
 const GalleryItem = (props) => {
-        if(props.image.length) {
-            const images = props.image.map(image => (
-                <div className="col">
-                    <img src={image} className="img-fluid" alt="" />
+        if(props.images.length) {
+            let className = "col";
+            if (props.images.length > 4 && props.images.length < 9) {
+                className = "col-sm-4";
+            } else if (props.images.length >= 9) {
+                className = "col-sm-3";
+            }
+            const images = props.images.map(image => (
+                <div className={className}>
+                    <img src={rootUrl + '/' +image} className="img-fluid" alt="" />
                 </div>
             ));
             return (
@@ -15,17 +22,17 @@ const GalleryItem = (props) => {
                     <div className="header d-flex align-items-center">
                         <FontAwesomeIcon icon={faUserCircle} size={"3x"} />
                         <div className="name">
-                            <h5>Abel Kevin</h5>
-                            <span>Il ya 2 heures</span>
+                            <h5>Entrecops</h5>
+                            <span>{props.date}</span>
                         </div>
                     </div>
                     <div className="description">
                         <div className="mb-4 mt-3">
-                            <h4>React Redux Node MongoDB JWT Authentication Example is the today’s leading topic. We use React and Redux for the frontend, Node.js as a platform, express as a web framework and MongoDB as a NoSQL database.</h4>
+                            <h4>{props.content}</h4>
                         </div>
                     </div>
                     <div className="body">
-                        <div className="row">
+                        <div className="row justify-content-lg-center">
                             {images}
                         </div>
                     </div>

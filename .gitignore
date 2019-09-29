@@ -8,6 +8,7 @@
 /backend/uploads/servicesimages/*
 /backend/uploads/suppliersImages/*
 /backend/uploads/usersImages/*
+/backend/uploads/gallery/*
 
 node_modules
 /.pnp

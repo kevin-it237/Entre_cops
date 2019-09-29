@@ -3,8 +3,6 @@ import Header from '../../globalComponent/Header';
 import { connect } from 'react-redux';
 import GalleryList from './GalleryList';
 
-
-
 class Gallery extends Component {
 
     state = {};
