@@ -8,6 +8,8 @@ import {connect} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapMarked, faSearch, faComment, faFileDownload, faAnchor } from '@fortawesome/free-solid-svg-icons';
 import './DetailsPage.scss';
+import AwesomeSlider from 'react-awesome-slider';
+import AwsSliderStyles from 'react-awesome-slider/src/styles';
 
 import Header from '../../globalComponent/Header';
 import Hoc from '../../globalComponent/Hoc';
@@ -341,6 +343,7 @@ class DetailsPage extends Component {
         const { documentPreview, announce, error, loading, name, email, tel, messageValid, reserving, downloadingCoupon,
                 numberOfPlaces, formValid, reservationError, recError, sendingComment, userEmail, userName, userMessage } = this.state;
         const {anounceType} = this.props.match.params;
+
         return (
             <Hoc>
                 <Header />
@@ -355,7 +358,10 @@ class DetailsPage extends Component {
                                 <Fragment>
                                     <div className="col-sm-12 col-md-8 col-lg-8 left">
                                         <div className="infos pb-4">
-                                            <img src={rootUrl + '/' +announce.image} alt="service" />
+                                            {/* <img src={rootUrl + '/' +announce.image} alt="service" /> */}
+                                            <AwesomeSlider bullets={false} cssModule={AwsSliderStyles}>
+                                                {announce.images.map(image => <div data-src={rootUrl + '/' + image} />)}
+                                            </AwesomeSlider>
 
                                             <div className="otherinfos ">
                                                 <div className="d-flex align-items-center justify-content-between titleandstars">

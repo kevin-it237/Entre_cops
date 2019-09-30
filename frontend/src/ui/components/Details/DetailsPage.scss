@@ -25,6 +25,16 @@
     textarea {
         font-size: 1.5rem;
     }
+
+    .aws-sld__controls__arrow-left:after, .aws-sld__controls__arrow-right:after {
+        background-color: white !important;
+    }
+    .aws-sld__controls__arrow-left:after, .aws-sld__controls__arrow-right:before {
+        background-color: white !important;
+    }
+    .aws-sld__controls__arrow-left:before {
+        background-color: white !important;
+    }
 }
 #projectdetails .left .aws-sld__content {
     background-color: transparent !important;

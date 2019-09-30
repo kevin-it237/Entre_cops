@@ -103,7 +103,7 @@ class SignUpForm extends Component {
                         {isTyping&&!emailValid ? <div style={{color: "red"}}>Email non valide.</div>:null}
                         <input type="password" value={password} onChange={(e) => this.handleInputChange(e)} id="password" className="fadeIn third" name="password" placeholder="Mot de passe"/>
                         {isTyping&&!passwordValid ? <div style={{color: "red"}}>Invalide. Min 6 caratères</div>:null}
-                        <input type="text" value={tel} onChange={(e) => this.handleInputChange(e)} id="tel" className="fadeIn second" name="tel" placeholder="Numéro de Téléphone" />
+                        <input type="text" value={tel} onChange={(e) => this.handleInputChange(e)} id="tel" className="fadeIn second" name="tel" placeholder="Numéro Whatsapp" />
                         <button disabled={loader} type="submit" onClick={(e) => this.handleSubmit(e)} id="signBtn" className="button fadeIn fourth mt-4 mb-5">{this.props.loader ? <Loader color="white" />:"S'inscrire"}</button>
                     </form>
 
