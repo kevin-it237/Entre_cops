@@ -216,6 +216,24 @@ router.patch('/:userId/image', upload.single('profileImage'), (req, res, next) =
         })
 });
 
+// Make recommandation to every user when a project is validated
+router.patch('/recommand/to/all', (req, res, next) => {
+    User.updateMany({role: "user"}, {
+        $push: {
+            recommandations: req.body.rec,
+        }
+    })
+    .then(user => {
+        res.status(201).json({
+            message: 'Recommandation saved successfully',
+            user: user
+        })
+    })
+    .catch(err => {
+        res.status(500).json({ error: err })
+    })
+});
+
 
 //Update password
 router.patch('/:userId/password/update', (req, res, next) => {

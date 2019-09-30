@@ -439,11 +439,15 @@ class DetailsPage extends Component {
                                                 </div>
                                                 <div className="other-infos mt-4">
                                                     <div className="d-flex flex-column">
-                                                        <h3 className="mb-3">Regardez l'aperçu en video</h3>
-                                                        <video width="100%" height="100%" controls onClick={() => this.setState({showVideo: true})}>
-                                                            <source src="movie.mp4" type="video/mp4"></source>
-                                                            <source src="movie.ogg" type="video/ogg"></source>
-                                                        </video>
+                                                        {
+                                                            announce.video.length ?
+                                                                <Fragment>
+                                                                    <h3 className="mb-3">Regardez l'aperçu en video</h3>
+                                                                    <video src={rootUrl + '/' + announce.video} width="100%" height="100%" controls onClick={() => this.setState({ showVideo: true })}>
+                                                                    </video>
+                                                                </Fragment> :
+                                                                <h3 className="mb-3 text-center">Aucune vidéo disponible.</h3>
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
@@ -592,11 +596,15 @@ class DetailsPage extends Component {
                                             </div>
                                             <div className="other-infos mt-4">
                                                 <div className="d-flex flex-column">
-                                                    <h3 className="mb-3">Regardez l'aperçu en video</h3>
-                                                    <video width="100%" height="100%" controls onClick={() => this.setState({showVideo: true})}>
-                                                        <source src="movie.mp4" type="video/mp4"></source>
-                                                        <source src="movie.ogg" type="video/ogg"></source>
-                                                    </video>
+                                                        {
+                                                            announce.video.length ?
+                                                                <Fragment>
+                                                                    <h3 className="mb-3">Regardez l'aperçu en video</h3>
+                                                                    <video src={rootUrl + '/' + announce.video} width="100%" height="100%" controls onClick={() => this.setState({ showVideo: true })}>
+                                                                    </video>
+                                                                </Fragment> :
+                                                                <h3 className="mb-3 text-center">Aucune vidéo disponible.</h3>
+                                                        }
                                                 </div>
                                             </div>
                                             <div className="other-infos mt-4">
@@ -749,10 +757,15 @@ class DetailsPage extends Component {
                     <Modal.Title>Video</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <video width="100%" height="100%" controls>
-                            <source src="movie.mp4" type="video/mp4"></source>
-                            <source src="movie.ogg" type="video/ogg"></source>
-                        </video>
+                        {
+                            this.state.announce ?
+                                <Fragment>
+                                    <h3 className="mb-3">Regardez l'aperçu en video</h3>
+                                    <video src={rootUrl + '/' + this.state.announce.video} width="100%" height="100%" controls onClick={() => this.setState({ showVideo: true })}>
+                                    </video>
+                                </Fragment> :
+                                <h3 className="mb-3 text-center">Aucune vidéo disponible.</h3>
+                        }
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="py-3">

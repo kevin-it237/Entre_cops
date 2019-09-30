@@ -51,18 +51,7 @@ class Header extends Component {
         socket.on('display anounce notification', data => {
             const authData = JSON.parse(localStorage.getItem("authData"));
             if (authData && authData.user) {
-                try {
-                    // save in database
-                    axios.patch('/api/user/' + authData.user._id + '/recommand', { rec: data })
-                        .then(res => {
-                            this.props.onAutoSign();
-                        })
-                        .catch(err => {
-                            this.setState({ recError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
-                        })
-                } catch (error) {
-                    this.setState({ recError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
-                }
+                this.props.onAutoSign();
             }
         })
     }
@@ -134,7 +123,7 @@ class Header extends Component {
                                 {
                                     token && role === "admin" ?
                                     <li className="nav-item">
-                                        <NavLink className="nav-link" to="/admin/home">Admin</NavLink>
+                                        <NavLink className="nav-link" to="/admin/home">Admin Dashboard</NavLink>
                                     </li>:null
                                 }
                                 {
@@ -150,7 +139,7 @@ class Header extends Component {
                                     </li>:null
                                 }
                                 {
-                                    token ?
+                                    token && role !== "admin"?
                                     <li className="nav-item rec-item-desktop">
                                         <div className="dropdown mt-2">
                                             <a href="/recommandations" className=""  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

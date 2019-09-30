@@ -375,15 +375,15 @@ class AdminHome extends Component {
                                         </form>
                                     </div>
                                 <div className="container mt-2">
-                                        <div className="row justify-content-center">
-                                            {this.state.previewImages ? 
-                                                this.state.previewImages.map((image, id) => (
-                                                    <div key={id} className="col-4 mt-2">
-                                                        <img src={image} className="img-fluid" alt="" /> 
-                                                    </div>
-                                                )) : null
-                                            }
-                                        </div>
+                                    <div className="row justify-content-center">
+                                        {this.state.previewImages ? 
+                                            this.state.previewImages.map((image, id) => (
+                                                <div key={id} className="col-4 mt-2">
+                                                    <img src={image} className="img-fluid" alt="" /> 
+                                                </div>
+                                            )) : null
+                                        }
+                                    </div>
                                 </div>
                                 </div>
                             </div>

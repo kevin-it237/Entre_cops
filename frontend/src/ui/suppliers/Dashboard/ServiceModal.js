@@ -15,18 +15,18 @@ class ServiceModal extends Component {
         cible: '',
         probleme: '',
         serviceVideo: '',
-        serviceImage: '',
         offre: '',
         duration: '',
         place: '',
         isTyping: false,
         formValid: false,
+        previewImages: null,
+        images: null,
         titleValid: false,
         categoryValid: false,
         cibleValid: false,
         placeValid: false,
         offreValid: false,
-        durationValid: false,
         problemeValid: false,
         serviceImageValid: false,
         loading: false,
@@ -48,7 +48,7 @@ class ServiceModal extends Component {
 
     validateField = (fieldName, value) => {
         let { titleValid, problemeValid, cibleValid, serviceImageValid, 
-            categoryValid, durationValid, offreValid, placeValid } = this.state;
+            categoryValid, offreValid, placeValid } = this.state;
 
         switch (fieldName) {
             case 'title':
@@ -60,14 +60,8 @@ class ServiceModal extends Component {
             case 'cible':
                 cibleValid = value.length > 0;
                 break;
-            case 'serviceImage':
-                serviceImageValid = value.length > 0;
-                break;
             case 'category':
                 categoryValid = value.length > 0;
-                break;
-            case 'duration':
-                durationValid = value.length > 0;
                 break;
             case 'offre':
                 offreValid = value.length > 0;
@@ -84,7 +78,6 @@ class ServiceModal extends Component {
             cibleValid: cibleValid,
             serviceImageValid: serviceImageValid,
             categoryValid: categoryValid,
-            durationValid: durationValid,
             offreValid: offreValid,
             placeValid: placeValid,
         }, this.validateForm);
@@ -98,7 +91,6 @@ class ServiceModal extends Component {
                 this.state.cibleValid &&
                 this.state.categoryValid &&
                 this.state.serviceImageValid &&
-                this.state.durationValid &&
                 this.state.offreValid &&
                 this.state.placeValid
         });
@@ -108,17 +100,21 @@ class ServiceModal extends Component {
         e.preventDefault();
         if (this.state.formValid) {
             const formData = new FormData();
-            const { title, probleme, cible, category, serviceImage, serviceVideo, offre, duration, place } = this.state;
+            const { title, probleme, cible, category, images, serviceVideo, offre, duration, place } = this.state;
             formData.append('title', title);
             formData.append('category', category);
             formData.append('cible', cible);
             formData.append('problem', probleme);
-            formData.append('serviceImage', serviceImage);
-            formData.append('serviceVideo', serviceVideo);
             formData.append('offre', offre);
             formData.append('duration', duration);
             formData.append('place', place);
             formData.append('user', JSON.stringify(this.props.user));
+            Array.from(images).forEach(file => {
+                formData.append('images', file);
+            });
+            if (serviceVideo !== "") {
+                formData.append('serviceVideo', serviceVideo);
+            }
             const config = {
                 headers: {
                     'content-type': 'multipart/form-data'
@@ -136,7 +132,6 @@ class ServiceModal extends Component {
                             cible: '',
                             category: '',
                             probleme: '',
-                            serviceImage: '',
                             serviceVideo: '',
                             offre:'',
                             duration: '',
@@ -160,10 +155,15 @@ class ServiceModal extends Component {
         }
     }
 
+    // preview image
+    preview = (e) => {
+        let images = Array.from(e.target.files).map(file => URL.createObjectURL(file));
+        this.setState({ previewImages: images, images: e.target.files, serviceImageValid: true });
+    }
+
     setFile = (name, file) => {
         this.setState({
             [name]: file,
-            serviceImageValid: true,
             error: ''
         }, this.validateForm);
     }
@@ -177,6 +177,7 @@ class ServiceModal extends Component {
         if (prevProps.service !== this.props.service) {
             const { isEditing, loadingAn, service } = this.props;
             if (isEditing && !loadingAn) {
+                let images = service.images.map(image => rootUrl + '/' + image);
                 this.setState({
                     title: service.title,
                     category: service.category,
@@ -184,8 +185,8 @@ class ServiceModal extends Component {
                     offre: service.offre,
                     place: service.place,
                     probleme: service.problem,
-                    serviceVideo: service.video ? service.video : null,
-                    serviceImage: rootUrl + "/" + service.image,
+                    serviceVideo: service.video.length ? rootUrl + "/" + service.video : null,
+                    previewImages: images,
                     duration: service.duration,
                     validated: service.validated
                 })
@@ -225,28 +226,33 @@ class ServiceModal extends Component {
     updateService = (e) => {
         e.preventDefault();
         const formData = new FormData();
-        const { serviceImage, serviceVideo } = this.state;
-        formData.append('serviceImage', serviceImage);
-        formData.append('serviceVideo', serviceVideo);
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data'
+        const { images } = this.state;
+        if (images) {
+            Array.from(images).forEach(file => {
+                formData.append('images', file);
+            });
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            };
+            this.setState({ loading: true });
+            try {
+                axios.patch('/api/service/' + this.props.service._id, formData, config)
+                    .then(res => {
+                        this.setState({ 
+                            loading: false,
+                         });
+                        this.props.closeModal();
+                    })
+                    .catch(err => {
+                        this.setState({ error: "Veuillez faire une modification avant d'enregistrer", loading: false });
+                    })
+            } catch (error) {
+                this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
             }
-        };
-        this.setState({ loading: true });
-        try {
-            axios.patch('/api/service/' + this.props.service._id, formData, config)
-                .then(res => {
-                    this.setState({ 
-                        loading: false,
-                     });
-                    this.props.closeModal();
-                })
-                .catch(err => {
-                    this.setState({ error: "Veuillez faire une modification avant d'enregistrer", loading: false });
-                })
-        } catch (error) {
-            this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
+        } else {
+            alert("Aucune modification éffectuée")
         }
     }
 
@@ -278,8 +284,14 @@ class ServiceModal extends Component {
                     projectId: service._id,
                     date: new Date()
                 }
-                const socket = socketIOClient(rootUrl);
-                socket.emit("new anounce notification", not);
+                axios.patch('/api/user/recommand/to/all', { rec: not })
+                    .then(res => {
+                        const socket = socketIOClient(rootUrl);
+                        socket.emit("new anounce notification", not);
+                    })
+                    .catch(err => {
+                        this.setState({ recError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+                    })
                 // Send Email to Supplier 
             })
             .catch(err => {
@@ -313,7 +325,7 @@ class ServiceModal extends Component {
     }
 
     render() {
-        const { serviceImage, serviceVideo, title, probleme, cible, durationValid, problemeValid,
+        const { serviceVideo, title, probleme, cible, problemeValid,
             category, serviceImageValid, titleValid, cibleValid, categoryValid, offre, place, placeValid,
             error, loading, isTyping, categories, validating, deleting, duration, offreValid } = this.state;
         const { show, closeModal, loadingAn, isEditing, service } = this.props;
@@ -371,15 +383,28 @@ class ServiceModal extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label for="name">Durée du service</label>
-                                                    <input disabled={isEditing} type="text" value={duration} onChange={(e) => this.handleInputChange(e)} className={isTyping && !durationValid ? "form-control is-invalid" : "form-control"} name="duration" placeholder="Exple: 2 Mois" required />
-                                                    {isTyping && !durationValid ? <div className="invalid-feedback">Invalide</div> : null}
+                                                    <input disabled={isEditing} type="text" value={duration} onChange={(e) => this.handleInputChange(e)} className= "form-control" name="duration" placeholder="Exple: 2 Mois" required />
                                                 </div>
                                                 <div className="row align-items-start py-3">
                                                     <div className="col-sm-12 col-md-6 col-lg-6">
-                                                        <Upload type="image" oldUrl={serviceImage} setFile={(name, file) => this.setFile(name, file)} name="serviceImage" label={"Importer une image"} />
+                                                        <label for="name">Importer des images</label><br />
+                                                        <div className="custom-file">
+                                                            <input disabled={this.state.validated} onChange={(e) => this.preview(e)} type="file" className="custom-file-input" accept="image/*" id="customFile" multiple />
+                                                            <label className="custom-file-label" for="customFile">Choisir les images</label>
+                                                        </div>
                                                         {isTyping && !serviceImageValid ? <p className="alert alert-danger">Image Requise</p> : null}
+                                                        <div className="row justify-content-center mt-3">
+                                                            {this.state.previewImages ?
+                                                                this.state.previewImages.map((image, id) => (
+                                                                    <div key={id} className="col-sm-6 mt-2">
+                                                                        <img src={image} className="img-fluid" alt="" />
+                                                                    </div>
+                                                                )) : null
+                                                            }
+                                                        </div>
                                                     </div>
                                                     <div className="col-sm-12 col-md-6 col-lg-6">
+                                                        <label for="name">Importer une vidéo</label><br />
                                                         <Upload type="video" oldUrl={serviceVideo} setFile={(name, file) => this.setFile(name, file)} name="serviceVideo" label={"Importer une video"} />
                                                     </div>
                                                 </div>

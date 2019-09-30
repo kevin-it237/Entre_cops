@@ -16,7 +16,11 @@ const storage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
+    if (file.mimetype === 'image/jpeg' ||
+        file.mimetype === 'image/png' ||
+        file.mimetype === 'image/jpg' ||
+        file.mimetype === 'video/mp4' ||
+        file.mimetype === 'video/mkv') {
         cb(null, true)
     } else {
         cb(null, false)
@@ -26,20 +30,29 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 5
+        fileSize: 1024 * 1024 * 50
     },
     fileFilter: fileFilter
 })
 
 // Service creation
-router.post('/new', upload.single('serviceImage'), (req, res, next) => {
+router.post('/new', upload.any(), (req, res, next) => {
+    let video = '';
+    req.files.forEach(file => {
+        if (file.fieldname === 'serviceVideo') {
+            video = file.path;
+        }
+    })
+    const filesPath = req.files.map(file => file.path)
     // Save new supplier
     const service = new Service({
         _id: mongoose.Types.ObjectId(),
         title: req.body.title,
         owner: JSON.parse(req.body.user),
-        image: req.file.path,
+        image: req.files[0].path,
+        images: filesPath,
         target: req.body.cible,
+        video: video,
         problem: req.body.problem,
         category: req.body.category,
         offre: req.body.offre,
@@ -63,9 +76,11 @@ router.post('/new', upload.single('serviceImage'), (req, res, next) => {
 })
 
 // Update service
-router.patch('/:id', upload.single('serviceImage'), (req, res, next) => {
+router.patch('/:id', upload.array('images'), (req, res, next) => {
+    console.log(req.files)
+    const filesPath = req.files.map(file => file.path)
     Service.updateOne({ _id: req.params.id }, {
-        $set: { image: req.file.path }
+        $set: { images: filesPath, image: req.files[0].path }
     })
     .exec()
     .then(service => {

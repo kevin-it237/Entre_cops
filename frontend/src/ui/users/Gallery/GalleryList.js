@@ -4,10 +4,6 @@ import GalleryItem from './GalleryItem';
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
 
-import img1 from '../../../assets/images/art-birthday-bright-796605.jpg';
-import img from '../../../assets/images/bg3.jpg';
-import img2 from '../../../assets/images/bg2.jpg';
-
 class GalleryList extends Component {
 
     state = {

@@ -16,7 +16,11 @@ const storage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
+    if (file.mimetype === 'image/jpeg' || 
+        file.mimetype === 'image/png' || 
+        file.mimetype === 'image/jpg' ||
+        file.mimetype === 'video/mp4' ||
+        file.mimetype === 'video/mkv' ) { 
         cb(null, true)
     } else {
         cb(null, false)
@@ -26,19 +30,28 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 5
+        fileSize: 1024 * 1024 * 50
     },
-    fileFilter: fileFilter
+    fileFilter: fileFilter 
 })
 
 // Event creation
-router.post('/new', upload.single('eventImage'), (req, res, next) => {
+router.post('/new', upload.any(), (req, res, next) => {
     // Save new supplier
+    let video = '';
+    req.files.forEach(file => {
+        if (file.fieldname === 'eventVideo') {
+            video = file.path;
+        }
+    })
+    const filesPath = req.files.map(file => file.path)
     const event = new Event({
         _id: mongoose.Types.ObjectId(),
         title: req.body.title,
         owner: JSON.parse(req.body.user),
-        image: req.file.path,
+        image: req.files[0].path,
+        images: filesPath,
+        video: video,
         place: req.body.place,
         description: req.body.description,
         category: req.body.category,
@@ -175,9 +188,10 @@ router.patch('/validate/:id', (req, res, next) => {
 })
 
 // Update event
-router.patch('/:id', upload.single('eventImage'), (req, res, next) => {
+router.patch('/:id', upload.array('images'), (req, res, next) => {
+    const filesPath = req.files.map(file => file.path)
     Event.updateOne({ _id: req.params.id }, {
-        $set: { image: req.file.path }
+        $set: { images: filesPath, image: req.files[0].path }
     })
     .exec()
     .then(event => {

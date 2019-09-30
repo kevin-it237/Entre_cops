@@ -164,7 +164,7 @@ class AdminCoupons extends Component {
 
 
     render() {
-        const { error, events, eventsLoading, services, servicesLoading, selectedAnnonce, loading, removing } = this.state;
+        const { error, events, eventsLoading, services, servicesLoading, selectedAnnonce, loading } = this.state;
         return (
             <Fragment>
                 <div className="container admin-coupons mt-4">

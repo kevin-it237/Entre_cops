@@ -1,7 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import Header from '../../globalComponent/Header';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import './Notifications.scss';
 import Loader from '../../globalComponent/Loader';
 
