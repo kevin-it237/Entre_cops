@@ -14,6 +14,7 @@ const userSchema = mongoose.Schema({
     role: { type: String, required: true },
     recommandations: { type: Array, required: false },
     reservations: { type: Array, required: false },
+    gallery: { type: Array, required: false },
     date: { type: Date, required: false },
 })
 

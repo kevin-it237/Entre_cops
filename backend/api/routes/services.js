@@ -52,6 +52,7 @@ router.post('/new', upload.any(), (req, res, next) => {
         image: req.files[0].path,
         images: filesPath,
         target: req.body.cible,
+        youtubeVideoLink: req.body.youtubeVideoLink,
         video: video,
         problem: req.body.problem,
         category: req.body.category,
@@ -93,12 +94,27 @@ router.patch('/:id', upload.array('images'), (req, res, next) => {
     })
 })
 
+// Search services by  title
+router.get('/:query/search', (req, res, next) => {
+    const query = req.params.query
+    Service.find({ title: new RegExp(query, 'i') })
+        .exec()
+        .then(services => {
+            return res.status(200).json({
+                services: services
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
 // Get all services
 router.get('/all', (req, res, next) => {
     Service.find({}).sort({ $natural: -1 })
         .exec()
         .then(services => {
-            return res.status(201).json({
+            return res.status(200).json({
                 services: services
             })
         })
@@ -112,7 +128,7 @@ router.get('/5', (req, res, next) => {
     Service.find({}).sort({ $natural: -1 }).limit(5)
         .exec()
         .then(services => {
-            return res.status(201).json({
+            return res.status(200).json({
                 services: services
             })
         })
@@ -126,7 +142,7 @@ router.get('/validated/all', (req, res, next) => {
     Service.find({validated: true}).sort({ $natural: -1 })
         .exec()
         .then(services => {
-            return res.status(201).json({
+            return res.status(200).json({
                 services: services
             })
         })
@@ -140,7 +156,7 @@ router.get('/category/:name', (req, res, next) => {
     Service.find({category: req.params.name, validated: true}).sort({ $natural: -1 })
     .exec()
     .then(services => {
-        return res.status(201).json({
+        return res.status(200).json({
             services: services
         })
     })
@@ -154,7 +170,7 @@ router.get('/4', (req, res, next) => {
     Service.find({validated: true}).sort({ $natural: -1 }).limit(4)
         .exec()
         .then(services => {
-            return res.status(201).json({
+            return res.status(200).json({
                 services: services
             })
         })
@@ -168,7 +184,7 @@ router.get('/:id', (req, res, next) => {
     Service.findById(req.params.id)
         .exec()
         .then(service => {
-            return res.status(201).json({
+            return res.status(200).json({
                 service: service
             })
         })
@@ -182,7 +198,7 @@ router.get('/supplier/:id', (req, res, next) => {
     Service.find({"owner._id" : req.params.id, validated: true})
     .exec()
     .then(services => {
-        return res.status(201).json({
+        return res.status(200).json({
             services: services
         })
     })
@@ -227,6 +243,22 @@ router.patch('/:id/makereservation', (req, res, next) => {
 router.patch('/:id/comment', (req, res, next) => {
     Service.updateOne({ _id: req.params.id }, {
         $push: { comments: req.body.comment }
+    })
+    .exec()
+    .then(service => {
+        return res.status(201).json({
+            service: service
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Vote an event
+router.patch('/:id/vote/:value', (req, res, next) => {
+    Service.updateOne({ _id: req.params.id }, {
+        $set: { rate: { value: Number(req.params.value),  clients: req.body.clients  } }
     })
     .exec()
     .then(service => {
@@ -285,5 +317,66 @@ router.delete('/:id', (req, res, next) => {
             return res.status(500).json({ error: err })
         })
 })
+
+
+// Search events by category, town or date
+router.post('/filter', (req, res, next) => {
+    const category = req.body.category
+    const town = new RegExp(req.body.town, 'i')
+    const date1 = req.body.date1
+    const date2 = req.body.date2
+    let query = {}
+    // Category, town, date1, date2
+    if (category != "" && town != "" && date1 && date2) {
+        query = { $and: [{ category: category, place: town }, { date: { $gt: date1 } }, { date: { $lt: date2 } }] }
+    }
+    // Category, town, date1
+    if (category != "" && town != "" && date1 && !date2) {
+        query = { category: category, place: town, date: { $gt: date1 } }
+    }
+    // Category, town
+    if (category != "" && town != "" && !date1 && !date2) {
+        query = { category: category, place: town }
+    }
+    // Category
+    if (category != "" && town == "" && !date1 && !date2) {
+        query = { category: category }
+    }
+    // town
+    if (category == "" && town != "" && !date1 && !date2) {
+        query = { place: town }
+    }
+    // date1
+    if (category == "" && town == "" && date1 && !date2) {
+        query = { date: { $gt: date1 } }
+    }
+    // Category, date1
+    if (category != "" && town == "" && date1 && !date2) {
+        query = { category: category, date: { $gt: date1 } }
+    }
+    // town, date1
+    if (category == "" && town != "" && date1 && !date2) {
+        query = { place: town, date: { $gt: date1 } }
+    }
+    // Category,town, date2
+    if (category != "" && town != "" && !date1 && date2) {
+        query = { category: category, place: town }
+    }
+    // date1, date2
+    if (category == "" && town == "" && date1 && date2) {
+        query = { $and: [{ date: { $gt: date1 } }, { date: { $lt: date2 } }] }
+    }
+    Service.find(query).sort({ $natural: -1 })
+        .exec()
+        .then(services => {
+            return res.status(200).json({
+                services: services
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
 
 module.exports = router;

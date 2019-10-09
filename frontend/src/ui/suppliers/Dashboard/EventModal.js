@@ -396,11 +396,11 @@ class EventModal extends Component {
                                                 </div>
                                                 <div className="col-sm-12 col-md-6 col-lg-6">
                                                     <label for="name">Importer une vidéo</label><br />
-                                                    <Upload type="video" oldUrl={eventVideo} setFile={(name, file) => this.setFile(name, file)} name="eventVideo" label={"Importer depuis votre ordinateur"} />
+                                                        <Upload isEditing={isEditing} type="video" oldUrl={eventVideo} setFile={(name, file) => this.setFile(name, file)} name="eventVideo" label={"Importer depuis votre ordinateur"} />
                                                     <span>Ou bien insérez le lien youtube.</span>
                                                     <input type="text" disabled={isEditing} value={youtubeVideoLink} onChange={(e) => this.handleInputChange(e)} className="form-control" name="youtubeVideoLink" placeholder="Lien youtube" />
                                                     {
-                                                        youtubeVideoLink.length ?
+                                                        youtubeVideoLink&&youtubeVideoLink.length ?
                                                         <iframe width="100%" title="video"
                                                             src={youtubeVideoLink}>
                                                         </iframe>:null

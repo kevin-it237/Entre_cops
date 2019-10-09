@@ -53,6 +53,7 @@ router.post('/new', upload.any(), (req, res, next) => {
         images: filesPath,
         video: video,
         place: req.body.place,
+        youtubeVideoLink: req.body.youtubeVideoLink,
         description: req.body.description,
         category: req.body.category,
         otherInfos: req.body.otherInfos,
@@ -78,7 +79,22 @@ router.get('/all', (req, res, next) => {
     Event.find({}).sort({ $natural: -1 })
     .exec()
         .then(events => {
-        return res.status(201).json({
+        return res.status(200).json({
+            events: events
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Search events by  title
+router.get('/:query/search', (req, res, next) => {
+    const query = req.params.query
+    Event.find({ title: new RegExp(query, 'i') })
+    .exec()
+    .then(events => {
+        return res.status(200).json({
             events: events
         })
     })
@@ -92,7 +108,7 @@ router.get('/5', (req, res, next) => {
     Event.find({}).sort({ $natural: -1 }).limit(5)
     .exec()
         .then(events => {
-        return res.status(201).json({
+        return res.status(200).json({
             events: events
         })
     })
@@ -106,7 +122,7 @@ router.get('/validated/all', (req, res, next) => {
     Event.find({validated: true}).sort({ $natural: -1 })
     .exec()
         .then(events => {
-        return res.status(201).json({
+        return res.status(200).json({
             events: events
         })
     })
@@ -120,7 +136,7 @@ router.get('/4', (req, res, next) => {
     Event.find({validated: true}).sort({ $natural: -1 }).limit(4)
     .exec()
         .then(events => {
-        return res.status(201).json({
+        return res.status(200).json({
             events: events
         })
     })
@@ -134,7 +150,7 @@ router.get('/category/:name', (req, res, next) => {
     Event.find({category: req.params.name, validated: true}).sort({ $natural: -1 })
     .exec()
     .then(events => {
-        return res.status(201).json({
+        return res.status(200).json({
             events: events
         })
     })
@@ -148,7 +164,7 @@ router.get('/:id', (req, res, next) => {
     Event.findById(req.params.id)
         .exec()
         .then(event => {
-            return res.status(201).json({
+            return res.status(200).json({
                 event: event
             })
         })
@@ -162,7 +178,7 @@ router.get('/supplier/:id', (req, res, next) => {
     Event.find({"owner._id" : req.params.id, validated: true})
         .exec()
         .then(events => {
-            return res.status(201).json({
+            return res.status(200).json({
                 events: events
             })
         })
@@ -238,6 +254,22 @@ router.patch('/:id/comment', (req, res, next) => {
     })
 })
 
+// Vote an event
+router.patch('/:id/vote/:value', (req, res, next) => {
+    Event.updateOne({ _id: req.params.id }, {
+        $set: { rate: { value: Number(req.params.value),  clients: req.body.clients  } }
+    })
+    .exec()
+    .then(event => {
+        return res.status(201).json({
+            event: event
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
 
 // Set coupons
 router.patch('/:id/add/coupon', (req, res, next) => {
@@ -279,6 +311,65 @@ router.delete('/:id', (req, res, next) => {
     .then(event => {
         return res.status(201).json({
             event: event
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Search events by category, town or date
+router.post('/filter', (req, res, next) => {
+    const category = req.body.category
+    const town = new RegExp(req.body.town, 'i')
+    const date1 = req.body.date1
+    const date2 = req.body.date2
+    let query = {}
+    // Category, town, date1, date2
+    if (category != "" && town != "" && date1 && date2) {
+        query = { $and: [{ category: category, place: town }, { date: { $gt: date1 } }, { date: { $lt: date2 } }] }
+    }
+    // Category, town, date1
+    if (category != "" && town != "" && date1 && !date2) {
+        query = { category: category, place: town, date: { $gt: date1 } }
+    }
+    // Category, town
+    if (category != "" && town != "" && !date1 && !date2) {
+        query = { category: category, place: town }
+    }
+    // Category
+    if (category != "" && town == "" && !date1 && !date2) {
+        query = { category: category }
+    }
+    // town
+    if (category == "" && town != "" && !date1 && !date2) {
+        query = { place: town }
+    }
+    // date1
+    if (category == "" && town == "" && date1 && !date2) {
+        query = { date: { $gt: date1 } }
+    }
+    // Category, date1
+    if (category != "" && town == "" && date1 && !date2) {
+        query = { category: category, date: { $gt: date1 } }
+    }
+    // town, date1
+    if (category == "" && town != "" && date1 && !date2) {
+        query = { place: town, date: { $gt: date1 } }
+    }
+    // Category,town, date2
+    if (category != "" && town != "" && !date1 && date2) {
+        query = { category: category, place: town }
+    }
+    // date1, date2
+    if (category == "" && town == "" && date1 && date2) {
+        query = { $and: [{ date: { $gt: date1 } }, { date: { $lt: date2 }}] }
+    }
+    Event.find(query).sort({ $natural: -1 })
+    .exec()
+    .then(events => {
+        return res.status(200).json({
+            events: events
         })
     })
     .catch(err => {

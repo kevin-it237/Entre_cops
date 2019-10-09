@@ -1,7 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const PDFDocument = require('pdfkit');
 const path = require("path");
+const fs = require('fs')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const multer = require('multer')
@@ -151,6 +153,21 @@ router.post('/generatetoken', (req, res, next) => {
     })
 })
 
+// Search user by name or email
+router.get('/:query/search', (req, res, next) => {
+    const query = req.params.query.toString()
+    User.find({ $or: [{name: new RegExp(query, 'i')}, {email: new RegExp(query, 'i')} ]})
+        .exec()
+        .then(users => {
+            return res.status(201).json({
+                users: users
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
 //Update profile without image
 router.patch('/:userId', (req, res, next) => {
     User.findById(req.params.userId)
@@ -285,6 +302,24 @@ router.patch('/:userId/password/update', (req, res, next) => {
         })
 });
 
+// Save images on user gallery
+router.patch('/:id/galleryimages/save', (req, res, next) => {
+    User.update({ _id: req.params.id }, {
+        $push: {
+            gallery: req.body.gallery,
+        }
+    })
+    .then(user => {
+        res.status(201).json({
+            message: 'saved successfully',
+            user: user
+        })
+    })
+    .catch(err => {
+        res.status(500).json({ error: err })
+    })
+});
+
 // delete a user
 router.delete('/:userId', (req, res, next) => {
     User.remove({ _id: req.params.userId })
@@ -395,5 +430,44 @@ router.get('/count/all', (req, res, next) => {
             return res.status(500).json({ error: err })
         })
 })
+
+router.get('/pdf/download', (req, res, next) => {
+    // Create a document
+    const doc = new PDFDocument;
+
+    // Pipe its output somewhere, like to a file or HTTP response
+    // See below for browser usage
+    doc.pipe(fs.createWriteStream('./uploads/coupons/doc.pdf'));
+
+    // Embed a font, set the font size, and render some text
+
+
+    // Add an image, constrain it to a given size, and center it vertically and horizontally
+    doc.image('./uploads/logo/logo.png', 10, 20, {
+        fit: [150, 80],
+        align: 'center',  
+        valign: 'center'
+    }, { width: 150 });
+
+    // Add another page
+    doc.fontSize(16)
+        .text("Reduction du prix d'entré", 170, 20, { lineGap : 2});
+    doc.fillColor('red')
+        .fontSize(14)
+        .text("Coupon de réduction de 5%", 170, null, { lineGap: 2 });
+    doc.fillColor('black')
+        .fontSize(14)
+        .text("Pour cette Annonce: Vente Make up tools Pour cette Annonce: Vente Make up tools", 170, null, { lineGap: 2 });
+    doc.fontSize(10)
+        .text("Offre valable jusqu'à 12 juillet sous présentation au guichet.", 170, null, { lineGap: 2 });
+
+    doc.save() 
+ 
+    // Finalize PDF file
+    doc.end();
+    return res.status(201).json({ 
+        message: "PDF_CREATED"
+    })
+});
 
 module.exports = router;

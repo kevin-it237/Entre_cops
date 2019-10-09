@@ -12,9 +12,10 @@ const eventSchema = mongoose.Schema({
     video: { type: String, required: false },
     reservations: { type: Array, required: false },
     otherInfos: { type: String, required: false },
+    youtubeVideoLink: { type: String, required: false },
     comments: { type: Object, required: false },
     coupons: { type: Object, required: false },
-    rate: { type: Number, required: false },
+    rate: { type: Object, required: false },
     validated: { type: Boolean, required: true },
     date: { type: Date, required: false }
 })

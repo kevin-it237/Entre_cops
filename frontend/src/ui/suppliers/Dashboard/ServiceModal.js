@@ -385,7 +385,7 @@ class ServiceModal extends Component {
                                                     {isTyping && !placeValid ? <div className="invalid-feedback">Invalide</div> : null}
                                                 </div>
                                                 <div className="form-group">
-                                                    <label for="name">Durée du service</label>
+                                                    <label for="name">Durée du service/ Dates d'ouverture</label>
                                                     <input disabled={isEditing} type="text" value={duration} onChange={(e) => this.handleInputChange(e)} className= "form-control" name="duration" placeholder="Exple: 2 Mois" required />
                                                 </div>
                                                 <div className="row align-items-start py-3">
@@ -408,11 +408,11 @@ class ServiceModal extends Component {
                                                     </div>
                                                     <div className="col-sm-12 col-md-6 col-lg-6">
                                                         <label for="name">Importer une vidéo</label><br />
-                                                        <Upload isEditing type="video" oldUrl={serviceVideo} setFile={(name, file) => this.setFile(name, file)} name="serviceVideo" label={"Importer depuis votre ordinateur"} />
+                                                        <Upload isEditing={isEditing} type="video" oldUrl={serviceVideo} setFile={(name, file) => this.setFile(name, file)} name="serviceVideo" label={"Importer depuis votre ordinateur"} />
                                                         <span>Ou bien insérez le lien youtube.</span>
                                                         <input type="text" disabled={isEditing} value={youtubeVideoLink} onChange={(e) => this.handleInputChange(e)} className="form-control" name="youtubeVideoLink" placeholder="Lien youtube" />
                                                         {
-                                                            youtubeVideoLink.length ?
+                                                            youtubeVideoLink&&youtubeVideoLink.length ?
                                                                 <iframe width="100%" title="video"
                                                                     src={youtubeVideoLink}>
                                                                 </iframe> : null
