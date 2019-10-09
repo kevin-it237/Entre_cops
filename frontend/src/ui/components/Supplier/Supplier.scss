@@ -1,7 +1,7 @@
 @import '../../utils/utils.scss';
 
 .bannerwrapper {
-    background: linear-gradient(to bottom, rgba($maincolor,0.94), rgba($maincolor,0.94)), url("./../../../assets/images/bg2.jpg"), ;
+    background: linear-gradient(to bottom, rgba($maincolor,.96), rgba($maincolor,.96)), url("./../../../assets/images/bg2.jpg"), ;
     background-size: 100%;
     background-repeat: no-repeat;
 
@@ -13,7 +13,7 @@
         }
         h1 > b {
             color: white !important;
-            font-size: 3rem;
+            font-size: 3.6rem;
             @media only screen and (max-width: 900px) {
                 font-size: 2rem;
                 text-align: center !important;
@@ -49,8 +49,7 @@
 
     .banner {
         img {
-            width: 40rem;
-            height: 40rem;
+            width: 80%;
         }
         .supplierdemand {
             color: white !important;

@@ -1,6 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import imgSante from '../../../assets/icons/biceps.svg';
+import imgShopping from '../../../assets/icons/shopping-store.svg';
+import imgBar from '../../../assets/icons/meat.svg';
+import imgVoyage from '../../../assets/icons/map-location.svg';
+import imgSortir from '../../../assets/icons/idea.svg';
+import imgCoupons from '../../../assets/icons/graphic-design.svg';
 
 const CategoryItem = (props) => {
     const {category} = props;
@@ -13,11 +18,19 @@ const CategoryItem = (props) => {
     } else {
         url = "/category/" + categoryName;
     }
+
     return (
         <div className="wrimagecard wrimagecard-topimage">
             <NavLink to={url}>
                 <div className="wrimagecard-topimage_header">
-                    <center><FontAwesomeIcon icon={props.icon} size={"3x"} /></center>
+                    <center>
+                        {(category.name === "Coupons") && <img src={imgCoupons} alt="" />}
+                        {(category.name === "Sortir") && <img src={imgSortir} alt="" />}
+                        {(category.name === "Bar louge & Restaurants") && <img src={imgBar} alt="" />}
+                        {(category.name === "Beauté & Santé") && <img src={imgSante} alt="" />}
+                        {(category.name === "Voyages") && <img src={imgVoyage} alt="" />}
+                        {(category.name === "Shopping") && <img src={imgShopping} alt="" />}
+                    </center>
                 </div>
                 <div className="wrimagecard-topimage_title">
                     <p className={props.selected ? "text-center selected": "text-center"}>{category.name}</p>

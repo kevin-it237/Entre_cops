@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionsTypes';
+import {clearLoader} from '../actions'
 import axios from 'axios';
 
 export const signup = (data) => {
@@ -14,6 +15,7 @@ export const signup = (data) => {
                 // Save in localstorage
                 localStorage.setItem('authData', JSON.stringify(res.data));
                 dispatch(startSignup(res.data))
+                dispatch(clearLoader())
             })
             .catch(err => {
                 // User already Exist
@@ -22,9 +24,11 @@ export const signup = (data) => {
                 } else {
                     dispatch(authError("Une érreur s'est produite, Veuillez reéssayer"))
                 }
+                dispatch(clearLoader())
             })
         } catch (error) {
             dispatch(authError("Problème de connection."))
+            dispatch(clearLoader())
         }
     }
 };
@@ -48,6 +52,7 @@ export const login = (data) => {
                 // Save in localstorage
                 localStorage.setItem('authData', JSON.stringify(res.data));
                 dispatch(startLogin(res.data))
+                dispatch(clearLoader())
             })
             .catch(err => {
                 if (err.response.data.message === 'WRONG_PASSWORD'
@@ -56,9 +61,11 @@ export const login = (data) => {
                 } else {
                     dispatch(authError("Une érreur s'est produite, Veuillez reéssayer"))
                 }
+                dispatch(clearLoader())
             })
         } catch (error) {
             dispatch(authError("Erreur de connexion. Veuillez reéssayer."))
+            dispatch(clearLoader())
         }
     }
 };

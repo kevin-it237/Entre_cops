@@ -27,13 +27,13 @@
     }
 
     .aws-sld__controls__arrow-left:after, .aws-sld__controls__arrow-right:after {
-        background-color: white !important;
+        background-color: $maincolor !important;
     }
     .aws-sld__controls__arrow-left:after, .aws-sld__controls__arrow-right:before {
-        background-color: white !important;
+        background-color: $maincolor !important;
     }
     .aws-sld__controls__arrow-left:before {
-        background-color: white !important;
+        background-color: $maincolor !important;
     }
 }
 #projectdetails .left .aws-sld__content {
@@ -139,31 +139,6 @@
     display: flex;
     padding-right: 2rem;
     padding-left: 2rem;
-}
-#projectdetails .left .moreinfos .stars{
-    display: flex;
-    align-items: center;
-    padding-right: 2rem;
-    padding-left: 2rem;
-
-    svg {
-        margin-right: .5rem;
-        cursor: pointer;
-        path {
-            fill: orange !important;
-        }
-        &:hover path {
-            fill: orangered !important;
-        }
-    }
-
-    .votes {
-        font-size: 1.25rem;
-        margin-top: .25rem;
-        @media only screen and (max-width: 600px) {
-            font-size: 1.05rem;
-        }
-    }
 }
 
 #projectdetails .left .moreinfos .content{

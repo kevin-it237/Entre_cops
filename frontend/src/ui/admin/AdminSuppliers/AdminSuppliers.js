@@ -3,6 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Loader from '../../globalComponent/Loader';
+import SupplierForm from '../../components/Forms/SuplierForm';
 import {rootUrl} from '../../../configs/config';
 
 class AdminSupplier extends Component {
@@ -16,7 +17,12 @@ class AdminSupplier extends Component {
         deleting: false,
         loadinSingle: false,
         error: '',
-        fetcherror: ''
+        fetcherror: '',
+        showSupplierCreationModal: false
+    }
+
+    closeSupplierModal = () => {
+        this.setState({showSupplierCreationModal: false})
     }
 
     componentDidMount() {
@@ -110,8 +116,9 @@ class AdminSupplier extends Component {
             <Fragment>
                 <div className="container">
                     <div className="row mt-5">
-                        <div className="col-sm-12">
-                            <h3 className="title mb-5">FOURNISSEURS</h3>
+                        <div className="col-sm-12 d-flex justify-content-between align-items-center mb-5">
+                            <h3 className="title">FOURNISSEURS</h3>
+                            <button onClick={() => this.setState({ showSupplierCreationModal: true })} className="button">Ajouter un Fournisseur</button>
                         </div>
                         <div className="col-sm-12">
                             {fetcherror && fetcherror.length ? <div className="alert alert-danger">{fetcherror}</div> : null}
@@ -155,7 +162,7 @@ class AdminSupplier extends Component {
                     </div>
                 </div>
 
-                 {/* Add a new Supplier Popup */}
+                 {/* Validate/delete supplier */}
                  <Modal show={this.state.showModal} size="lg" onHide={() => this.setState({showModal: false})} >
                     <Modal.Header closeButton>
                         <Modal.Title>Détails sur le Fournisseur</Modal.Title>
@@ -218,6 +225,25 @@ class AdminSupplier extends Component {
                                 {deleting ? <Loader color="white" /> : "Supprimer"}
                             </Button>
                             <Button variant="default" onClick={() => this.setState({showModal: false, error: ''})}>
+                                Fermer
+                            </Button>
+                        </div>
+                    </Modal.Footer>
+                </Modal>
+
+                {/* Add a new Supplier Popup */}
+                <Modal show={this.state.showSupplierCreationModal} size="lg" onHide={() => this.setState({ showSupplierCreationModal: false })} >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Nouveau Fournisseur</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="container supplier-form">
+                            <SupplierForm closeModal={this.closeSupplierModal} />
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <div className="py-3">
+                            <Button variant="outline" onClick={() => this.setState({ showSupplierCreationModal: false })}>
                                 Fermer
                             </Button>
                         </div>

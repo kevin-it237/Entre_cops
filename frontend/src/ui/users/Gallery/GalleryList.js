@@ -12,10 +12,9 @@ class GalleryList extends Component {
         loading: true
     };
 
-    componentWillMount() {
+    componentDidMount() {
         axios.get('/api/gallery/all')
         .then(res => {
-            console.log(res.data)
             this.setState({ loading: false, publications: res.data.publications })
         })
         .catch(err => {
@@ -37,16 +36,16 @@ class GalleryList extends Component {
                 </section>
                 <section className="publications-section">
                     <div className="container">
-                        <div className="row">
-                            <div className="col-sm-12">
-                                    {
-                                    this.state.loading ? <div className="d-flex justify-content-center"><Loader /></div> :
-                                        this.state.publications.map(pub => (
-                                            <GalleryItem content={pub.content} images={pub.images} date={pub.date} />
-                                        ))
-                                    }
-                            </div>
-                        </div>
+                        {
+                        this.state.loading ? <div className="d-flex justify-content-center"><Loader /></div> :
+                            this.state.publications.map((pub, id) => (
+                                <div className="row pt-5 gallery-row pb-5">
+                                    <div className="col-sm-12 mt-4 mb-3">
+                                        <GalleryItem key={id} content={pub.content} images={pub.images} date={pub.date} />
+                                    </div>
+                                </div>
+                            ))
+                        }
                     </div>
                 </section>
             </Fragment>

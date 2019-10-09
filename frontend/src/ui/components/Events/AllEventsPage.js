@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import Hoc from '../../globalComponent/Hoc';
+import React, { Component, Fragment } from 'react';
 import Header from '../../globalComponent/Header';
 import Events from './Events';
 import Categories from '../Categories/Categories';
@@ -8,11 +7,11 @@ class AllEventsPage extends Component {
 
     render() {
         return (
-            <Hoc>
+            <Fragment>
                 <Header />
                 <Categories />
                 <Events eventType="Toutes les Actualités" isHomePage={false} />
-            </Hoc>
+            </Fragment>
         );
     }
 }

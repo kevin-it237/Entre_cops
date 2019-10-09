@@ -15,6 +15,7 @@ class ServiceModal extends Component {
         cible: '',
         probleme: '',
         serviceVideo: '',
+        youtubeVideoLink: '',
         offre: '',
         duration: '',
         place: '',
@@ -100,11 +101,12 @@ class ServiceModal extends Component {
         e.preventDefault();
         if (this.state.formValid) {
             const formData = new FormData();
-            const { title, probleme, cible, category, images, serviceVideo, offre, duration, place } = this.state;
+            const { title, probleme, cible, category, images, serviceVideo, offre, duration, place, youtubeVideoLink } = this.state;
             formData.append('title', title);
             formData.append('category', category);
             formData.append('cible', cible);
             formData.append('problem', probleme);
+            formData.append('youtubeVideoLink', youtubeVideoLink);
             formData.append('offre', offre);
             formData.append('duration', duration);
             formData.append('place', place);
@@ -188,7 +190,8 @@ class ServiceModal extends Component {
                     serviceVideo: service.video.length ? rootUrl + "/" + service.video : null,
                     previewImages: images,
                     duration: service.duration,
-                    validated: service.validated
+                    validated: service.validated,
+                    youtubeVideoLink: service.youtubeVideoLink
                 })
             }
         }
@@ -325,7 +328,7 @@ class ServiceModal extends Component {
     }
 
     render() {
-        const { serviceVideo, title, probleme, cible, problemeValid,
+        const { serviceVideo, title, probleme, cible, problemeValid, youtubeVideoLink,
             category, serviceImageValid, titleValid, cibleValid, categoryValid, offre, place, placeValid,
             error, loading, isTyping, categories, validating, deleting, duration, offreValid } = this.state;
         const { show, closeModal, loadingAn, isEditing, service } = this.props;
@@ -405,18 +408,26 @@ class ServiceModal extends Component {
                                                     </div>
                                                     <div className="col-sm-12 col-md-6 col-lg-6">
                                                         <label for="name">Importer une vidéo</label><br />
-                                                        <Upload type="video" oldUrl={serviceVideo} setFile={(name, file) => this.setFile(name, file)} name="serviceVideo" label={"Importer une video"} />
+                                                        <Upload isEditing type="video" oldUrl={serviceVideo} setFile={(name, file) => this.setFile(name, file)} name="serviceVideo" label={"Importer depuis votre ordinateur"} />
+                                                        <span>Ou bien insérez le lien youtube.</span>
+                                                        <input type="text" disabled={isEditing} value={youtubeVideoLink} onChange={(e) => this.handleInputChange(e)} className="form-control" name="youtubeVideoLink" placeholder="Lien youtube" />
+                                                        {
+                                                            youtubeVideoLink.length ?
+                                                                <iframe width="100%" title="video"
+                                                                    src={youtubeVideoLink}>
+                                                                </iframe> : null
+                                                        }
                                                     </div>
                                                 </div>
                                                 {
-                                                    !isEditing ?
+                                                !isEditing ?
+                                                    <div className="d-flex justify-content-end">
+                                                        <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Ajouter l'Evenement"}</button>
+                                                    </div> :
+                                                    !this.state.validated ?
                                                         <div className="d-flex justify-content-end">
-                                                            <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Ajouter l'Evenement"}</button>
-                                                        </div> :
-                                                        !this.state.validated ?
-                                                            <div className="d-flex justify-content-end">
-                                                                <button disabled={loading} type="submit" onClick={(e) => this.updateService(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer la modification"}</button>
-                                                            </div> : null
+                                                            <button disabled={loading} type="submit" onClick={(e) => this.updateService(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer la modification"}</button>
+                                                        </div> : null
                                                 }
                                             </Fragment>
                                     }

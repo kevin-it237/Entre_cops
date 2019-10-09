@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Forms.scss'; 
 import { connect } from 'react-redux';
 import {Link} from 'react-router-dom';
-import { login, renderLoader, clearLoader, clearError } from '../../../store/actions';
+import { login, renderLoader, clearError } from '../../../store/actions';
 import Loader from '../../globalComponent/Loader';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 
@@ -17,7 +17,8 @@ class LoginForm extends Component {
         formErrors: { email: '', password: '' },
         emailValid: false,
         passwordValid: false,
-        formValid: false
+        formValid: false,
+        loading: false
     }
 
     componentDidMount() {
@@ -72,8 +73,6 @@ class LoginForm extends Component {
             }
             // Launch the signup
             this.props.onLogin(data);
-            // Clear loader
-            this.props.onClearLoader();
         }
     }
 
@@ -93,7 +92,7 @@ class LoginForm extends Component {
                         {isTyping && !emailValid ? <div style={{ color: "red" }}>Email non valide.</div> : null}
                         <input type="password" value={password} onChange={(e) => this.handleInputChange(e)} id="password" className="fadeIn third" name="password" placeholder="Mot de passe" />
                         {isTyping && !this.state.passwordValid ? <div style={{ color: "red" }}>Invalide. Min 6 caratères</div> : null}
-                        <button disabled={loader} type="submit" onClick={(e) => this.handleSubmit(e)} id="signBtn" className="button fadeIn fourth mt-4 mb-5">{this.props.loader ? <Loader color="white" /> : "Se connecter"}</button>
+                        <button disabled={loader} type="submit" onClick={(e) => this.handleSubmit(e)} id="signBtn" className="button fadeIn fourth mt-4 mb-5">{loader ? <Loader color="white" /> : "Se connecter"}</button>
                     </form>
                     <p>Ou bien connectez vous avec:</p>
                     <div className="d-flex socialWrapper">
@@ -121,7 +120,6 @@ const mapPropsToState = state => {
 const mapDispatchToState = dispatch => {
     return {
         onLogin: (data) => dispatch(login(data)),
-        onClearLoader: () => dispatch(clearLoader()),
         onRenderLoader: () => dispatch(renderLoader()),
         onClearError: () => dispatch(clearError()),
     }

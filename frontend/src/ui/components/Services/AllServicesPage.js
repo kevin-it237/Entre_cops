@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import Hoc from '../../globalComponent/Hoc';
+import React, { Component, Fragment } from 'react';
 import Header from '../../globalComponent/Header';
 import Services from './Services';
 import Categories from '../Categories/Categories';
@@ -8,11 +7,11 @@ class AllServicesPage extends Component {
 
     render() {
         return (
-            <Hoc>
+            <Fragment>
                 <Header />
                 <Categories />
                 <Services eventType="Tous les Services" isHomePage={false} />
-            </Hoc>
+            </Fragment>
         );
     }
 }

@@ -15,12 +15,18 @@
     }
 }
 
+.gallery-row {
+    border-top: solid 1px #eee;
+}
+
 .gallery-item {
     &:not(:first-child) {
         padding-top: 3rem;
         margin-top: 4.5rem;
         border-top: solid 1px #eee;
     }
+
+    
 
     .header {
         margin-bottom: 1rem;
@@ -35,14 +41,8 @@
     }
 
     .body {
-        img {
-            max-height: 30rem;
-            width: 100%;
-        }
-        .col, .col-sm-4, .col-sm-3 {
-            padding: 2px !important;
-            max-height: 55rem;
-        }
+        
+        
     }
 }
 

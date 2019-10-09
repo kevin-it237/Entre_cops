@@ -3,8 +3,7 @@ import CategoryItem from './CategoryItem';
 import './Categories.scss';
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
-import { faAirFreshener, faCamera } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import imgGallery from '../../../assets/icons/photo.svg';
 
 class Categories extends Component {
     state = {
@@ -69,9 +68,9 @@ class Categories extends Component {
         if(!loading&&categories.length) {
             content = categories.map(category => {
                 if(this.props.selected === category.name) {
-                    return <CategoryItem selected={true} key={category._id} category={category} icon={faAirFreshener} />
+                    return <CategoryItem selected={true} key={category._id} category={category}  />
                 } else {
-                    return <CategoryItem key={category._id} category={category} icon={faAirFreshener} />
+                    return <CategoryItem key={category._id} category={category} />
                 }
         });
         }
@@ -80,7 +79,7 @@ class Categories extends Component {
                 <div className="container pb-4">
                     <div className="row py-5">
                         <div className="col">
-                            <center><h1 className="pt-4 service-header">Parcourir par catégorie</h1></center>
+                            <center><h2 className="pt-4 service-header">Parcourir par catégorie</h2></center>
                         </div>
                     </div>
                     <div className="row pb-5 categories-wrapper">
@@ -88,7 +87,7 @@ class Categories extends Component {
                         <div className="wrimagecard wrimagecard-topimage">
                             <a href="/gallery">
                                 <div className="wrimagecard-topimage_header">
-                                    <center><FontAwesomeIcon icon={faCamera} size={"3x"} /></center>
+                                    <center><center><img src={imgGallery} alt="Galerie" /></center></center>
                                 </div>
                                 <div className="wrimagecard-topimage_title">
                                     <p className={"text-center"}>Galerie</p>

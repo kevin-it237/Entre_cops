@@ -6,8 +6,8 @@ const EventItem = (props) => {
     const description = textLength <= 95 ? props.event.description:
         props.event.description.slice(0, 93) + '...';
     return (
-        <a href={"/annonce/event/" + props.event._id} className="home mt-5">
-            {props.event.coupons && props.event.coupons.nCoupons > 0 ? <h2 className="badge badge-danger custom-badge">Coupon disponible</h2>:null}
+        <a href={"/annonce/event/" + props.event._id} className="home mt-4">
+            {props.event.coupons && props.event.coupons.nCoupons > 0 ? <h2 className="badge badge-warning custom-badge">Coupons</h2> : <h2 className="badge badge-dark custom-badge">Pas de coupons</h2>}
             <img src={rootUrl+'/'+props.event.image} alt="" className="home__img"/>
             <h5 className="home_name">{props.event.title}</h5>
             <div className="home_content">

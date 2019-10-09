@@ -1,12 +1,17 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
-import html2pdf from 'html2pdf.js';
 import { rootUrl } from '../../../configs/config';
 
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Loader from '../../globalComponent/Loader';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+
 import logo from '../../../assets/images/logo.png';
+import {counponToPrint} from '../../components/CouponSchema/Coupon'
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+const image2base64 = require('image-to-base64');
 
 class AdminCoupons extends Component {
 
@@ -113,34 +118,30 @@ class AdminCoupons extends Component {
                 }
                 return event;
             })
-            let element =
-                `<div class="bg-light py-5 pr-4 pl-4" style="height: auto" id="admincouponstodownload">
-                    <div class="d-flex flex-row text-dark" style={display: flex}>
-                        <img class="mr-3" src=${logo} width="200" alt="" />
-                        <div>
-                            <h3>${infos}</h3>
-                            <h4>Coupon de réduction de ${montant}</h4>
-                            <h3>Pour cette Annonce: ${selectedAnnonce.title}</h3>
-                            <p>Offre valable jusqu'à ${datelimite} sous présentation au guichet.</p>
-                        </div>
-                    </div>
-                </div>`;
-            let opt = {
-                margin: 1,
-                filename: selectedAnnonce.title.split(' ').join('-'),
-                image: { type: 'png', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
-            };
-            // Generate the pdf
-            html2pdf().set(opt).from(element).save()
-            .then(doc => {
+            // generate the coupon
+            image2base64(logo) // you can also to use url
+            .then(response => {
+                let docDefinition = counponToPrint(response, infos, montant, datelimite,
+                    selectedAnnonce.title, "Entrecops", selectedAnnonce.title.split(' ').join('-'))
+                pdfMake.createPdf(docDefinition).open();
                 this.setState({ loading: false, showModal: false, [eventType+"s"]: newEvents })
-            });
+            })
+            .catch((error) => console.log(error))
         })
         .catch(err => {
             this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
         })
+    }
+
+    previewCoupon = (announce) => {
+        const {infos, datelimite, montant} = announce.coupons;
+        image2base64(logo) // you can also to use url
+            .then(response => {
+                let docDefinition = counponToPrint(response, infos, montant, datelimite,
+                    announce.title, "Entrecops", announce.title.split(' ').join('-'))
+                pdfMake.createPdf(docDefinition).open();
+            })
+            .catch((error) => console.log(error))
     }
 
     removeCoupon = (id, type) => {
@@ -204,9 +205,14 @@ class AdminCoupons extends Component {
                                                         <th scope="row">{i + 1}</th>
                                                         <td>{event.title}</td>
                                                         <td>{event.coupons ? event.coupons.nCoupons : 0}</td>
-                                                        <td className="actions">
+                                                        <td className="actions text-right">
+                                                            {event.coupons ?
+                                                            <Fragment>
+                                                                <button className="btn btn-dark btn-lg mr-3" onClick={() => this.previewCoupon(event)}>Afficher le coupon</button>
+                                                                <button className="btn btn-outline-danger btn-lg" onClick={() => this.removeCoupon(event._id, "event")}>Annuler coupons</button>
+                                                            </Fragment>:
                                                             <button className="btn btn-danger btn-lg mr-3" onClick={() => this.openModal(event._id, "event")}>Générer des coupons</button>
-                                                            <button className="btn btn-dark btn-lg" onClick={() => this.removeCoupon(event._id, "event")}>Annuler coupons</button>
+                                                             }
                                                         </td>
                                                     </tr>
                                                 ))
@@ -244,8 +250,14 @@ class AdminCoupons extends Component {
                                                             <td>{service.title}</td>
                                                             <td>{service.coupons ? service.coupons.nCoupons : 0}</td>
                                                             <td className="actions">
-                                                                <button className="btn btn-danger btn-lg mr-3" onClick={() => this.openModal(service._id, "service")}>Générer des coupons</button>
-                                                                <button className="btn btn-dark btn-lg" onClick={() => this.removeCoupon(service._id, "service")}>Annuler coupons</button>
+                                                                {
+                                                                    service.coupons ?
+                                                                    <Fragment>
+                                                                        <button className="btn btn-dark btn-lg mr-3" onClick={() => this.previewCoupon(service)}>Afficher le coupon</button>
+                                                                        <button className="btn btn-outline-danger btn-lg" onClick={() => this.removeCoupon(service._id, "service")}>Annuler coupons</button>
+                                                                    </Fragment>:
+                                                                    <button className="btn btn-danger btn-lg mr-3" onClick={() => this.openModal(service._id, "service")}>Générer des coupons</button>
+                                                                }
                                                             </td>
                                                         </tr>
                                                     ))
@@ -288,6 +300,9 @@ class AdminCoupons extends Component {
                                         <div className="form-group">
                                             <label for="ncoupons">Nombre de coupons</label>
                                             <input type="number" onChange={(e) => this.handleInputChange(e)} value={this.state.nCoupons} name="nCoupons" className="form-control" placeholder="Nombre de coupons"/>
+                                        </div>
+                                        <div className="couponwrap" id="couponwrap">
+
                                         </div>
                                     </div>:null
                                 }

@@ -13,9 +13,11 @@ import SupplierDashboard from './ui/suppliers/Dashboard/Dashboard';
 import SupplierRegistration from './ui/components/Supplier/SupplierRegistration';
 import SupplierConfirmationForm from './ui/components/Supplier/SupplierConfirmationForm';
 import Gallery from './ui/users/Gallery/GalleryPage';
+import UserGallery from './ui/users/Gallery/UserGallery';
 import Profile from './ui/users/Profile/Profile';
 import Notifications from './ui/users/Notifications/NotificationsPage';
 import UserReservations from './ui/users/Reservations/Reservations';
+import FilterResults from './ui/components/Filter/FilterResults';
 
 import {autoSignIn} from './store/actions';
 
@@ -44,6 +46,7 @@ class App extends Component {
             <Route path="/category/:id" exact component={SingleCategoryPage}  />
             <Route path="/annonce/:anounceType/:id" exact component={DetailsPage}  />
             <Route path="/gallery" exact component={Gallery}  />
+            <Route path="/filter" exact component={() => <FilterResults filter={localStorage.getItem("searchParams")} />}  />
 
             {/* Supplier Routes */}
             <PrivateRoute path="/dashboard/reservations" exact component={SupplierDashboard}  />
@@ -52,6 +55,7 @@ class App extends Component {
             <PrivateRoute path="/user/profile" exact component={Profile}  />
             <PrivateRoute path="/user/notifications" exact component={Notifications}  />
             <PrivateRoute path="/user/reservations" exact component={UserReservations}  />
+            <PrivateRoute path="/user/gallery" exact component={UserGallery}  />
     
             {/* Admin Routes */}
             <PrivateRoute path="/admin" component={Admin} />

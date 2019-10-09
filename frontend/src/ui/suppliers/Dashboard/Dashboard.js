@@ -135,7 +135,11 @@ class Dashboard extends Component {
                                                 <a key={i} className={i===0 ?"list-group-item list-group-item-action active":"list-group-item list-group-item-action"} data-toggle="list" href={`#item${i}`} role="tab">
                                                     {event.title} ({event.reservations&&event.reservations.length ? event.reservations.length: 0})
                                                     <br/>
-                                                    <Stars isSupplierDashboard />
+                                                    <Stars 
+                                                        isSupplierDashboard
+                                                        rate={event.rate ? event.rate: null }
+                                                        anounceType={"event"}  
+                                                        id={event._id} />
                                                 </a>
                                             ))
                                         }
@@ -197,7 +201,11 @@ class Dashboard extends Component {
                                                 <a key={service._id} className={i===0 ?"list-group-item list-group-item-action active":"list-group-item list-group-item-action"} data-toggle="list" href={`#service${i}`} role="tab">
                                                     {service.title} ({service.reservations&&service.reservations.length ? service.reservations.length: 0})
                                                     <br/>
-                                                    <Stars isSupplierDashboard />
+                                                    <Stars 
+                                                        isSupplierDashboard
+                                                        rate={service.rate ? service.rate: null }
+                                                        anounceType={"service"}  
+                                                        id={service._id} />
                                                 </a>
                                             ))
                                         }

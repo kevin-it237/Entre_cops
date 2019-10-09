@@ -8,13 +8,15 @@ const ServiceItem = (props) => {
         <a href={"/annonce/service/"+props.service._id} className="mt-5">
             <div className="card">
                 <div className="box">
-                    {props.service.coupons && props.service.coupons.nCoupons > 0 ? <h2 className="badge badge-danger custom-badge">Coupon disponible</h2> : null}
+                    {props.service.coupons && props.service.coupons.nCoupons > 0 ? <h2 className="badge badge-warning custom-badge">Coupons</h2> : <h2 className="badge badge-dark custom-badge">Pas de coupons</h2>}
                     <div className="img">
                         <img src={rootUrl+'/'+props.service.image} alt="Service" />
                     </div>
-                    <h2>{props.service.category}<br/>
-                    <span>{props.service.title}</span></h2>
-                    <p>{offre}</p>
+                    <div className="text-content">
+                        <h2>{props.service.category}<br/>
+                        <span>{props.service.title}</span></h2>
+                        <p>{offre}</p>
+                    </div>
                 </div>
             </div>
         </a>

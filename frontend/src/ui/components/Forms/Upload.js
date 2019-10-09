@@ -17,12 +17,12 @@ export default class Upload extends Component {
 
     render() {
         const {url} = this.state;
-        const {label, oldUrl, type} = this.props;
+        const { label, oldUrl, type, isEditing} = this.props;
         let accept = type === "image" ? "image/png,image/jpeg,image/jpg" : (type === "document" ? ".docx, .pptx, .pdf" : "video/*");
 
     return ( 
         <Fragment>
-            <button type="button" className="btn btn-dark mb-2" onClick={()=>this.inputElement.click()}>{label} </button>
+            <button disabled={isEditing} type="button" className="btn btn-dark mb-2" onClick={()=>this.inputElement.click()}>{label} </button>
             <input style={{visibility:'hidden'}} accept={accept} onChange={(event) => this.preview(event)} ref={input => this.inputElement = input} type="file" />
             <div className="ibox">
                 <div className="ibox-content product-box active">

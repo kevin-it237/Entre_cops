@@ -2,10 +2,10 @@ import React, {Component, Fragment} from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Upload from '../../components/Forms/Upload';
 import axios from 'axios';
 import socketIOClient from 'socket.io-client';
-import "react-datepicker/dist/react-datepicker.css";
 import Loader from '../../globalComponent/Loader';
 import {rootUrl} from '../../../configs/config';
 import './EventForm.scss';
@@ -18,6 +18,7 @@ class EventModal extends Component {
         description: '',
         date: new Date(),
         eventVideo: '',
+        youtubeVideoLink: '',
         previewImages: '',
         otherInfos: '',
         isTyping: false,
@@ -86,10 +87,11 @@ class EventModal extends Component {
         e.preventDefault();
         if (this.state.formValid) {
             const formData = new FormData();
-            const { title, description, place, category, eventVideo, otherInfos, date, images } = this.state;
+            const { title, description, place, category, eventVideo, otherInfos, date, images, youtubeVideoLink } = this.state;
             formData.append('title', title);
             formData.append('category', category);
             formData.append('place', place);
+            formData.append('youtubeVideoLink', youtubeVideoLink);
             formData.append('description', description);
             formData.append('otherInfos', otherInfos);
             formData.append('date', date);
@@ -314,7 +316,7 @@ class EventModal extends Component {
     }
 
     render() {
-        const { eventVideo, title, description, place, otherInfos, date,
+        const { eventVideo, title, description, place, otherInfos, date, youtubeVideoLink,
             category, imageValid, titleValid, descriptionValid, placeValid, categoryValid,
             error, loading, isTyping, categories, validating, deleting } = this.state;
         const { show, closeModal, loadingEv, isEditing, event} = this.props;
@@ -355,22 +357,30 @@ class EventModal extends Component {
                                                     <textarea disabled={isEditing} type="text" value={description} className={isTyping && !descriptionValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="description" rows={3} placeholder="Resumé"></textarea>
                                                 {isTyping && !descriptionValid ? <div className="invalid-feedback">Invalide</div> : null}
                                             </div>
-                                            <div className="form-group">
-                                                <label for="name">Lieu</label>
-                                                    <input disabled={isEditing} type="text" value={place} onChange={(e) => this.handleInputChange(e)} className={isTyping && !placeValid ? "form-control is-invalid" : "form-control"} name="place" placeholder="Lieu de l'évènement" required />
-                                                {isTyping && !placeValid ? <div className="invalid-feedback">Invalide</div> : null}
-                                            </div>
-                                            <div className="row align-items-start py-3">
-                                                <div className="col-sm-12 col-md-4 col-lg-4">
+                                            <div className="row justify-content-between">
+                                                <div className="col-sm-12 col-md-7 col-lg-7">
                                                     <div className="form-group">
+                                                        <label for="name">Lieu</label>
+                                                            <input disabled={isEditing} type="text" value={place} onChange={(e) => this.handleInputChange(e)} className={isTyping && !placeValid ? "form-control is-invalid" : "form-control"} name="place" placeholder="Lieu de l'évènement" required />
+                                                        {isTyping && !placeValid ? <div className="invalid-feedback">Invalide</div> : null}
+                                                    </div>
+                                                </div>
+                                                <div className="col-sm-12 col-md-5 col-lg-5">
+                                                    <div className="form-group mt-2">
                                                         <label for="name">Date et Heure de l'évènement</label><br />
                                                         <DatePicker disabled={isEditing} showTimeSelect dateFormat="Pp" className="form-control" selected={date} onChange={date => this.pickDate(date)} />
                                                     </div>
                                                 </div>
-                                                <div className="col-sm-12 col-md-4 col-lg-4">
+                                            </div>
+                                            <div className="form-group">
+                                                <label for="name">Autres informations</label>
+                                                <textarea disabled={isEditing} type="text" className="form-control" value={otherInfos} onChange={(e) => this.handleInputChange(e)} name="otherInfos" rows={3} placeholder="Autres informations"></textarea>
+                                            </div>
+                                            <div className="row align-items-start py-3">
+                                                <div className="col-sm-12 col-md-6 col-lg-6">
                                                     <label for="name">Importer des images</label><br />
                                                     <div className="custom-file">
-                                                            <input disabled={this.state.validated} onChange={(e) => this.preview(e)} type="file" className="custom-file-input" accept="image/*" id="customFile" multiple />
+                                                        <input disabled={this.state.validated} onChange={(e) => this.preview(e)} type="file" className="custom-file-input" accept="image/*" id="customFile" multiple />
                                                         <label className="custom-file-label" for="customFile">Choisir les images</label>
                                                     </div>
                                                     {isTyping && !imageValid ? <p className="alert alert-danger">Image Requise</p> : null}
@@ -384,14 +394,18 @@ class EventModal extends Component {
                                                         }
                                                     </div>
                                                 </div>
-                                                <div className="col-sm-12 col-md-4 col-lg-4">
+                                                <div className="col-sm-12 col-md-6 col-lg-6">
                                                     <label for="name">Importer une vidéo</label><br />
-                                                    <Upload type="video" oldUrl={eventVideo} setFile={(name, file) => this.setFile(name, file)} name="eventVideo" label={"Importer une video"} />
+                                                    <Upload type="video" oldUrl={eventVideo} setFile={(name, file) => this.setFile(name, file)} name="eventVideo" label={"Importer depuis votre ordinateur"} />
+                                                    <span>Ou bien insérez le lien youtube.</span>
+                                                    <input type="text" disabled={isEditing} value={youtubeVideoLink} onChange={(e) => this.handleInputChange(e)} className="form-control" name="youtubeVideoLink" placeholder="Lien youtube" />
+                                                    {
+                                                        youtubeVideoLink.length ?
+                                                        <iframe width="100%" title="video"
+                                                            src={youtubeVideoLink}>
+                                                        </iframe>:null
+                                                    }
                                                 </div>
-                                            </div>
-                                            <div className="form-group">
-                                                <label for="name">Autres informations</label>
-                                                <textarea disabled={isEditing} type="text" className="form-control" value={otherInfos} onChange={(e) => this.handleInputChange(e)} name="otherInfos" rows={3} placeholder="Autres informations"></textarea>
                                             </div>
                                             {
                                                 !isEditing ? 

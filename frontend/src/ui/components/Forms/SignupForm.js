@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Forms.scss';
 import { connect } from 'react-redux';
 import {Link} from 'react-router-dom';
-import { signup, renderLoader, clearLoader, clearError } from '../../../store/actions';
+import { signup, renderLoader, clearError } from '../../../store/actions';
 import Loader from '../../globalComponent/Loader';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 
@@ -81,8 +81,6 @@ class SignUpForm extends Component {
             }
             // Launch the signup
             this.props.onSignUp(data);
-            // Clear loader
-            this.props.onClearLoader();
         }
     }
 
@@ -104,7 +102,7 @@ class SignUpForm extends Component {
                         <input type="password" value={password} onChange={(e) => this.handleInputChange(e)} id="password" className="fadeIn third" name="password" placeholder="Mot de passe"/>
                         {isTyping&&!passwordValid ? <div style={{color: "red"}}>Invalide. Min 6 caratères</div>:null}
                         <input type="text" value={tel} onChange={(e) => this.handleInputChange(e)} id="tel" className="fadeIn second" name="tel" placeholder="Numéro Whatsapp" />
-                        <button disabled={loader} type="submit" onClick={(e) => this.handleSubmit(e)} id="signBtn" className="button fadeIn fourth mt-4 mb-5">{this.props.loader ? <Loader color="white" />:"S'inscrire"}</button>
+                        <button disabled={loader} type="submit" onClick={(e) => this.handleSubmit(e)} id="signBtn" className="button fadeIn fourth mt-4 mb-5">{loader ? <Loader color="white" />:"S'inscrire"}</button>
                     </form>
 
                     <p>Ou bien inscrivez vous avec:</p>
@@ -132,7 +130,6 @@ const mapPropsToState = state => {
 const mapDispatchToState = dispatch => {
     return {
         onSignUp: (data) => dispatch(signup(data)),
-        onClearLoader: () => dispatch(clearLoader()),
         onRenderLoader: () => dispatch(renderLoader()),
         onClearError: () => dispatch(clearError()),
     }

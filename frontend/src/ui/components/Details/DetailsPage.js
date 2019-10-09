@@ -3,13 +3,14 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import socketIOClient from "socket.io-client";
-import html2pdf from 'html2pdf.js';
 import {connect} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faMapMarked, faSearch, faComment, faFileDownload, faAnchor } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faMapMarked, faSearch, faComment, faAnchor } from '@fortawesome/free-solid-svg-icons';
 import './DetailsPage.scss';
 import AwesomeSlider from 'react-awesome-slider';
 import AwsSliderStyles from 'react-awesome-slider/src/styles';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
 
 import Header from '../../globalComponent/Header';
 import Hoc from '../../globalComponent/Hoc';
@@ -19,6 +20,9 @@ import Stars from '../Stars/Stars';
 import Loader from '../../globalComponent/Loader';
 import {rootUrl} from '../../../configs/config';
 import logo from '../../../assets/images/logo.png';
+import {counponToPrint} from '../CouponSchema/Coupon'
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+const image2base64 = require('image-to-base64');
 
 
 class DetailsPage extends Component {
@@ -26,7 +30,6 @@ class DetailsPage extends Component {
         showReservationModal: false,
         showRecModal: false,
         showCouponModal: false,
-        couponGenerated: false,
         showVideo: false,
         showToast: false,
         downloadingCoupon: false,
@@ -90,12 +93,9 @@ class DetailsPage extends Component {
             searchingUser: true
         });
         if(value.length > 1) {
-            axios.get('/api/user/')
+            axios.get('/api/user/' + value + '/search')
             .then(res => {
-                const userList = res.data.users.filter(user => (
-                    user.name.toLowerCase().includes(this.state.search.toLowerCase()) || 
-                    user.email.toLowerCase().includes(this.state.search.toLowerCase())
-                ))
+                const userList = res.data.users
                 this.setState({ searchingUser: false, userList: userList })
             })
             .catch(err => {
@@ -221,10 +221,6 @@ class DetailsPage extends Component {
                             notifications[i] = updateOne;
                             axios.patch('/api/user/' + authData.user._id + '/notification/seen', { rec: notifications})
                             .then(res => {
-                                // Update local storage
-                                // let newAuthData = {...authData};
-                                // newAuthData.user.recommandations = notifications;
-                                // localStorage.setItem("authData", newAuthData);
                                 this.setState({ recError: '' })
                             })
                             .catch(err => {
@@ -290,33 +286,21 @@ class DetailsPage extends Component {
                 .then(res => {
                     let newAnnounce = {...this.state.announce}
                     newAnnounce.coupons.clients.push(this.props.user._id)
-                    let element = 
-                        `<div class="bg-light py-5 pr-4 pl-4" style="min-heigth: 30rem" id="couponstodownload">
-                            <div class="d-flex flex-row" style={display: flex}>
-                                <img class="mr-3" src=${logo} width="200" alt="" />
-                                <div>
-                                    <h3>${coupon.infos}</h3>
-                                    <h4>Coupon de réduction de ${coupon.montant}</h4>
-                                    <h3>Pour cette Annonce: ${this.state.announce.title}</h3>
-                                    <p>Offre valable jusqu'à ${coupon.datelimite} sous présentation au guichet.</p>
-                                </div>
-                                <div className="mr-3">
-                                    
-                                </div>
-                            </div>
-                        </div>`;
-                    let opt = {
-                        margin: 1,
-                        filename: this.state.announce.title.split(' ').join('-'),
-                        image: { type: 'png', quality: 0.98 },
-                        html2canvas: { scale: 2 },
-                        jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
-                    };
                     // Generate the pdf
-                    html2pdf().set(opt).from(element).save()
-                    .then(doc => {
-                        this.setState({ downloadingCoupon: false, announce: newAnnounce });
-                    });
+                    image2base64(logo) // you can also to use url
+                        .then(response => {
+                            const {infos, montant, datelimite} = this.state.announce.coupons;
+                            let docDefinition = counponToPrint(response, infos, montant, datelimite, 
+                                this.state.announce.title, window.location.href, this.state.announce.title.split(' ').join('-'))
+                            const pdfDocGenerator = pdfMake.createPdf(docDefinition).open();
+                            this.setState({ downloadingCoupon: false, announce: newAnnounce, showCouponModal: false });
+                            pdfDocGenerator.getDataUrl((dataUrl) => {
+                                const iframe = document.createElement('iframe');
+                                iframe.src = dataUrl;
+                                // document.getElementById("couponpreview").appendChild(iframe);
+                            });
+                        })
+                        .catch((error) => console.log(error))
                 })
                 .catch(err => {
                     this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
@@ -340,7 +324,7 @@ class DetailsPage extends Component {
     }
 
     render() {
-        const { documentPreview, announce, error, loading, name, email, tel, messageValid, reserving, downloadingCoupon,
+        const { announce, error, loading, name, email, tel, messageValid, reserving, downloadingCoupon,
                 numberOfPlaces, formValid, reservationError, recError, sendingComment, userEmail, userName, userMessage } = this.state;
         const {anounceType} = this.props.match.params;
 
@@ -360,17 +344,20 @@ class DetailsPage extends Component {
                                         <div className="infos pb-4">
                                             {/* <img src={rootUrl + '/' +announce.image} alt="service" /> */}
                                             <AwesomeSlider bullets={false} cssModule={AwsSliderStyles}>
-                                                {announce.images.map(image => <div data-src={rootUrl + '/' + image} />)}
+                                                {announce.images.map((image, id) => <div key={id} data-src={rootUrl + '/' + image} />)}
                                             </AwesomeSlider>
 
-                                            <div className="otherinfos ">
+                                            <div className="otherinfos">
                                                 <div className="d-flex align-items-center justify-content-between titleandstars">
                                                     <div>
                                                         <h2>{announce.title}</h2>
                                                         <h5 className="py-2">{announce.category}</h5>
                                                     </div>
                                                     <div className="moreinfos d-none d-md-block d-flex justify-content-between mt-3">
-                                                        <Stars />
+                                                        <Stars 
+                                                            rate={announce.rate ? announce.rate: null }
+                                                            anounceType={anounceType}  
+                                                            id={this.props.match.params.id} />
                                                     </div>
                                                 </div>
                                                 <hr/>
@@ -426,7 +413,7 @@ class DetailsPage extends Component {
                                                                 <h3 className="pb-3">Coupon  disponible !!</h3>
                                                                 <h3 style={{ color: "#DC3545" }}>{announce.coupons.infos}</h3><br />
                                                                 <h4>Coupon de réduction de <strong>{announce.coupons.montant}</strong>.</h4><br />
-                                                                    <button className="button mt-2 book" onClick={this.getCoupon}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white"/>:null}</button>
+                                                                <button className="button mt-2 book" onClick={this.getCoupon}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
                                                             </div> :
                                                             <div className="d-flex flex-column py-2">
                                                                 <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
@@ -441,19 +428,43 @@ class DetailsPage extends Component {
                                                         <FontAwesomeIcon icon={faComment} size={"2x"} />
                                                         <h3 className="ml-3 mb-0">Reviews des clients</h3>
                                                     </div>
-                                                    <Stars />
+                                                    <Stars 
+                                                        rate={announce.rate ? announce.rate: null }
+                                                        anounceType={anounceType}  
+                                                        id={this.props.match.params.id} />
                                                 </div>
                                                 <div className="other-infos mt-4">
                                                     <div className="d-flex flex-column">
                                                         {
-                                                            announce.video.length ?
+                                                            announce.video&&announce.video.length ?
+                                                            <Fragment>
+                                                                <h3 className="mb-3">Regardez l'aperçu en video</h3>
+                                                                <video src={rootUrl + '/' + announce.video} width="100%" height="100%" controls onClick={() => this.setState({ showVideo: true })}>
+                                                                </video>
+                                                            </Fragment> :
+                                                                    announce.youtubeVideoLink&&announce.youtubeVideoLink.length ?
                                                                 <Fragment>
                                                                     <h3 className="mb-3">Regardez l'aperçu en video</h3>
-                                                                    <video src={rootUrl + '/' + announce.video} width="100%" height="100%" controls onClick={() => this.setState({ showVideo: true })}>
-                                                                    </video>
+                                                                    <iframe width="100%" height="100%" title="Video de l'annonce"
+                                                                        src={announce.youtubeVideoLink}
+                                                                        onClick={() => this.setState({ showVideo: true })}>
+                                                                    </iframe>
                                                                 </Fragment> :
                                                                 <h3 className="mb-3 text-center">Aucune vidéo disponible.</h3>
                                                         }
+                                                    </div>
+                                                    <div className="d-flex flex-column">
+                                                        <div className="mt-4">
+                                                            <iframe title="Location"
+                                                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3980.8047750987917!2d11.497123550867022!3d3.852039097184224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x108bcfbe61c08cd3%3A0x355870322ba0a3ce!2sCentre%20r%C3%A9gional%20africain%20d&#39;administration%20du%20travail!5e0!3m2!1sfr!2scm!4v1570633011922!5m2!1sfr!2scm" width="100%" height="250px" frameborder="0" style={{ border: "0" }} allowfullscreen=""></iframe>
+                                                        </div>
+                                                        <h3 className="mb-3 mt-5">A propos du promoteur</h3>
+                                                        <div className="d-flex justify-content-between align-items-center owner">
+                                                            <div>
+                                                                <p>Nom: {announce.owner.name}</p>
+                                                                <p>Tel: {announce.owner.tel}</p>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -590,7 +601,7 @@ class DetailsPage extends Component {
                                                         <h3 className="pb-3">Coupon  disponible !!</h3>
                                                         <h3 style={{ color: "#DC3545"}}>{announce.coupons.infos}</h3><br/>
                                                         <h4>Coupon de réduction de <strong>{announce.coupons.montant}</strong>.</h4><br/>
-                                                                <button className="button mt-2 book" onClick={this.getCoupon}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
+                                                            <button className="button mt-2 book" onClick={this.getCoupon}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
                                                     </div>:
                                                     <div className="d-flex flex-column py-2">
                                                         <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
@@ -603,24 +614,36 @@ class DetailsPage extends Component {
                                             <div className="other-infos mt-4">
                                                 <div className="d-flex flex-column">
                                                         {
-                                                            announce.video.length ?
+                                                            announce.video&&announce.video.length ?
                                                                 <Fragment>
                                                                     <h3 className="mb-3">Regardez l'aperçu en video</h3>
                                                                     <video src={rootUrl + '/' + announce.video} width="100%" height="100%" controls onClick={() => this.setState({ showVideo: true })}>
                                                                     </video>
                                                                 </Fragment> :
+                                                                announce.youtubeVideoLink&&announce.youtubeVideoLink.length ?
+                                                                    <Fragment>
+                                                                        <h3 className="mb-3">Regardez l'aperçu en video</h3>
+                                                                        <iframe width="100%" height="100%" title="Video de l'annonce"
+                                                                            src={announce.youtubeVideoLink}
+                                                                            onClick={() => this.setState({ showVideo: true })}>
+                                                                        </iframe>
+                                                                    </Fragment> :
                                                                 <h3 className="mb-3 text-center">Aucune vidéo disponible.</h3>
                                                         }
                                                 </div>
                                             </div>
                                             <div className="other-infos mt-4">
                                                 <div className="d-flex flex-column">
-                                                    <h3 className="mb-5">A propos du promoteur</h3>
+                                                        <h3 className="mb-4">Localisation</h3>
+                                                    <div>
+                                                        <iframe title="Location" 
+                                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3980.8047750987917!2d11.497123550867022!3d3.852039097184224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x108bcfbe61c08cd3%3A0x355870322ba0a3ce!2sCentre%20r%C3%A9gional%20africain%20d&#39;administration%20du%20travail!5e0!3m2!1sfr!2scm!4v1570633011922!5m2!1sfr!2scm" width="100%" height="250px" frameborder="0" style={{border:"0"}} allowfullscreen=""></iframe>
+                                                    </div>
+                                                    <h3 className="mb-3 mt-5">A propos du promoteur</h3>
                                                     <div className="d-flex justify-content-between align-items-center owner">
                                                         <div>
                                                             <p>Nom: {announce.owner.name}</p>
                                                             <p>Tel: {announce.owner.tel}</p>
-                                                            <p>Ville: {announce.owner.location}</p>
                                                         </div>
                                                         <img src={rootUrl+'/'+announce.owner.profileImage} alt="profileimage" width="100" height="100" className="rounded-circle align-self-center" />
                                                     </div>
@@ -726,7 +749,7 @@ class DetailsPage extends Component {
                 </Modal>
 
                 {/* Coupon */}
-                <Modal show={this.state.showCouponModal} onHide={() => this.setState({showCouponModal: false})} >
+                {/* <Modal show={this.state.showCouponModal} onHide={() => this.setState({showCouponModal: false})} size="md" >
                     <Modal.Header closeButton>
                     <Modal.Title>Coupon de réduction</Modal.Title>
                     </Modal.Header>
@@ -734,16 +757,19 @@ class DetailsPage extends Component {
                         <div className="container">
                             <div className="row justify-content-between">
                                 <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3 text-center">
-                                    {
-                                        this.state.couponGenerated ?
-                                        <Fragment>
-                                            <iframe src={documentPreview} projectName="Funnel PDF" align="top" width="100%" frameBorder="0" title="Doc" target="Message"><p>Your browser doesn't support Iframe. Here is a <a href={documentPreview}>link to the document</a> instead.</p> 
-                                            </iframe>:
-                                            <a href={documentPreview} rel="noopener noreferrer" target="_blank" className="btn btn-dark download-btn mt-3">Télécharger <FontAwesomeIcon icon={faFileDownload} size={"1x"} /></a>
-                                        </Fragment>
-                                        :
-                                        <button className="button" onClick={() => this.setState({couponGenerated: true})}>Générer le Coupon</button>
-                                    }
+                                    <Fragment>
+                                        {
+                                            this.state.announce&&this.state.announce.coupons ?
+                                            <Fragment>
+                                                <div className="d-flex justify-content-center" id="couponpreview">
+                                                    <button 
+                                                        className="btn btn-danger btn-lg mb-2 mt-3" 
+                                                        onClick={this.getCoupon}>Télécharger le coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
+                                                </div>
+                                            </Fragment>
+                                            :null
+                                        }
+                                    </Fragment>
                                 </div>
                             </div>
                         </div>
@@ -755,7 +781,7 @@ class DetailsPage extends Component {
                             </Button>
                         </div>
                     </Modal.Footer>
-                </Modal>
+                </Modal> */}
 
                 {/* Video */}
                 <Modal show={this.state.showVideo} onHide={() => this.setState({showVideo: false})} size="lg" >
@@ -764,22 +790,23 @@ class DetailsPage extends Component {
                     </Modal.Header>
                     <Modal.Body>
                         {
-                            this.state.announce ?
+                            this.state.announce && this.state.announce.video && this.state.announce.video.length ?
                                 <Fragment>
                                     <h3 className="mb-3">Regardez l'aperçu en video</h3>
                                     <video src={rootUrl + '/' + this.state.announce.video} width="100%" height="100%" controls onClick={() => this.setState({ showVideo: true })}>
                                     </video>
                                 </Fragment> :
-                                <h3 className="mb-3 text-center">Aucune vidéo disponible.</h3>
+                                this.state.announce && this.state.announce.youtubeVideoLink && this.state.announce.youtubeVideoLink.length ?
+                                    <Fragment>
+                                        <h3 className="mb-3">Regardez l'aperçu en video</h3>
+                                        <iframe width="100%" height="100%" title="Video de l'annonce"
+                                            src={this.state.announce.youtubeVideoLink}
+                                            onClick={() => this.setState({ showVideo: true })}>
+                                        </iframe>
+                                    </Fragment> :
+                                    <h3 className="mb-3 text-center">Aucune vidéo disponible.</h3>
                         }
                     </Modal.Body>
-                    <Modal.Footer>
-                        <div className="py-3">
-                            <Button variant="default" onClick={() => this.setState({showVideo: false})}>
-                                Fermer
-                            </Button>
-                        </div>
-                    </Modal.Footer>
                 </Modal>
             </Hoc>
         );

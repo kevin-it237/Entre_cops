@@ -3,14 +3,29 @@
     align-items: center;
     padding-right: 2rem;
 
+    .dark {
+        path {
+            fill: black;
+        }
+        &:hover path {
+            fill: orangered ;
+        }
+    }
+
+    .voted {
+        path {
+            fill: green !important;
+        }
+    }
+
     svg {
         margin-right: .5rem;
         cursor: pointer;
         path {
-            fill: orange !important;
+            fill: orange ;
         }
         &:hover path {
-            fill: orangered !important;
+            fill: orangered ;
         }
     }
 

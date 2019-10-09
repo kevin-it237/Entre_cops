@@ -4,14 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
 import { logout } from '../../store/actions';
 import { faSearch, faBookmark } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
 import './Header.scss';
 import logo from '../../assets/images/logo.png';
 import socketIOClient from 'socket.io-client';
 
 import Notifications from '../users/Notifications/Notifications';
 import { rootUrl } from '../../configs/config';
-import {autoSignIn} from '../../store/actions'
+import {autoSignIn} from '../../store/actions';
+import SearchResult from '../components/SearchResult/SearchResult'
 
 class Header extends Component {
 
@@ -21,7 +21,8 @@ class Header extends Component {
         token: null,
         role: "",
         accountValidated: null,
-        redirect: false
+        redirect: false,
+        query: ""
     }
 
     componentDidMount() {
@@ -73,6 +74,11 @@ class Header extends Component {
         this.setState({redirect: true})
     }
 
+    handleInputChange = (e) => {
+        const value = e.target.value;
+        this.setState({ query: value})
+    }
+
     render() {
         const { name, token, role, accountValidated, user } = this.state;
         let nNotifications = 0;
@@ -90,10 +96,15 @@ class Header extends Component {
                         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon"></span>
                         </button>
-                        <form className="form-inline d-lg-none my-2 my-lg-0 navbar-brand form-mobile">
-                            <input className="form-control mr-sm-2" type="search" placeholder="Rechercher..." aria-label="Rechercher..."/>
-                            <FontAwesomeIcon icon={faSearch} size={"2x"} />
-                        </form>
+                        <div className="search-wrapper">
+                            <form className="form-inline d-lg-none my-2 my-lg-0 navbar-brand form-mobile">
+                                <input onChange={(e) => this.handleInputChange(e)} className="form-control mr-sm-2" type="text" placeholder="Rechercher..." aria-label="Rechercher..." />
+                                <FontAwesomeIcon icon={faSearch} size={"2x"} />
+                            </form>
+                            {this.state.query.trim().length > 0 ? 
+                                <SearchResult query={this.state.query} className="d-lg-none" />:null
+                            }
+                        </div>
                         {
                             token ?
                             <div className="dropdown-mobile mt-2">
@@ -115,10 +126,15 @@ class Header extends Component {
                             <img src={logo} width="110" height="100%" alt="Logo" />
                         </a>
                         <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
-                            <form className="form-inline d-none d-lg-block my-2 my-lg-0 ml-auto mr-4 form-desktop">
-                                <input className="form-control mr-sm-2" type="search" placeholder="Rechercher..." aria-label="Rechercher..."/>
-                                <FontAwesomeIcon icon={faSearch} size={"2x"} />
-                            </form>
+                            <div className="ml-auto search-wrapper">
+                                <form className="form-inline d-none d-lg-block my-2 my-lg-0 ml-auto mr-4 form-desktop">
+                                    <input onChange={(e) => this.handleInputChange(e)} className="form-control mr-sm-2" type="text" placeholder="Rechercher..." aria-label="Rechercher..." />
+                                    <FontAwesomeIcon icon={faSearch} size={"2x"} />
+                                </form>
+                                {this.state.query.trim().length > 0 ? 
+                                <SearchResult query={this.state.query} className="d-none d-lg-block" />:null
+                                }
+                            </div>
                             <ul className="navbar-nav  mt-2 mt-lg-0">
                                 {
                                     token && role === "admin" ?
@@ -136,6 +152,12 @@ class Header extends Component {
                                     token && role === "user" ?
                                     <li className="nav-item">
                                         <NavLink className="nav-link" to="/user/reservations">Mes réservations</NavLink>
+                                    </li>:null
+                                }
+                                {
+                                    token && role === "user" ?
+                                    <li className="nav-item">
+                                        <NavLink className="nav-link" to="/user/gallery">Galerie</NavLink>
                                     </li>:null
                                 }
                                 {

@@ -36,7 +36,11 @@ class Home extends Component {
         // Fetch events/services
         axios.get('/api/event/category/' + category)
         .then(res => {
-            this.setState({events: res.data.events, error: '', loadingEvents: false});
+            let data = res.data.events;
+            if (window.location.pathname.split('/')[1] !== "events") {
+                data = data.slice(0, 8);
+            }
+            this.setState({events: data, error: '', loadingEvents: false});
         })
         .catch(err => {
             this.setState({ error: 'Une érreur s\'est produite. Veuillez recharger.', loadingEvents: false});
@@ -49,7 +53,11 @@ class Home extends Component {
         // Fetch services/services
         axios.get('/api/service/category/' + category)
         .then(res => {
-            this.setState({services: res.data.services, error: '', loadingServices: false});
+            let data = res.data.services;
+            if (window.location.pathname.split('/')[1] !== "services") {
+                data = data.slice(0, 8);
+            }
+            this.setState({services: data, error: '', loadingServices: false});
         })
         .catch(err => {
             this.setState({ error: 'Une érreur s\'est produite. Veuillez recharger.', loadingServices: false});
@@ -59,20 +67,20 @@ class Home extends Component {
     render() {
         const {events, services, loadingEvents, loadingServices} = this.state;
         const category = this.props.match.params.id.split("-").join(" ");
-        const hisAllAnoucesPage = window.location.pathname.split('/')[1] === "category";
+        const isAllAnoucesPage = window.location.pathname.split('/')[1] === "category";
         return (
             <Hoc>
                 <Header />
                 <Categories selected={category} />
                 {
-                    this.props.match.params.AnounceType === "events" || hisAllAnoucesPage ?
-                    loadingEvents ? <div className="d-flex justify-content-center py-5"><Loader/></div>:
-                    <Events events={events} isCategoryPage={true} eventType="Evènements" isHomePage={false} /> : null 
+                    this.props.match.params.AnounceType === "events" || isAllAnoucesPage ?
+                        loadingEvents ? <div className="d-flex justify-content-center py-5"><Loader /></div> :
+                        <Events showMore={isAllAnoucesPage} category={category}  events={events} isCategoryPage={true} eventType="Evènements" isHomePage={false} /> : null
                 }
                 {
-                    this.props.match.params.AnounceType === "services" || hisAllAnoucesPage ?
-                    loadingServices ? <div className="d-flex justify-content-center py-5"><Loader/></div>:  
-                    <Services services={services} isCategoryPage={true} eventType="Services" isHomePage={false} /> :null
+                    this.props.match.params.AnounceType === "services" || isAllAnoucesPage ?
+                        loadingServices ? <div className="d-flex justify-content-center py-5"><Loader /></div> :
+                        <Services showMore={isAllAnoucesPage} category={category} services={services} isCategoryPage={true} eventType="Services" isHomePage={false} /> : null
                 }
             </Hoc>
         );
