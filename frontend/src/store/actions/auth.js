@@ -104,7 +104,7 @@ export const autoSignIn = () => {
     authData = JSON.parse(authData);
     return dispatch => {
         const now = new Date();
-        if (authData && authData.token) {
+        if (authData && authData.token && authData.user) {
             const parsedExpiryDate = new Date(parseInt(authData.expiresDate));
             if (parsedExpiryDate > now) {
                 // Get user data and update the local storage/ The localstorage can be outdated
