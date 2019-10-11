@@ -18,6 +18,7 @@ class ServiceModal extends Component {
         youtubeVideoLink: '',
         offre: '',
         duration: '',
+        tags: '',
         place: '',
         isTyping: false,
         formValid: false,
@@ -42,7 +43,14 @@ class ServiceModal extends Component {
     handleInputChange = (e) => {
         e.preventDefault();
         const name = e.target.name;
-        const value = e.target.value;
+        let value = e.target.value;
+        if(name === "youtubeVideoLink") {
+            let newValue = "https://www.youtube.com/embed/"+value.split("=")[1]
+            if(newValue.includes("&")) {
+                newValue = newValue.split("&")[0]
+            }
+            value = newValue;
+        }
         this.setState({ [name]: value, error: '' },
             () => { this.validateField(name, value) });
     }
@@ -69,6 +77,9 @@ class ServiceModal extends Component {
                 break;
             case 'place':
                 placeValid = value.length > 0;
+                break;
+            case 'images':
+                placeValid = value;
                 break;
             default:
                 break;
@@ -101,7 +112,7 @@ class ServiceModal extends Component {
         e.preventDefault();
         if (this.state.formValid) {
             const formData = new FormData();
-            const { title, probleme, cible, category, images, serviceVideo, offre, duration, place, youtubeVideoLink } = this.state;
+            const { title, probleme, cible, category, images, serviceVideo, offre, duration, place, youtubeVideoLink, tags } = this.state;
             formData.append('title', title);
             formData.append('category', category);
             formData.append('cible', cible);
@@ -110,6 +121,7 @@ class ServiceModal extends Component {
             formData.append('offre', offre);
             formData.append('duration', duration);
             formData.append('place', place);
+            formData.append('tags', tags);
             formData.append('user', JSON.stringify(this.props.user));
             Array.from(images).forEach(file => {
                 formData.append('images', file);
@@ -137,7 +149,8 @@ class ServiceModal extends Component {
                             serviceVideo: '',
                             offre:'',
                             duration: '',
-                            place: ''
+                            place: '',
+                            tags: ''
                         });
                         // For admin when he creates service
                         if (this.props.refreshServiceList) {
@@ -160,7 +173,8 @@ class ServiceModal extends Component {
     // preview image
     preview = (e) => {
         let images = Array.from(e.target.files).map(file => URL.createObjectURL(file));
-        this.setState({ previewImages: images, images: e.target.files, serviceImageValid: true });
+        this.setState({ previewImages: images, images: e.target.files, serviceImageValid: true }, 
+            () => { this.validateField("images", true) });
     }
 
     setFile = (name, file) => {
@@ -170,7 +184,7 @@ class ServiceModal extends Component {
         }, this.validateForm);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         //Charge categories on form
         this.initCategories();
     }
@@ -187,11 +201,12 @@ class ServiceModal extends Component {
                     offre: service.offre,
                     place: service.place,
                     probleme: service.problem,
-                    serviceVideo: service.video.length ? rootUrl + "/" + service.video : null,
+                    serviceVideo: service.video&&service.video.length ? rootUrl + "/" + service.video : null,
                     previewImages: images,
                     duration: service.duration,
                     validated: service.validated,
-                    youtubeVideoLink: service.youtubeVideoLink
+                    youtubeVideoLink: service.youtubeVideoLink,
+                    tags: service.tags,
                 })
             }
         }
@@ -331,7 +346,7 @@ class ServiceModal extends Component {
         const { serviceVideo, title, probleme, cible, problemeValid, youtubeVideoLink,
             category, serviceImageValid, titleValid, cibleValid, categoryValid, offre, place, placeValid,
             error, loading, isTyping, categories, validating, deleting, duration, offreValid } = this.state;
-        const { show, closeModal, loadingAn, isEditing, service } = this.props;
+        const { show, closeModal, loadingAn, isEditing, service, tags } = this.props;
         return (
             <Modal show={show} onHide={() => closeModal()} size="lg" >
                 <Modal.Header closeButton>
@@ -379,14 +394,24 @@ class ServiceModal extends Component {
                                                     <input disabled={isEditing} type="text" value={cible} onChange={(e) => this.handleInputChange(e)} className={isTyping && !cibleValid ? "form-control is-invalid" : "form-control"} name="cible" placeholder="Cible" required />
                                                     {isTyping && !cibleValid ? <div className="invalid-feedback">Invalide</div> : null}
                                                 </div>
-                                                <div className="form-group">
-                                                    <label for="name">Lieux&Adresse</label>
-                                                    <input disabled={isEditing} type="text" value={place} onChange={(e) => this.handleInputChange(e)} className={isTyping && !placeValid ? "form-control is-invalid" : "form-control"} name="place" placeholder="Lieu & Adresse" required />
-                                                    {isTyping && !placeValid ? <div className="invalid-feedback">Invalide</div> : null}
+                                                <div className="row">
+                                                    <div className="col-md-6 col-sm-12">
+                                                        <div className="form-group">
+                                                            <label for="name">Lieux&Adresse</label>
+                                                            <input disabled={isEditing} type="text" value={place} onChange={(e) => this.handleInputChange(e)} className={isTyping && !placeValid ? "form-control is-invalid" : "form-control"} name="place" placeholder="Lieu & Adresse" required />
+                                                            {isTyping && !placeValid ? <div className="invalid-feedback">Invalide</div> : null}
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-md-6 col-sm-12">
+                                                        <div className="form-group">
+                                                            <label for="name">Durée du service/ Dates d'ouverture</label>
+                                                            <input disabled={isEditing} type="text" value={duration} onChange={(e) => this.handleInputChange(e)} className= "form-control" name="duration" placeholder="Exple: 2 Mois" required />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label for="name">Durée du service/ Dates d'ouverture</label>
-                                                    <input disabled={isEditing} type="text" value={duration} onChange={(e) => this.handleInputChange(e)} className= "form-control" name="duration" placeholder="Exple: 2 Mois" required />
+                                                    <label for="tags">Tags <strong>(Séparer par des virgules ",")</strong></label>
+                                                    <input disabled={isEditing} type="text" value={tags} onChange={(e) => this.handleInputChange(e)} className= "form-control" name="tags" placeholder="Tags: Exple fete, concert, boutique" />
                                                 </div>
                                                 <div className="row align-items-start py-3">
                                                     <div className="col-sm-12 col-md-6 col-lg-6">

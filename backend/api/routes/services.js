@@ -59,10 +59,12 @@ router.post('/new', upload.any(), (req, res, next) => {
         offre: req.body.offre,
         duration: req.body.duration,
         place: req.body.place,
+        tags: req.body.tags,
         validated: false,
         comments: [],
         reservations: [],
         date: new Date(),
+        createdAt: new Date()
     })
     service.save()
     .then(service => {
@@ -97,7 +99,7 @@ router.patch('/:id', upload.array('images'), (req, res, next) => {
 // Search services by  title
 router.get('/:query/search', (req, res, next) => {
     const query = req.params.query
-    Service.find({ title: new RegExp(query, 'i') })
+    Service.find({ title: new RegExp(query, 'i'), validated: true })
         .exec()
         .then(services => {
             return res.status(200).json({
@@ -137,7 +139,7 @@ router.get('/5', (req, res, next) => {
         })
 })
 
-// Get all validaded services
+// Get all validated services
 router.get('/validated/all', (req, res, next) => {
     Service.find({validated: true}).sort({ $natural: -1 })
         .exec()
@@ -165,7 +167,7 @@ router.get('/category/:name', (req, res, next) => {
     })
 })
 
-// Get last 4 validaded services
+// Get last 4 validated services
 router.get('/4', (req, res, next) => {
     Service.find({validated: true}).sort({ $natural: -1 }).limit(4)
         .exec()
@@ -322,49 +324,83 @@ router.delete('/:id', (req, res, next) => {
 // Search events by category, town or date
 router.post('/filter', (req, res, next) => {
     const category = req.body.category
-    const town = new RegExp(req.body.town, 'i')
+    const tag = req.body.tag
+    const tagRegex = new RegExp(tag, 'i')
+    const town = req.body.town
+    const townRegex = new RegExp(town, 'i')
     const date1 = req.body.date1
     const date2 = req.body.date2
-    let query = {}
+    // Category, town, date1, tag, date2
+    if (category.length&& town.length&& date1 && date2 && tag.length) {
+        query = { $and: [{ category: category, place: townRegex, validated: true, tags: tagRegex }, { date: { $gt: date1 } }, { date: { $lt: date2 } }] }
+    }
     // Category, town, date1, date2
-    if (category != "" && town != "" && date1 && date2) {
-        query = { $and: [{ category: category, place: town }, { date: { $gt: date1 } }, { date: { $lt: date2 } }] }
+    if (category.length&& town.length&& date1 && date2 && !tag.length) {
+        query = { $and: [{ category: category, place: townRegex, validated: true }, { date: { $gt: date1 } }, { date: { $lt: date2 } }] }
     }
     // Category, town, date1
-    if (category != "" && town != "" && date1 && !date2) {
-        query = { category: category, place: town, date: { $gt: date1 } }
+    if (category.length && town.length && date1 && !date2&& !tag.length) {
+        query = { category: category, place: townRegex, date: { $gt: date1 }, validated: true }
     }
     // Category, town
-    if (category != "" && town != "" && !date1 && !date2) {
-        query = { category: category, place: town }
+    if (category.length && town.length && !date1 && !date2&& !tag.length) {
+        query = { category: category, place: townRegex }
     }
     // Category
-    if (category != "" && town == "" && !date1 && !date2) {
-        query = { category: category }
+    if (category.length && !town.length && !date1 && !date2&& !tag.length) {
+        query = { category: category, validated: true }
     }
     // town
-    if (category == "" && town != "" && !date1 && !date2) {
-        query = { place: town }
+    if (!category.length && town.length && !date1 && !date2&& !tag.length) {
+        query = { place: townRegex, validated: true }
     }
     // date1
-    if (category == "" && town == "" && date1 && !date2) {
-        query = { date: { $gt: date1 } }
+    if (!category.length && !town.length && date1 && !date2&& !tag.length) {
+        query = { date: { $gt: date1 }, validated: true }
     }
     // Category, date1
-    if (category != "" && town == "" && date1 && !date2) {
-        query = { category: category, date: { $gt: date1 } }
+    if (category.length && !town.length && date1 && !date2&& !tag.length) {
+        query = { category: category, date: { $gt: date1 }, validated: true }
     }
     // town, date1
-    if (category == "" && town != "" && date1 && !date2) {
-        query = { place: town, date: { $gt: date1 } }
+    if (!category.length && town.length && date1 && !date2&& !tag.length) {
+        query = { place: townRegex, date: { $gt: date1 }, validated: true }
     }
     // Category,town, date2
-    if (category != "" && town != "" && !date1 && date2) {
-        query = { category: category, place: town }
+    if (category.length && town.length && !date1 && date2&& !tag.length) {
+        query = { category: category, place: townRegex, validated: true }
     }
     // date1, date2
-    if (category == "" && town == "" && date1 && date2) {
-        query = { $and: [{ date: { $gt: date1 } }, { date: { $lt: date2 } }] }
+    if (!category.length && !town.length && date1 && date2&& !tag.length) {
+        query = { $and: [{ date: { $gt: date1 } }, { date: { $lt: date2 }}, {validated: true}] }
+    }
+    // date1, date2, tag
+    if (!category.length && !town.length && date1 && date2&& tag.length) {
+        query = { $and: [{ date: { $gt: date1 } }, { date: { $lt: date2 }}, {validated: true, tag: tagRegex}] }
+    }
+    // Category,town,tag
+    if (category.length && town.length && !date1 && !date2&& tag.length) {
+        query = { category: category, town: townRegex, tags: tagRegex, validated: true }
+    }
+    // Category,town,tag,date1
+    if (category.length && town.length && date1 && !date2&& tag.length) {
+        query = { category: category, town: townRegex, date: { $gt: date1 }, tags: tagRegex, validated: true }
+    }
+    // Category,tag
+    if (category.length && !town.length && !date1 && !date2&& tag.length) {
+        query = { category: category, tags: tagRegex, validated: true }
+    }
+    // town,tag
+    if (!category.length && town.length && !date1 && !date2&& tag.length) {
+        query = { town: townRegex, tags: tagRegex, validated: true }
+    }
+    // date1, tag
+    if (!category.length && !town.length && date1 && !date2&& tag.length) {
+        query = { tags: tagRegex, date: { $gt: date1 }, validated: true }
+    }
+    // tag
+    if (!category.length&& !town.length&& !date1 && !date2&& tag.length) {
+        query = { tags: tagRegex, validated: true }
     }
     Service.find(query).sort({ $natural: -1 })
         .exec()

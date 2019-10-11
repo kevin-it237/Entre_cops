@@ -10,6 +10,7 @@ const eventSchema = mongoose.Schema({
     image: { type: String, required: true },
     images: { type: Array, required: true },
     video: { type: String, required: false },
+    tags: { type: String, required: false },
     reservations: { type: Array, required: false },
     otherInfos: { type: String, required: false },
     youtubeVideoLink: { type: String, required: false },
@@ -17,7 +18,8 @@ const eventSchema = mongoose.Schema({
     coupons: { type: Object, required: false },
     rate: { type: Object, required: false },
     validated: { type: Boolean, required: true },
-    date: { type: Date, required: false }
+    date: { type: Date, required: false },
+    createdAt: { type: Date, required: false }
 })
 
 module.exports = mongoose.model('Event', eventSchema);

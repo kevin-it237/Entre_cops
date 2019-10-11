@@ -34,6 +34,7 @@ class AdminHome extends Component {
         showUploadModal: false,
         images: null,
         content: '',
+        tags: '',
         publishing: false,
         succesPublish: false,
         publishError: false
@@ -123,11 +124,12 @@ class AdminHome extends Component {
     // Publish in gallery
     publish = (e) => {
         e.preventDefault();
-        this.setState({publishing: true, showUploadModal: true})
-        const { images, content } = this.state;
+        const { images, content, tags } = this.state;
         if(images&&content.length) {
+            this.setState({publishing: true, showUploadModal: true})
             const formData = new FormData();
             formData.append('content', content);
+            formData.append('tags', tags);
             Array.from(images).forEach(file => {
                 formData.append('images', file);
             });
@@ -206,7 +208,7 @@ class AdminHome extends Component {
                                 <div className="card-body">
                                     <h5 className="card-title">Galerie</h5>
                                     <p className="card-text">Ajouter du contenu dans la Galerie</p>
-                                    <Link onClick={() => this.setState({ showUploadModal: true })} className="btn btn-dark btn-block upload-btn">Publier dans la Galerie &nbsp; <FontAwesomeIcon icon={faCamera} size={"1x"} /></Link>
+                                    <Link to="#gallery" onClick={() => this.setState({ showUploadModal: true })} className="btn btn-dark btn-block upload-btn">Publier dans la Galerie &nbsp; <FontAwesomeIcon icon={faCamera} size={"1x"} /></Link>
                                 </div>
                             </div>
                         </div>
@@ -357,11 +359,15 @@ class AdminHome extends Component {
                                     <div className="col-sm-12">
                                         {this.state.publishError.length && <div className="alert alert-danger">{this.state.publishError}</div>}
                                         {this.state.succesPublish && <div className="alert alert-success">Publié avec succès</div>}
-                                        <div className="upload d-flex flex-column justify-content-center align-items-center">
+                                        <div className="upload">
                                             <label className="mt-3 mb-4">Entrez un message pour votre publication</label>
                                             <textarea placeholder="Exprimez vous"
                                                 value={this.state.content} name="content"
                                                 className="form-control" onChange={(e) => this.handleInputChange(e)} rows="2"></textarea>
+                                        </div>
+                                        <div className="form-group ">
+                                            <label className="mt-3">Tags (Séparez par des virgules)</label>
+                                            <input className="form-control" onChange={(e) => this.handleInputChange(e)} type="text" name="tags" value={this.state.tags} placeholder="Entrez des tags" />
                                         </div>
                                     </div>
                                 </div>

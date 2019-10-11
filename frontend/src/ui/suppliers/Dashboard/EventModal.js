@@ -21,6 +21,7 @@ class EventModal extends Component {
         youtubeVideoLink: '',
         previewImages: '',
         otherInfos: '',
+        images: null,
         isTyping: false,
         formValid: false,
         titleValid: false,
@@ -33,13 +34,21 @@ class EventModal extends Component {
         categories: [],
         validated: false,
         validating: false,
-        deleting: false
+        deleting: false,
+        tags: ''
     }
 
     handleInputChange = (e) => {
         e.preventDefault();
         const name = e.target.name;
-        const value = e.target.value;
+        let value = e.target.value;
+        if(name === "youtubeVideoLink") {
+            let newValue = "https://www.youtube.com/embed/"+value.split("=")[1]
+            if(newValue.includes("&")) {
+                newValue = newValue.split("&")[0]
+            }
+            value = newValue;
+        }
         this.setState({ [name]: value, error: '' },
             () => { this.validateField(name, value) });
     }
@@ -59,6 +68,9 @@ class EventModal extends Component {
                 break;
             case 'category':
                 categoryValid = value.length > 0;
+                break;
+            case 'images':
+                imageValid = value;
                 break;
             default:
                 break;
@@ -87,7 +99,7 @@ class EventModal extends Component {
         e.preventDefault();
         if (this.state.formValid) {
             const formData = new FormData();
-            const { title, description, place, category, eventVideo, otherInfos, date, images, youtubeVideoLink } = this.state;
+            const { title, description, place, category, eventVideo, otherInfos, date, images, youtubeVideoLink, tags } = this.state;
             formData.append('title', title);
             formData.append('category', category);
             formData.append('place', place);
@@ -95,6 +107,7 @@ class EventModal extends Component {
             formData.append('description', description);
             formData.append('otherInfos', otherInfos);
             formData.append('date', date);
+            formData.append('tags', tags);
             formData.append('user', JSON.stringify(this.props.user));
             Array.from(images).forEach(file => {
                 formData.append('images', file);
@@ -164,7 +177,7 @@ class EventModal extends Component {
                         this.props.closeModal();
                     })
                     .catch(err => {
-                        this.setState({ error: "Veuillez faire une modification avant d'enregistrer", loading: false });
+                        this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
                     })
             } catch (error) {
                 this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
@@ -176,8 +189,10 @@ class EventModal extends Component {
 
     // preview image
     preview = (e) => {
+        e.preventDefault()
         let images = Array.from(e.target.files).map(file => URL.createObjectURL(file));
-        this.setState({ previewImages: images, images: e.target.files, imageValid: true });
+        this.setState({ previewImages: images, images: e.target.files, imageValid: true }, 
+            () => { this.validateField("images", true)});
     }
 
     // preview video
@@ -192,7 +207,7 @@ class EventModal extends Component {
         this.setState({ date: date })
     }
 
-    componentWillMount() {
+    componentDidMount() {
         //Charge categories on form
         this.initCategories();
     }
@@ -208,10 +223,12 @@ class EventModal extends Component {
                     place: event.place,
                     description: event.description,
                     date: new Date(event.date),
-                    eventVideo: event.video.length ? rootUrl + "/" + event.video : null,
+                    eventVideo: event.video&&event.video.length ? rootUrl + "/" + event.video : null,
                     previewImages: images,
                     otherInfos: event.otherInfos ? event.otherInfos : null,
-                    validated: event.validated
+                    validated: event.validated,
+                    youtubeVideoLink: event.youtubeVideoLink,
+                    tags: event.tags,
                 })
             }
         }
@@ -318,7 +335,7 @@ class EventModal extends Component {
     render() {
         const { eventVideo, title, description, place, otherInfos, date, youtubeVideoLink,
             category, imageValid, titleValid, descriptionValid, placeValid, categoryValid,
-            error, loading, isTyping, categories, validating, deleting } = this.state;
+            error, loading, isTyping, categories, validating, deleting, tags } = this.state;
         const { show, closeModal, loadingEv, isEditing, event} = this.props;
         return (
             <Modal show={show} onHide={() => closeModal()} size="lg" >
@@ -371,6 +388,10 @@ class EventModal extends Component {
                                                         <DatePicker disabled={isEditing} showTimeSelect dateFormat="Pp" className="form-control" selected={date} onChange={date => this.pickDate(date)} />
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label for="tags">Tags <strong>(Séparer par des virgules ",")</strong></label>
+                                                <input disabled={isEditing} type="text" value={tags} onChange={(e) => this.handleInputChange(e)} className= "form-control" name="tags" placeholder="Tags: Exple fete, concert, boutique" />
                                             </div>
                                             <div className="form-group">
                                                 <label for="name">Autres informations</label>

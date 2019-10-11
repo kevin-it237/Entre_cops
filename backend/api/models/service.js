@@ -10,6 +10,7 @@ const serviceSchema = mongoose.Schema({
     target: { type: String, required: true },
     place: { type: String, required: true },
     owner: { type: Object, required: true },
+    tags: { type: String, required: false },
     image: { type: String, required: true },
     images: { type: Array, required: true },
     video: { type: String, required: false },
@@ -19,7 +20,8 @@ const serviceSchema = mongoose.Schema({
     coupons: { type: Object, required: false },
     rate: { type: Object, required: false },
     validated: { type: Boolean, required: true },
-    date: { type: Date, required: false }
+    date: { type: Date, required: false },
+    createdAt: { type: Date, required: false }
 })
 
 module.exports = mongoose.model('Service', serviceSchema);

@@ -22,7 +22,8 @@
                 border-radius: 2px !important;
                 background-color: white;
                 &::placeholder {
-                    color: #333;
+                    color: #666;
+                    font-size: 1.25rem;
                 }
                 &:focus {
                     box-shadow: inset 0 -1px 0 rgba($maincolor, 0.4);

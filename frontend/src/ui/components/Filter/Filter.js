@@ -11,6 +11,7 @@ class Filter extends Component {
         date1: null,
         date2: null,
         category: "",
+        tag: "",
         town: ""
     }
 
@@ -19,7 +20,7 @@ class Filter extends Component {
     }
     
     handleChange = (e) => {
-        const value = e.target.value;
+        const value = e.target.value.trim();
         const name = e.target.name;
         this.setState({[name]: value}, this.save)
     }
@@ -35,7 +36,7 @@ class Filter extends Component {
     }
 
     render() {
-        const { date1, date2, category, town} = this.state;
+        const { date1, date2, category, town, tag} = this.state;
         return (
             <section className="filter-row">
                 <div className="filter container">
@@ -52,19 +53,27 @@ class Filter extends Component {
                                 <option>Voyages</option>
                             </select>
                         </div>
-                        <div className="form-group col-sm-6 col-md-3 mt-sm-2">
+                        <div className="form-group col-sm-6 col-md-2 mt-sm-2">
                             <label>Ville</label>
                             <input type="text" onChange={(e) => this.handleChange(e)} name="town" className="form-control" value={town} id="ville" placeholder="Entrez une ville" />
                         </div>
-                        <div className="form-group col-sm-6 col-md-3 mt-sm-2">
+                        <div className="form-group col-sm-6 col-md-2 mt-sm-2">
+                            <label>Tag</label>
+                            <input type="text" onChange={(e) => this.handleChange(e)} name="tag" className="form-control" value={tag} id="tag" placeholder="Entrez un tag" />
+                        </div>
+                        <div className="form-group col-sm-6 col-md-2 mt-sm-2">
                             <label>Se déroulant entre le:</label>
-                            <DatePicker dateFormat="Pp"
+                            <DatePicker 
+                                dateFormat="Pp" 
+                                placeholderText="Choisissez une date"
                                 className="form-control" selected={date1}
                                 onChange={date => this.pickDate(date, "date1")} />
                         </div>
-                        <div className="form-group col-sm-6 col-md-3 mt-sm-2">
+                        <div className="form-group col-sm-6 col-md-2 mt-sm-2">
                             <label>Et le:</label>
-                            <DatePicker dateFormat="Pp" id="date2"
+                            <DatePicker 
+                                dateFormat="Pp" id="date2"
+                                placeholderText="Choisissez une date"
                                 className="form-control" selected={date2}
                                 onChange={date => this.pickDate(date, "date2")} />
                         </div>

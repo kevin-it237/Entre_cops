@@ -37,6 +37,7 @@ router.post('/publish', upload.array('images'), (req, res, next) => {
     const publication = new Gallery({
         _id: mongoose.Types.ObjectId(),
         content: req.body.content,
+        tags: req.body.tags,
         images: filesPath,
         date: new Date()
     });
@@ -57,6 +58,20 @@ router.get('/all', (req, res, next) => {
         .exec()
         .then(publications => {
             return res.status(201).json({
+                publications: publications
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
+router.get('/:query/filter', (req, res, next) => {
+    const query = req.params.query.toString()
+    Gallery.find({ tags: new RegExp(query, 'i') })
+        .exec()
+        .then(publications => {
+            return res.status(200).json({
                 publications: publications
             })
         })

@@ -6,7 +6,7 @@ class Home extends Component {
     render() {
         return (
             <Fragment>
-                <section className="supplier-view-page bannerwrapper">
+                <section className=" bannerwrapper">
                     <div className="container py-5 banner">
                         <div className="row py-5 justify-content-between align-items-center">
                             <div className="col-sm-12 d-none d-md-block col-md-6 align-self-end text-center">

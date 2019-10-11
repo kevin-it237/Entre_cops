@@ -51,7 +51,7 @@ class Events extends Component {
         return (
             <Fragment>
                 {!this.props.isHomePage&&<Filter />}
-                <section className="events pt-5 bgWhite" id="events">
+                <section className={this.props.isHomePage ? "events pt-5":"events pt-5 bgWhite"} id="events">
                     <div className="container pb-5">
                         <div className="row pt-5">
                             <div className="col-sm-12">

@@ -28,7 +28,7 @@ class FilterResults extends Component {
         .then(res => {
             this.setState({ loading: false, events: res.data.events, error: "" })
         })
-        .catch(err => {
+        .catch(() => {
             this.setState({ loading: false, error: "Une érreur s'est produite. Veuillez reéssayer." })
         })
         // Search for services
@@ -36,7 +36,7 @@ class FilterResults extends Component {
             .then(res => {
                 this.setState({ loading: false, services: res.data.services, error: "" })
             })
-            .catch(err => {
+            .catch(() => {
                 this.setState({ loading: false, error: "Une érreur s'est produite. Veuillez reéssayer." })
             })
         // Clear localStorage

@@ -82,7 +82,7 @@ class GalleryItem extends Component {
                             customControls={[<i></i>,
                                 <button style={{position: "absolute", right: "0", bottom: "40px", borderRadius: "0"}} 
                                 className="btn btn-danger btn-lg" key="deleteImage" onClick={this.importTomyGallery}>
-                                <FontAwesomeIcon size="1x" icon={faDownload} /> Impoter dans ma Galerie</button>
+                                <FontAwesomeIcon size="1x" icon={faDownload} /> Importer dans ma Galerie</button>
                             ]}
                         />
                     </div>

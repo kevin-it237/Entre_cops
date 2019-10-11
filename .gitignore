@@ -10,6 +10,14 @@
 /backend/uploads/usersImages/*
 /backend/uploads/gallery/*
 
+!backend/uploads/videos/.gitkeep
+!backend/uploads/eventsimages/.gitkeep
+!backend/uploads/servicesimages/.gitkeep
+!backend/uploads/suppliersImages/.gitkeep
+!backend/uploads/usersImages/.gitkeep
+!backend/uploads/gallery/.gitkeep
+
+
 node_modules
 /.pnp
 .pnp.js
