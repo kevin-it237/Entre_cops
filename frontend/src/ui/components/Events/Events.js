@@ -1,7 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import EventItem from './EventItem';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import Loader from '../../globalComponent/Loader';
 import axios from 'axios';
 import './Events.scss';
@@ -76,18 +74,16 @@ class Events extends Component {
                         {
                             this.props.isHomePage&&events.length !==0 ?
                             <div className="row pb-5">
-                                <div className="col all_events">
-                                    <a href="/events">Voir plus</a>
-                                    <FontAwesomeIcon icon={faChevronRight} />
+                                <div className="col text-center see-more">
+                                    <a className="btn btn-danger" href="/events">Voir plus</a>
                                 </div>
                             </div> : null
                         }
                         {
                             this.props.showMore&&events.length !==0 ?
                             <div className="row pb-5">
-                                <div className="col all_events">
-                                    <a href={"/events/category/"+this.props.category}>Voir plus</a>
-                                    <FontAwesomeIcon icon={faChevronRight} />
+                                <div className="col text-center see-more">
+                                    <a className="btn btn-danger" href={"/events/category/"+this.props.category}>Voir plus</a>
                                 </div>
                             </div> : null
                         }

@@ -1,7 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import ServiceItem from './ServicesItem';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import Loader from '../../globalComponent/Loader';
 import axios from 'axios';
 import './Services.scss';
@@ -77,18 +75,16 @@ class Services extends Component {
                             {
                             this.props.isHomePage&&services.length !==0 ?
                                 <div className="row">
-                                    <div className="col all_services">
-                                        <a href="/services">Voir plus</a>
-                                        <FontAwesomeIcon icon={faChevronRight} />
+                                    <div className="col text-center see-more">
+                                        <a href="/services" className="btn btn-danger">Voir plus</a>
                                     </div>
                                 </div>: null
                             }
                             {
                             this.props.showMore&&services.length !==0 ?
                                 <div className="row pb-5">
-                                    <div className="col all_services">
-                                        <a href={"/services/category/"+ this.props.category}>Voir plus</a>
-                                        <FontAwesomeIcon icon={faChevronRight} />
+                                    <div className="col text-center see-more">
+                                        <a className="btn btn-danger" href={"/services/category/"+ this.props.category}>Voir plus</a>
                                     </div>
                                 </div>: null
                             }

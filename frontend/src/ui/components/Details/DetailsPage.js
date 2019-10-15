@@ -271,41 +271,45 @@ class DetailsPage extends Component {
     }
 
     getCoupon = () => {
-        if (this.state.announce.coupons && this.state.announce.coupons.clients) {
-            // Verify if i have not already download the this coupons
-            if (this.state.announce.coupons.clients.includes(this.props.user._id)) {
-                alert("Vous avez déja télécharger le coupon.");
-            } else {
-                this.setState({downloadingCoupon: true})
-                // update the the remainings coupons
-                let url = rootUrl + '/api/' + this.props.match.params.anounceType + '/' + this.state.announce._id + '/add/coupon';
-                let coupon = { ...this.state.announce.coupons};
-                coupon.nCoupons = Number(coupon.nCoupons) - 1;
-                coupon.clients.push(this.props.user._id);
-                axios.patch(url, { coupon: coupon })
-                .then(res => {
-                    let newAnnounce = {...this.state.announce}
-                    newAnnounce.coupons.clients.push(this.props.user._id)
-                    // Generate the pdf
-                    image2base64(logo) // you can also to use url
-                        .then(response => {
-                            const {infos, montant, datelimite} = this.state.announce.coupons;
-                            let docDefinition = counponToPrint(response, infos, montant, datelimite, 
-                                this.state.announce.title, window.location.href, this.state.announce.title.split(' ').join('-'))
-                            const pdfDocGenerator = pdfMake.createPdf(docDefinition).open();
-                            this.setState({ downloadingCoupon: false, announce: newAnnounce, showCouponModal: false });
-                            pdfDocGenerator.getDataUrl((dataUrl) => {
-                                const iframe = document.createElement('iframe');
-                                iframe.src = dataUrl;
-                                // document.getElementById("couponpreview").appendChild(iframe);
-                            });
-                        })
-                        .catch((error) => console.log(error))
-                })
-                .catch(err => {
-                    this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
-                })
+        if(this.props.user) {
+            if (this.state.announce.coupons && this.state.announce.coupons.clients) {
+                // Verify if i have not already download the this coupons
+                if (this.state.announce.coupons.clients.includes(this.props.user._id)) {
+                    alert("Vous avez déja télécharger le coupon.");
+                } else {
+                    this.setState({downloadingCoupon: true})
+                    // update the the remainings coupons
+                    let url = rootUrl + '/api/' + this.props.match.params.anounceType + '/' + this.state.announce._id + '/add/coupon';
+                    let coupon = { ...this.state.announce.coupons};
+                    coupon.nCoupons = Number(coupon.nCoupons) - 1;
+                    coupon.clients.push(this.props.user._id);
+                    axios.patch(url, { coupon: coupon })
+                    .then(res => {
+                        let newAnnounce = {...this.state.announce}
+                        newAnnounce.coupons.clients.push(this.props.user._id)
+                        // Generate the pdf
+                        image2base64(logo) // you can also to use url
+                            .then(response => {
+                                const {infos, montant, datelimite} = this.state.announce.coupons;
+                                let docDefinition = counponToPrint(response, infos, montant, datelimite, 
+                                    this.state.announce.title, window.location.href, this.state.announce.title.split(' ').join('-'))
+                                const pdfDocGenerator = pdfMake.createPdf(docDefinition).open();
+                                this.setState({ downloadingCoupon: false, announce: newAnnounce, showCouponModal: false });
+                                pdfDocGenerator.getDataUrl((dataUrl) => {
+                                    const iframe = document.createElement('iframe');
+                                    iframe.src = dataUrl;
+                                    // document.getElementById("couponpreview").appendChild(iframe);
+                                });
+                            })
+                            .catch((error) => console.log(error))
+                    })
+                    .catch(err => {
+                        this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
+                    })
+                }
             }
+        } else {
+            this.props.history.push('/auth/login');
         }
     }
 

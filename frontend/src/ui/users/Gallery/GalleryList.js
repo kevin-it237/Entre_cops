@@ -65,7 +65,7 @@ class GalleryList extends Component {
                         {
                         this.state.loading ? <div className="d-flex justify-content-center"><Loader /></div> :
                             this.state.publications.map((pub, id) => (
-                                <div className="row pt-5 gallery-row pb-5">
+                                <div key={id} className="row pt-5 gallery-row pb-5">
                                     <div className="col-sm-12 mt-4 mb-3">
                                         <GalleryItem key={id} content={pub.content} images={pub.images} date={pub.date} />
                                     </div>

@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import Header from '../../globalComponent/Header';
-import { connect } from 'react-redux';
 import Gallery from 'react-grid-gallery';
 import Loader from '../../globalComponent/Loader';
 
@@ -8,9 +7,10 @@ class UserGallery extends Component {
 
     state = { images: [], loading: true, currentImage: 0};
 
-    componentDidUpdate(prevProps) {
-        if(prevProps !== this.props) {
-            let images = this.props.user.gallery.map((image, id) => (
+    componentDidMount() {
+        const authData = JSON.parse(localStorage.getItem("authData"));
+        if(authData&&authData.user) {
+            let images = authData.user.gallery.map((image, id) => (
                 {
                     src: image,
                     thumbnail: image,
@@ -58,10 +58,4 @@ class UserGallery extends Component {
     }
 }
 
-const mapPropsToState = state => {
-    return {
-        user: state.auth.user
-    }
-}
-
-export default connect(mapPropsToState)(UserGallery);
+export default UserGallery;

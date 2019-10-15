@@ -13,10 +13,12 @@ class NotificationsPage extends Component {
 
     componentDidMount() {
         const authData = JSON.parse(localStorage.getItem("authData"))
-        this.setState({ notifications: authData.user.recommandations.reverse(), loading: false})
+        this.setState({ notifications: authData.user.recommandations, loading: false})
     }
 
     render() {
+        let notifications = [...this.state.notifications];
+        notifications.reverse();
         return (
             <Fragment>
                 <Header/>
@@ -29,7 +31,7 @@ class NotificationsPage extends Component {
                             <div className="col-sm-12">
                                 {
                                     this.state.loading ? <div className="d-block ml-auto mr-auto text-center"><Loader/></div>:
-                                        this.state.notifications.map((notification, id) => (
+                                        notifications.map((notification, id) => (
                                             <a key={id} href={notification.link} className={notification.visited ? "noti-link d-flex" : "noti-link d-flex notvisited" }>
                                                 <img src={notification.image} className="rounded-circle img-fluid" alt="" />
                                                 <div className="d-flex d-flex justify-content-between flex-grow-1">

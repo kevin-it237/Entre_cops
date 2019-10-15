@@ -2,11 +2,10 @@ import React, { Component, Fragment } from 'react';
 import Gallery from 'react-grid-gallery';
 import './Gallery.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios'
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import {rootUrl} from '../../../configs/config';
 import logo from '../../../assets/images/logo.png';
-
-let images = [];
 
 class GalleryItem extends Component {
 
@@ -14,7 +13,10 @@ class GalleryItem extends Component {
         super(props);
 
         this.state = {
-            loading: false, user: JSON.parse(localStorage.getItem("authData")).user, currentImage: 0
+            loading: false, 
+            user: null, 
+            images: [],
+            currentImage: 0
         };
 
         this.importTomyGallery = this.importTomyGallery.bind(this);
@@ -22,20 +24,37 @@ class GalleryItem extends Component {
 
     importTomyGallery() {
         // Saving in gallery
-        alert(images[this.state.currentImage].src)
+        const {images} = this.state;
         if(this.state.user.gallery) {
             if (this.state.user.gallery.includes(images[this.state.currentImage].src)) {
                 alert("Cette image est déja incluse dans votre Galerie.")
             } else {
-                // axios.patch('/api/user/' + this.state.user._id + '/galleryimages/save', { gallery: [images[this.state.currentImage].src]})
-                // .then(res => {
-                //     alert("Image importée avec succès!!")
-                // })
-                // .catch(err => {
-                //     console.log(err)
-                // })
+                axios.patch('/api/user/' + this.state.user._id + '/galleryimages/save', { gallery: [images[this.state.currentImage].src]})
+                .then(res => {
+                    alert("Image importée avec succès!!")
+                })
+                .catch(err => {
+                    console.log(err)
+                })
             }
         }
+    }
+
+    componentDidMount() {
+        let images = [];
+        if(this.props.images.length) {
+            images = this.props.images.map((image, id) => (
+                {
+                    src: rootUrl + '/' + image,
+                    thumbnail: rootUrl + '/' + image,
+                    thumbnailWidth: 7,
+                    thumbnailHeight: 5,
+                    isSelected: false,
+                }
+            ));
+        }
+        const authData = JSON.parse(localStorage.getItem("authData"));
+        this.setState({user: authData&&authData.user ? authData.user : null, images: images})
     }
 
 
@@ -44,19 +63,7 @@ class GalleryItem extends Component {
     }
 
     render() {
-        if(this.props.images.length) {
-            images = this.props.images.map((image, id) => (
-                {
-                    src: rootUrl + '/' + image,
-                    thumbnail: rootUrl + '/' + image,
-                    thumbnailWidth: 768,
-                    thumbnailHeight: 520,
-                    isSelected: false,
-                }
-            ));
-        }
-        
-        
+        const {images} = this.state;
         return (
             <Fragment>
                 <div className="gallery-item d-block">
@@ -74,17 +81,25 @@ class GalleryItem extends Component {
                     </div>
                    
                     <div className="body">
-                        <Gallery
-                            enableLightbox={true}
-                            enableImageSelection={false}
-                            images={images}
-                            currentImageWillChange={this.onCurrentImageChange}
-                            customControls={[<i></i>,
-                                <button style={{position: "absolute", right: "0", bottom: "40px", borderRadius: "0"}} 
-                                className="btn btn-danger btn-lg" key="deleteImage" onClick={this.importTomyGallery}>
-                                <FontAwesomeIcon size="1x" icon={faDownload} /> Importer dans ma Galerie</button>
-                            ]}
-                        />
+                        {this.state.user ?
+                            <Gallery
+                                enableLightbox={true}
+                                enableImageSelection={false}
+                                images={images}
+                                currentImageWillChange={this.onCurrentImageChange}
+                                customControls={[<i></i>,
+                                    <button style={{position: "absolute", right: "0", bottom: "40px", borderRadius: "0"}} 
+                                    className="btn btn-danger btn-lg" key="deleteImage" onClick={this.importTomyGallery}>
+                                    <FontAwesomeIcon size="1x" icon={faDownload} /> Importer dans ma Galerie</button>
+                                ]}
+                            />:
+                            <Gallery
+                                enableLightbox={true}
+                                enableImageSelection={false}
+                                images={images}
+                                currentImageWillChange={this.onCurrentImageChange}
+                            />
+                        }
                     </div>
                 </div>
             </Fragment>

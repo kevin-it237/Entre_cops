@@ -122,9 +122,12 @@
             margin-top: .3rem;
         }
     }
-}
 
-.filter-left {
-    background-color: white;
-    margin-top: 3rem;
+    .see-more {
+        a {
+            font-size: 1.1rem !important;
+            border-radius: 20px;
+            padding: .8rem 1.5rem;
+        }
+    }
 }

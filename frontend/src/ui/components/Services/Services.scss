@@ -1,3 +1,5 @@
+@import '../../utils/utils.scss';
+
 .bg-white {
     background-color: white !important;
 }
@@ -137,9 +139,20 @@
             margin-bottom: 0 !important;
         }
     }
-}
 
-.filter-left {
-    background-color: white;
-    margin-top: 3rem;
+    .see-more {
+        a {
+            background-color: $maincolor;
+            color: #fff;
+            border: none;
+            border-radius: 0; 
+            font-weight: 500;
+            text-transform: uppercase;
+            padding: .8rem 1.5rem;
+            cursor: pointer;
+            transition: all .2s;
+            font-size: 1.1rem;
+            border-radius: 20px;
+        }
+    }
 }

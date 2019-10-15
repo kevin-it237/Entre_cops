@@ -5,10 +5,12 @@ import './Notifications.scss';
 
 class Notifications extends Component {
     render() {
+        let recommandations = [...this.props.recommandations.reverse()];
+        recommandations.reverse();
         return (
             <div className="recommandations d-flex flex-column">
             {
-                this.props.recommandations.slice(0,5).map((rec, i) =>(
+                recommandations.slice(0,5).map((rec, i) =>(
                     <div key={i} className={!rec.visited ? "notvisited rec-item" : "rec-item"}>
                         <a href={rec.link}>
                             <h4>{rec.title}</h4>
