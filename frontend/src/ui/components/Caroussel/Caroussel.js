@@ -1,7 +1,7 @@
 import React from 'react';
-import bg1 from '../../../assets/images/photo.jpeg';
-// import bg2 from '../../../assets/images/afterall05.png';
-// import bg3 from '../../../assets/images/afterall06.png';
+import bg1 from '../../../assets/images/Ban01.JPG';
+import bg2 from '../../../assets/images/Ban02.JPG';
+import bg3 from '../../../assets/images/Ban00.JPG';
 import './Caroussel.scss';
 
 const Caroussel = (props) => {
@@ -18,18 +18,18 @@ const Caroussel = (props) => {
                         <img className="d-block w-100" src={bg1} alt="First slide"/>
                         <div className="container">
                             <div className="carousel-caption d-none d-sm-block text-bottom mb-5">
-                                <h1 className="">SOYEZ A L'ACTU DE TOUS LES EVENEMENTS ET SERVICES</h1>
-                                <p>Réservez directement vos places.</p>
-                                <a href="#events" className="btn btn-danger btn-lg">Parcourir les Evènements</a>
+                                {/* <h1 className="">SOYEZ A L'ACTU DE TOUS LES EVENEMENTS ET SERVICES</h1> */}
+                                {/* <p>Réservez directement vos places.</p> */}
+                                {/* <a href="#events" className="btn btn-danger btn-lg">Parcourir les Evènements</a> */}
                             </div>
                         </div>
                     </div>
-                    {/* <div className="carousel-item">
+                    <div className="carousel-item">
                         <img className="d-block w-100" src={bg2} alt="Second slide"/>
                     </div>
                     <div className="carousel-item">
                         <img className="d-block w-100" src={bg3} alt="Third slide"/>
-                    </div> */}
+                    </div>
                 </div>
                 <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
                     <span className="carousel-control-prev-icon" aria-hidden="true"></span>
