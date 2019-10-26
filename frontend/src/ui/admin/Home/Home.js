@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import {DateFormat} from '../../utils/DateFormat'
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import SupplierForm from '../../components/Forms/SuplierForm';
@@ -242,7 +243,7 @@ class AdminHome extends Component {
                                                             <th scope="row">{i + 1}</th>
                                                             <td>{event.title}</td>
                                                             <td>{event.place}</td>
-                                                            <td>{event.date}</td>
+                                                            <td><DateFormat date={event.date} /></td>
                                                             <td>{event.category}</td>
                                                             <td>{event.validated ? <span style={{ color: "green" }}>Validé</span> : <b style={{ color: "red" }}>En attente</b>}</td>
                                                             <td className="actions">

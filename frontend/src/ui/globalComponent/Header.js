@@ -145,17 +145,17 @@ class Header extends Component {
                                 {
                                     token && role === "supplier" && accountValidated ?
                                     <li className="nav-item">
-                                        <NavLink className="nav-link" to="/dashboard/reservations">Réservations</NavLink>
+                                        <NavLink className="nav-link" to="/dashboard/reservations">Dashboard</NavLink>
                                     </li>:null
                                 }
                                 {
-                                    token && role === "user" ?
+                                    token && (role === "user" || role === "supplier") ?
                                     <li className="nav-item">
                                         <NavLink className="nav-link" to="/user/reservations">Mes réservations</NavLink>
                                     </li>:null
                                 }
                                 {
-                                    token && role === "user" ?
+                                    token && (role === "user" || role === "supplier") ?
                                     <li className="nav-item">
                                         <NavLink className="nav-link" to="/user/gallery">Galerie</NavLink>
                                     </li>:null

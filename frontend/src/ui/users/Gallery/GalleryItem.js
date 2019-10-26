@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Gallery from 'react-grid-gallery';
 import './Gallery.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {DateFormat} from '../../utils/DateFormat'
 import axios from 'axios'
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import {rootUrl} from '../../../configs/config';
@@ -20,6 +21,7 @@ class GalleryItem extends Component {
         };
 
         this.importTomyGallery = this.importTomyGallery.bind(this);
+        this.onCurrentImageChange = this.onCurrentImageChange.bind(this);
     }
 
     importTomyGallery() {
@@ -71,7 +73,7 @@ class GalleryItem extends Component {
                         <img src={logo} width="70px" height="50px" className="mr-3" alt="" />
                         <div className="name">
                             <h5>Entrecops</h5>
-                            <span>{this.props.date}</span>
+                            <span><DateFormat date={this.props.date} /></span>
                             <div className="description" onClick={this.toggleModal}>
                                 <div className="mb-4 mt-3">
                                     <h4>{this.props.content}</h4>

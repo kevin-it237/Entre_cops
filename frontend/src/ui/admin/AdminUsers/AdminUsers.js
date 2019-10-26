@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Modal from 'react-bootstrap/Modal';
+import {DateFormat} from '../../utils/DateFormat'
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
@@ -79,7 +80,7 @@ class AdminUser extends Component {
                                                     <th scope="row">{id+1}</th>
                                                     <td>{user.name}</td>
                                                     <td>{user.email}</td>
-                                                    <td className="date">{user.date}</td>
+                                                    <td className="date"><DateFormat date={user.date} /></td>
                                                     <td className="actions">
                                                         <button onClick={() => this.deleteUser(user._id)} className="btn btn-danger btn-md ml-3">{deleting ? <Loader />:"Supprimer"}</button>
                                                     </td>

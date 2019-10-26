@@ -15,10 +15,10 @@ class UserGallery extends Component {
                     src: image,
                     thumbnail: image,
                     thumbnailWidth: 320,
-                    thumbnailHeight: 174,
-                    isSelected: false,
+                    thumbnailHeight: 174
                 }
             ));
+            images.reverse()
             this.setState({ images: images, loading: false })
         }
     }
@@ -43,7 +43,7 @@ class UserGallery extends Component {
                                             <Gallery 
                                                 enableLightbox={true}
                                                 enableImageSelection={false}
-                                                images={this.state.images.reverse()}
+                                                images={this.state.images}
                                                 currentImageWillChange={this.onCurrentImageChange}
                                             />
                                         </Fragment>

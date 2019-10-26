@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
         cb(null, './uploads/gallery')
     },
     filename: function (req, file, cb) {
-        cb(null, "entrecops-" + Date.now() + path.extname(file.originalname))
+        cb(null, "entrecops-gallery-" + Date.now() + path.extname(file.originalname))
     }
 })
 

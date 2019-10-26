@@ -7,10 +7,13 @@ import {connect} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faMapMarked, faSearch, faComment, faAnchor } from '@fortawesome/free-solid-svg-icons';
 import './DetailsPage.scss';
-import AwesomeSlider from 'react-awesome-slider';
-import AwsSliderStyles from 'react-awesome-slider/src/styles';
+import {DateFormat} from "../../utils/DateFormat"
+// import AwesomeSlider from 'react-awesome-slider';
+// import AwsSliderStyles from 'react-awesome-slider/src/styles';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import ImageGallery from 'react-image-gallery';
+import "react-image-gallery/styles/scss/image-gallery.scss";
 
 import Header from '../../globalComponent/Header';
 import Hoc from '../../globalComponent/Hoc';
@@ -254,7 +257,8 @@ class DetailsPage extends Component {
             const comment = {
                 name: this.state.userName,
                 email: this.state.userEmail,
-                message: this.state.userMessage
+                message: this.state.userMessage,
+                date: new Date()
             }
             axios.patch(url, { comment: comment })
             .then(res => {
@@ -332,6 +336,16 @@ class DetailsPage extends Component {
                 numberOfPlaces, formValid, reservationError, recError, sendingComment, userEmail, userName, userMessage } = this.state;
         const {anounceType} = this.props.match.params;
 
+        let images = [];
+        if(announce&&announce.images) {
+            images = announce.images.map(image => {
+                return {
+                    original: rootUrl + '/' + image,
+                    thumbnail: rootUrl + '/' + image
+                }
+            })
+        }
+
         return (
             <Hoc>
                 <Header />
@@ -347,9 +361,11 @@ class DetailsPage extends Component {
                                     <div className="col-sm-12 col-md-8 col-lg-8 left">
                                         <div className="infos pb-4">
                                             {/* <img src={rootUrl + '/' +announce.image} alt="service" /> */}
-                                            <AwesomeSlider bullets={false} cssModule={AwsSliderStyles}>
+                                            {/* <AwesomeSlider bullets={false} cssModule={AwsSliderStyles}>
                                                 {announce.images.map((image, id) => <div key={id} data-src={rootUrl + '/' + image} />)}
-                                            </AwesomeSlider>
+                                            </AwesomeSlider> */}
+
+                                            <ImageGallery items={images} />
 
                                             <div className="otherinfos">
                                                 <div className="d-flex align-items-center justify-content-between titleandstars">
@@ -375,7 +391,7 @@ class DetailsPage extends Component {
                                                     <Fragment>
                                                         <div className="d-flex py-2">
                                                             <FontAwesomeIcon icon={faCalendar} size={"2x"} />
-                                                            <h2>Date: {announce.date}</h2>
+                                                            <h2>Date: <DateFormat date={announce.date} /></h2>
                                                         </div>
                                                         <hr />
                                                         <div className="d-flex py-2">
@@ -563,7 +579,7 @@ class DetailsPage extends Component {
                                                 <Fragment>
                                                     <div className="d-flex py-2">
                                                         <FontAwesomeIcon icon={faCalendar} size={"2x"} />
-                                                        <h2>Date: {announce.date}</h2>
+                                                        <h2>Date: <DateFormat date={announce.date} /></h2>
                                                     </div>
                                                     <hr />
                                                     <div className="d-flex py-2">

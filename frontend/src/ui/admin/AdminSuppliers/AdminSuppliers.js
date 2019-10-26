@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
+import {DateFormat} from '../../utils/DateFormat'
 import Button from 'react-bootstrap/Button';
 import Loader from '../../globalComponent/Loader';
 import SupplierForm from '../../components/Forms/SuplierForm';
@@ -145,7 +146,7 @@ class AdminSupplier extends Component {
                                                     <td>{supplier.name}</td>
                                                     <td>{supplier.email}</td>
                                                     <td>{supplier.tel}</td>
-                                                    <td className="date">{supplier.date}</td>
+                                                    <td className="date"><DateFormat date={supplier.date} /></td>
                                                     <td className="date">{supplier.accountValidated ? <span style={{ color: "green" }}>Compte Validé</span> : <b style={{ color: "#DC3545" }}>En attente</b>}</td>
                                                     <td className="actions">
                                                         <button className="btn btn-outline-dark btn-md ml-3" onClick={() => this.getSingleSupplier(supplier._id)}>Afficher</button>

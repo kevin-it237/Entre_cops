@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
+import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload} from '@fortawesome/free-solid-svg-icons';
 import ServiceModal from '../../suppliers/Dashboard/ServiceModal';
 import Loader from '../../globalComponent/Loader';
 
@@ -9,6 +12,7 @@ class AdminService extends Component {
     state = {
         showModal: false,
         servicesLoading: true,
+        showReservationListModal: false,
         services: [],
         error: '',
         service: null,
@@ -36,8 +40,11 @@ class AdminService extends Component {
         this.getAllServices();
     }
 
-    getSingleEvent = (id) => {
-        this.setState({ loading: true, showModal: true })
+    getSingleEvent = (id, info) => {
+        if(info === "detail")
+            this.setState({ loading: true, showModal: true})
+        else 
+            this.setState({ loading: true, showReservationListModal: true })
         axios.get('/api/service/' + id)
             .then(res => {
                 this.setState({
@@ -63,6 +70,24 @@ class AdminService extends Component {
 
     closeModal = () => {
         this.setState({ showModal: false, showCreationModal: false });
+    }
+
+    generateCSV = (data, announce) => {
+        let csvContent = "data:text/csv;charset=utf-8,";
+        // Format our csv file content
+        csvContent += "id , name, email, tel, places \r\n";
+        data.forEach(function (rowArray, i) {
+            let row = (i + 1) + " , " + rowArray.name + " , " + rowArray.email + " , " + rowArray.tel + " , " + rowArray.numberOfPlaces;
+            csvContent += row + "\r\n";
+        });
+
+        // Creating the file
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        let fileName = announce.split(' ').join('-');
+        link.setAttribute("download", fileName + ".csv");
+        link.click();
     }
 
     render() {
@@ -94,16 +119,17 @@ class AdminService extends Component {
                                         </thead>
                                         <tbody>
                                             {
-                                                services.map((event, i) => (
-                                                    <tr key={event._id}>
+                                                services.map((service, i) => (
+                                                    <tr key={service._id}>
                                                         <th scope="row">{i + 1}</th>
-                                                        <td>{event.title}</td>
-                                                        <td>{event.place}</td>
-                                                        <td>{event.target}</td>
-                                                        <td>{event.duration}</td>
-                                                        <td>{event.validated ? <span style={{ color: "green" }}>Validé</span> : <b style={{ color: "red" }}>En attente</b>}</td>
+                                                        <td>{service.title}</td>
+                                                        <td>{service.place}</td>
+                                                        <td>{service.target}</td>
+                                                        <td>{service.duration}</td>
+                                                        <td>{service.validated ? <span style={{ color: "green" }}>Validé</span> : <b style={{ color: "red" }}>En attente</b>}</td>
                                                         <td className="actions">
-                                                            <button onClick={() => this.getSingleEvent(event._id)} className="btn btn-outline-dark btn-md ml-3">Afficher</button>
+                                                            <button onClick={() => this.getSingleEvent(service._id, "detail")} className="btn btn-outline-dark btn-md ml-3">Afficher</button>
+                                                            <button onClick={() => this.getSingleEvent(service._id, "reservations")} className="btn btn-dark btn-md ml-3">Voir les réservations</button>
                                                         </td>
                                                     </tr>
                                                 ))
@@ -132,6 +158,45 @@ class AdminService extends Component {
                     show={this.state.showCreationModal}
                     closeModal={this.closeModal}
                     refreshServiceList={this.refreshServiceList} />
+
+                {/* reservation list */}
+                <Modal show={this.state.showReservationListModal} onHide={() => this.setState({showReservationListModal : false})} size="lg" >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Liste des réservations</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
+                                    {this.state.loading ? <div className="d-flex justify-content-center"><Loader /></div>:
+                                    this.state.service&&this.state.service.reservations && this.state.service.reservations.length ?
+                                            (
+                                               <Fragment>
+                                               <h3 className="mb-3">{this.state.service.title}</h3>
+                                                    <table className="table table-bordered reservations-list">
+                                                        <tbody>
+                                                            {this.state.service.reservations.map((reservation, i) => (
+                                                                <tr key={i}>
+                                                                    <th scope="row">{i + 1}</th>
+                                                                    <td>{reservation.name}</td>
+                                                                    <td>{reservation.email}</td>
+                                                                    <td>{reservation.tel}</td>
+                                                                    <td>Places: {reservation.numberOfPlaces}</td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                    <div className="deleteWrapper d-flex mt-auto">
+                                                        <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(this.state.service.reservations, this.state.service.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
+                                                    </div>
+                                               </Fragment>
+                                            ): <div className="d-flex justify-content-center"><p>Aucune réservation.</p></div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
 
             </Fragment>
         );

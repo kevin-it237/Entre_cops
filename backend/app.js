@@ -6,15 +6,14 @@ const morgan = require('morgan');
 const http = require('http');
 const socketIo = require("socket.io");;
 
+// Routes
 const userRoutes = require('./api/routes/users');
 const categoryRoutes = require('./api/routes/categories');
 const supplierRoutes = require('./api/routes/suppliers');
 const eventRoutes = require('./api/routes/events');
 const serviceRoutes = require('./api/routes/services');
 const galleryRoutes = require('./api/routes/galleries');
-
-// Model
-const User = require('./api/models/user');
+const bannersRoutes = require('./api/routes/banners');
 
 // Connect to db
 mongoose.connect(config.database, { useNewUrlParser: true });
@@ -45,16 +44,13 @@ app.use((req, res, next) => {
 })
 
 /* App Routes */
-
-// User routes
 app.use('/api/user', userRoutes);
 app.use('/api/category', categoryRoutes);
 app.use('/api/supplier', supplierRoutes);
 app.use('/api/event', eventRoutes);
 app.use('/api/service', serviceRoutes);
 app.use('/api/gallery', galleryRoutes);
-
-// Admin routes
+app.use('/api/banner', bannersRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not Found');
@@ -72,6 +68,7 @@ app.use((error, req, res, next) => {
 })
 
 
+// Init socket io
 var io = socketIo.listen(server);
 
 io.on('connection', function (socket) {

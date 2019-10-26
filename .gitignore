@@ -9,6 +9,7 @@
 /backend/uploads/suppliersImages/*
 /backend/uploads/usersImages/*
 /backend/uploads/gallery/*
+/backend/uploads/banner/*
 
 !backend/uploads/videos/.gitkeep
 !backend/uploads/eventsimages/.gitkeep
@@ -16,6 +17,7 @@
 !backend/uploads/suppliersImages/.gitkeep
 !backend/uploads/usersImages/.gitkeep
 !backend/uploads/gallery/.gitkeep
+!backend/uploads/banner/.gitkeep
 
 
 node_modules

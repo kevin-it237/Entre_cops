@@ -114,7 +114,7 @@ class Dashboard extends Component {
                         <div className="row pt-3">
                             <div className="col-sm-12 d-flex mb-3 add-buttom-wrapper">
                                 <h2 className="py-3 mr-auto align-align-self-end">TOUTES LES RESERVATIONS</h2>
-                                <button className="button" onClick={() => this.setState({showNewEv: true})}>NOUVEL EVENEMENT</button>
+                                <button className="button" onClick={() => this.setState({showNewEv: true})}>NOUVELLE ACTUALITE</button>
                                 <button className="button" onClick={() => this.setState({showNewAn: true})}>NOUVEAU SERVICE</button>
                             </div>
                             <div className="col-sm-12">
@@ -122,7 +122,7 @@ class Dashboard extends Component {
                             </div>
                         </div>
                         {/* Events */}
-                        <div className="row mt-2"><div className="col-sm-12 mt-2"><h3>MES EVENEMENTS</h3></div></div>
+                        <div className="row mt-2"><div className="col-sm-12 mt-2"><h3>MES ACTUALITES</h3></div></div>
 
                         <div className="row mt-4 pb-5">
                             <div className="col-sm-12 col-md-12 col-lg-4 mt-2">
@@ -144,7 +144,7 @@ class Dashboard extends Component {
                                             ))
                                         }
                                         </div>
-                                    : <h5 className="">Vous n'avez aucun Evènement actif</h5>
+                                    : <h5 className="">Vous n'avez aucune Actualité active</h5>
                             }
                             </div>
                             <div className="col-sm-12 col-md-12 col-lg-8 mt-2 d-flex flex-column justify-content-between">
@@ -154,7 +154,7 @@ class Dashboard extends Component {
                                         eventsLoading ? null :
                                             events && events.length ?
                                                 events.map((event, i) => (
-                                                    event.reservations && event.reservations.length ?
+                                                    (event.reservations && event.reservations.length) || event.comments ?
                                                     (
                                                         <div key={i} className={i === 0 ? "tab-pane fade show active" : "tab-pane fade"} id={`item${i}`} role="tabpanel">
                                                             <table className="table">
@@ -171,14 +171,26 @@ class Dashboard extends Component {
                                                                 </tbody>
                                                             </table>
                                                             <div className="deleteWrapper d-flex mt-auto">
-                                                                    <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(event.reservations, event.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
-                                                                <button className={event.reservations.length ? "btn btn-danger ml-3 mt-3" : "btn btn-danger ml-auto mt-3"}>Supprimer l'évenement</button>
+                                                                <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(event.reservations, event.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
+                                                                {/* <button className={event.reservations.length ? "btn btn-danger ml-3 mt-3" : "btn btn-danger ml-auto mt-3"}>Supprimer l'évenement</button> */}
                                                             </div>
+                                                            <div className="row pt-3">
+                                                            <div className="col-sm-12">
+                                                                <h3 className="pt-3 mb-5">Commentaires des utilisateurs</h3>
+                                                                {
+                                                                    event.comments&&event.comments.length ?
+                                                                    event.comments.reverse().map((comment, i) => (
+                                                                        <ReviewItem key={i} comment={comment} />
+                                                                    ))
+                                                                    : <h5 className="text-center py-3">Aucun commentaire</h5>
+                                                                }
+                                                            </div>
+                                                        </div>
                                                         </div>
                                                     ): 
                                                     <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={`item${i}`} role="tabpanel" >
                                                         <h3 className="text-center">Aucune reservation sur cet évènement.</h3>
-                                                        <button className="btn btn-danger d-block ml-auto mt-3">Supprimer l'évenement</button>
+                                                        {/* <button className="btn btn-danger d-block ml-auto mt-3">Supprimer l'évenement</button> */}
                                                     </div>
                                                 ))
                                             : null
@@ -220,9 +232,9 @@ class Dashboard extends Component {
                                     servicesLoading ? null :
                                         services && services.length ?
                                             services.map((service, i) => (
-                                                service.reservations && service.reservations.length ?
+                                                (service.reservations && service.reservations.length) || service.comments ?
                                                 (
-                                                        <div key={i} className={i === 0 ? "tab-pane fade show active" : "tab-pane fade"} id={`service${i}`} role="tabpanel" >
+                                                    <div key={i} className={i === 0 ? "tab-pane fade show active" : "tab-pane fade"} id={`service${i}`} role="tabpanel" >
                                                         <table className="table">
                                                             <tbody>
                                                                 {service.reservations.map((reservation, i) => (
@@ -237,14 +249,26 @@ class Dashboard extends Component {
                                                             </tbody>
                                                         </table>
                                                         <div className="deleteWrapper d-flex mt-auto">
-                                                                <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(service.reservations, service.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
-                                                            <button className={service.reservations.length ? "btn btn-danger ml-3 mt-3" : "btn btn-danger ml-auto mt-3"}>Supprimer l'évenement</button>
+                                                            <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(service.reservations, service.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
+                                                            {/* <button className={service.reservations.length ? "btn btn-danger ml-3 mt-3" : "btn btn-danger ml-auto mt-3"}>Supprimer l'évenement</button> */}
+                                                        </div>
+                                                        <div className="row pt-3">
+                                                            <div className="col-sm-12">
+                                                                <h3 className="pt-3 mb-5">Commentaires des utilisateurs</h3>
+                                                                {
+                                                                    service.comments&&service.comments.length ?
+                                                                    service.comments.reverse().map((comment, i) => (
+                                                                        <ReviewItem key={i} comment={comment} />
+                                                                    ))
+                                                                    : <h5 className="text-center py-3">Aucun commentaire</h5>
+                                                                }
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 ): 
                                                 <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={`service${i}`} role="tabpanel">
                                                     <h3 className="text-center">Aucune reservation sur ce service.</h3>
-                                                    <button className="btn btn-danger d-block ml-auto mt-3">Supprimer le service</button>
+                                                    {/* <button className="btn btn-danger d-block ml-auto mt-3">Supprimer le service</button> */}
                                                 </div>
                                             ))
                                             : null
@@ -255,19 +279,17 @@ class Dashboard extends Component {
                     </div>
 
                     {/* messages */}
-                    <div className="container mt-5 p-5 mb-5">
+                    {/* <div className="container mt-5 p-5 mb-5">
                         <div className="row pt-3 align-items-start">
                             <div className="col-sm-12 col-md-12 col-lg-8">
                                 <h3 className="pt-3 mb-5">Messages sur l'évènement</h3>
-                                {/* <ReviewItem/>
-                                <ReviewItem/>
-                                <ReviewItem/> */}
+                                
                             </div>
                             <div className="col-sm-12 col-md-12 col-lg-4">
                                 <h2></h2>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </section>
 
                 {/* New Event/Annonce */}

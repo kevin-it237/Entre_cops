@@ -1,16 +1,17 @@
 .review-item {
     padding-top: 2rem;
-    padding-bottom: .2rem;
     margin-bottom: 1.5rem;
-    background-color: #f6f6f6;
+    background-color: #f5f8fa;
     border-radius: 5px;
 
     p {
         font-size: 1.3rem;
+        text-align: justify;
     }
 
     h5 {
-        font-size: 1.45rem;
+        font-size: 1.3rem;
+        font-weight: 600;
         margin-bottom: 0 !important;
     }
 

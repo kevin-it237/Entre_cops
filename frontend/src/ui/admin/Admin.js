@@ -9,6 +9,8 @@ import AdminAnnonces from './AdminAnnonces/AdminAnnonces';
 import AdminServices from './AdminServices/AdminServices';
 import AdminSuppliers from './AdminSuppliers/AdminSuppliers';
 import AdminUsers from './AdminUsers/AdminUsers';
+import AdminSlider from './AdminSlider/AdminSlider';
+import AdminEmails from './AdminEMails/AdminEMails';
 import Loader from '../globalComponent/Loader';
 import { logout } from '../../store/actions'
 import axios from 'axios';
@@ -79,11 +81,17 @@ class Admin extends Component {
                                 <NavLink className="navbar-brand" to="/admin/coupons">
                                     <h3 className="d-inline align-middle">COUPONS</h3>
                                 </NavLink> 
+                                <NavLink className="navbar-brand" to="/admin/emails">
+                                    <h3 className="d-inline align-middle">ENVOI DES EMAILS</h3>
+                                </NavLink>
                                 <NavLink className="navbar-brand" to="/admin/suppliers">
                                     <h3 className="d-inline align-middle">FOURNISSEURS</h3>
                                 </NavLink> 
                                 <NavLink className="navbar-brand" to="/admin/users">
                                     <h3 className="d-inline align-middle">UTILISATEURS</h3>
+                                </NavLink>
+                                <NavLink className="navbar-brand" to="/admin/slider">
+                                    <h3 className="d-inline align-middle">BANNIERE</h3>
                                 </NavLink>
                                 <a href="#logout" onClick={this.logout} className="mt-auto btn btn-outline-light btn-lg logout">Logout</a> 
                             </div>
@@ -111,6 +119,8 @@ class Admin extends Component {
                             <Route exact path="/admin/services" component={AdminServices} />
                             <Route exact path="/admin/suppliers" component={AdminSuppliers} />
                             <Route exact path="/admin/users" component={AdminUsers} />
+                            <Route exact path="/admin/slider" component={AdminSlider} />
+                            <Route exact path="/admin/emails" component={AdminEmails} />
                         </div>
                     </div>
                 </section>
