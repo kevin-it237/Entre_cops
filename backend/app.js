@@ -15,6 +15,8 @@ const serviceRoutes = require('./api/routes/services');
 const galleryRoutes = require('./api/routes/galleries');
 const bannersRoutes = require('./api/routes/banners');
 
+const send = require('./api/mailing/sendGrid')
+
 // Connect to db
 mongoose.connect(config.database, { useNewUrlParser: true });
 mongoose.Promise = global.Promise

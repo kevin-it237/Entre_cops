@@ -34,8 +34,8 @@ class UserGallery extends Component {
                 <section>
                     <div className="container py-5 mt-5">
                         <div className="row py-5" style={{ backgroundColor: "white" }}>
-                            <div className="col-sm-12 p-5"><h2 className="text-center display-4">Ma Galerie</h2></div>
-                            <div className="col-sm-12 px-5 pt-0 pb-5" >
+                            <div className="col-sm-12 p-5"><h2 className="text-center display-5">MA GALERIE</h2></div>
+                            <div className="col-sm-12 px-5 pt-0 pb-5 mb-5" >
                                 {
                                     this.state.loading ? <div className="d-flex justify-content-center"><Loader /></div>:
                                         this.state.images.length > 0 ?

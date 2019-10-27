@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { NavLink, Redirect } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
 import { logout } from '../../store/actions';
@@ -71,7 +71,6 @@ class Header extends Component {
     
     logout = () => {
         this.props.onLogout();
-        this.setState({redirect: true})
     }
 
     handleInputChange = (e) => {
@@ -90,7 +89,6 @@ class Header extends Component {
         }
         return (
             <Fragment>
-                {this.state.redirect ? <Redirect to="/" />: null}
                 <nav className={this.props.home ? "navbar navbar-expand-lg navbar-light bg-light navbar-shadow": "navbar navbar-expand-lg navbar-light bg-light navbar-shadow" }>
                     <div className="container">
                         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
@@ -198,7 +196,7 @@ class Header extends Component {
                                         <p className="dropbtn">{name}</p>
                                         <div className="dropdown-content">
                                             <a className="nav-link" href="/user/profile"><i className="fa fa-user"></i>Mon profil</a>
-                                            <a href="/" onClick={this.logout}><i className="fa fa-sign-out"></i>Logout</a>
+                                            <a href="/auth/login" onClick={this.logout}><i className="fa fa-sign-out"></i>Logout</a>
                                         </div>
                                     </div>: null
                                 }
