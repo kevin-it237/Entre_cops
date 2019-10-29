@@ -15,6 +15,7 @@ class SupplierForm extends Component {
         services: [],
         profileImage: '',
         otherInfos: '',
+        mapLink: '',
         isTyping: false,
         formValid: false,
         emailValid: false,
@@ -91,7 +92,7 @@ class SupplierForm extends Component {
         e.preventDefault();
         if(this.state.formValid) {
             const formData = new FormData();
-            const { email, name, tel, location, services, profileImage, otherInfos } = this.state;
+            const { email, name, tel, location, services, profileImage, otherInfos, mapLink } = this.state;
             formData.append('name', name);
             formData.append('email', email);
             formData.append('tel', tel);
@@ -99,6 +100,7 @@ class SupplierForm extends Component {
             formData.append('services', services);
             formData.append('profileImage', profileImage);
             formData.append('otherInfos', otherInfos);
+            formData.append('mapLink', mapLink);
             const config = {
                 headers: {
                     'content-type': 'multipart/form-data'
@@ -139,7 +141,7 @@ class SupplierForm extends Component {
 
     render() {
         const { isTyping, name, tel, services, location, locationValid, otherInfos,  emailValid, telValid, email, 
-                nameValid, profileImage, servicesValid, otherInfosValid, profileImageValid, error, loading } = this.state;
+                nameValid, profileImage, servicesValid, otherInfosValid, profileImageValid, error, loading, mapLink } = this.state;
         return (
             <Fragment>
                 {this.state.redirect ? this.props.closeTo ? <Redirect to={this.props.closeTo} />: null : null}
@@ -164,6 +166,10 @@ class SupplierForm extends Component {
                         <label for="name">Localisation</label>
                         <input type="text" className={isTyping && !locationValid ? "form-control is-invalid" : "form-control"} value={location} onChange={(e) => this.handleInputChange(e)} name="location" id="location" placeholder="Localisation" />
                         {isTyping && !locationValid ? <div className="invalid-feedback">Invalide</div> : null}
+                    </div>
+                    <div className="form-group">
+                        <label for="name">Lien Google Map</label>
+                        <input type="text" className="form-control" value={mapLink} onChange={(e) => this.handleInputChange(e)} name="mapLink" id="mapLink" placeholder="Lien Google Map" />
                     </div>
                     <div className="form-group">
                         <label for="name">Vos services (Séparez par des virgules: ",")</label>

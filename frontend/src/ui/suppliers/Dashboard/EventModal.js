@@ -21,6 +21,7 @@ class EventModal extends Component {
         youtubeVideoLink: '',
         previewImages: '',
         otherInfos: '',
+        mapLink: '',
         images: null,
         isTyping: false,
         formValid: false,
@@ -99,7 +100,7 @@ class EventModal extends Component {
         e.preventDefault();
         if (this.state.formValid) {
             const formData = new FormData();
-            const { title, description, place, category, eventVideo, otherInfos, date, images, youtubeVideoLink, tags } = this.state;
+            const { title, description, place, category, eventVideo, otherInfos, date, images, youtubeVideoLink, tags, mapLink } = this.state;
             formData.append('title', title);
             formData.append('category', category);
             formData.append('place', place);
@@ -108,6 +109,7 @@ class EventModal extends Component {
             formData.append('otherInfos', otherInfos);
             formData.append('date', date);
             formData.append('tags', tags);
+            formData.append('mapLink', mapLink);
             formData.append('user', JSON.stringify(this.props.user));
             Array.from(images).forEach(file => {
                 formData.append('images', file);
@@ -120,7 +122,7 @@ class EventModal extends Component {
                     'content-type': 'multipart/form-data'
                 }
             };
-            // Add the service
+            // Add event
             this.setState({ loading: true });
             try {
                 axios.post('/api/event/new', formData, config)
@@ -133,6 +135,7 @@ class EventModal extends Component {
                             category: '',
                             otherInfos: '',
                             description: '',
+                            mapLink: '',
                             eventVideo: '',
                             images: null,
                             previewImages: null
@@ -229,6 +232,7 @@ class EventModal extends Component {
                     validated: event.validated,
                     youtubeVideoLink: event.youtubeVideoLink,
                     tags: event.tags,
+                    mapLink: event.mapLink,
                 })
             }
         }
@@ -335,7 +339,7 @@ class EventModal extends Component {
     render() {
         const { eventVideo, title, description, place, otherInfos, date, youtubeVideoLink,
             category, imageValid, titleValid, descriptionValid, placeValid, categoryValid,
-            error, loading, isTyping, categories, validating, deleting, tags } = this.state;
+            error, loading, isTyping, categories, validating, deleting, tags, mapLink } = this.state;
         const { show, closeModal, loadingEv, isEditing, event} = this.props;
         return (
             <Modal show={show} onHide={() => closeModal()} size="lg" >
@@ -371,7 +375,7 @@ class EventModal extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label for="name">Description</label>
-                                                    <textarea disabled={isEditing} type="text" value={description} className={isTyping && !descriptionValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="description" rows={3} placeholder="Resumé"></textarea>
+                                                <textarea disabled={isEditing} type="text" value={description} className={isTyping && !descriptionValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="description" rows={2} placeholder="Resumé"></textarea>
                                                 {isTyping && !descriptionValid ? <div className="invalid-feedback">Invalide</div> : null}
                                             </div>
                                             <div className="row justify-content-between">
@@ -388,6 +392,10 @@ class EventModal extends Component {
                                                         <DatePicker disabled={isEditing} showTimeSelect dateFormat="Pp" className="form-control" selected={date} onChange={date => this.pickDate(date)} />
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label for="tags">Lien Google Map</label>
+                                                <input disabled={isEditing} type="text" value={mapLink} onChange={(e) => this.handleInputChange(e)} className="form-control" name="mapLink" placeholder="Lien Google Map" />
                                             </div>
                                             <div className="form-group">
                                                 <label for="tags">Tags <strong>(Séparer par des virgules ",")</strong></label>

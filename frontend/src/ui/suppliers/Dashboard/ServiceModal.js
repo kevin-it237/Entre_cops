@@ -20,6 +20,7 @@ class ServiceModal extends Component {
         duration: '',
         tags: '',
         place: '',
+        mapLink: '',
         isTyping: false,
         formValid: false,
         previewImages: null,
@@ -112,7 +113,7 @@ class ServiceModal extends Component {
         e.preventDefault();
         if (this.state.formValid) {
             const formData = new FormData();
-            const { title, probleme, cible, category, images, serviceVideo, offre, duration, place, youtubeVideoLink, tags } = this.state;
+            const { title, probleme, cible, category, images, serviceVideo, offre, duration, place, youtubeVideoLink, tags, mapLink } = this.state;
             formData.append('title', title);
             formData.append('category', category);
             formData.append('cible', cible);
@@ -122,6 +123,7 @@ class ServiceModal extends Component {
             formData.append('duration', duration);
             formData.append('place', place);
             formData.append('tags', tags);
+            formData.append('mapLink', mapLink);
             formData.append('user', JSON.stringify(this.props.user));
             Array.from(images).forEach(file => {
                 formData.append('images', file);
@@ -150,7 +152,8 @@ class ServiceModal extends Component {
                             offre:'',
                             duration: '',
                             place: '',
-                            tags: ''
+                            tags: '',
+                            mapLink: ''
                         });
                         // For admin when he creates service
                         if (this.props.refreshServiceList) {
@@ -204,6 +207,7 @@ class ServiceModal extends Component {
                     serviceVideo: service.video&&service.video.length ? rootUrl + "/" + service.video : null,
                     previewImages: images,
                     duration: service.duration,
+                    mapLink: service.mapLink,
                     validated: service.validated,
                     youtubeVideoLink: service.youtubeVideoLink,
                     tags: service.tags,
@@ -345,7 +349,7 @@ class ServiceModal extends Component {
     render() {
         const { serviceVideo, title, probleme, cible, problemeValid, youtubeVideoLink,
             category, serviceImageValid, titleValid, cibleValid, categoryValid, offre, place, placeValid,
-            error, loading, isTyping, categories, validating, deleting, duration, offreValid } = this.state;
+            error, loading, isTyping, categories, validating, deleting, duration, offreValid, mapLink } = this.state;
         const { show, closeModal, loadingAn, isEditing, service, tags } = this.props;
         return (
             <Modal show={show} onHide={() => closeModal()} size="lg" >
@@ -381,12 +385,12 @@ class ServiceModal extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label for="name">Problème</label>
-                                                    <textarea disabled={isEditing} type="text" value={probleme} className={isTyping && !problemeValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="probleme" rows={3} placeholder="Problème"></textarea>
+                                                    <textarea disabled={isEditing} type="text" value={probleme} className={isTyping && !problemeValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="probleme" rows={2} placeholder="Problème"></textarea>
                                                     {isTyping && !problemeValid ? <div className="invalid-feedback">Invalide</div> : null}
                                                 </div>
                                                 <div className="form-group">
                                                     <label for="name">Offre</label>
-                                                    <textarea disabled={isEditing} type="text" value={offre} className={isTyping && !offreValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="offre" rows={3} placeholder="Offre"></textarea>
+                                                    <textarea disabled={isEditing} type="text" value={offre} className={isTyping && !offreValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="offre" rows={2} placeholder="Offre"></textarea>
                                                     {isTyping && !offreValid ? <div className="invalid-feedback">Invalide</div> : null}
                                                 </div>
                                                 <div className="form-group">
@@ -408,6 +412,10 @@ class ServiceModal extends Component {
                                                             <input disabled={isEditing} type="text" value={duration} onChange={(e) => this.handleInputChange(e)} className= "form-control" name="duration" placeholder="Exple: 2 Mois" required />
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label for="tags">Lien Google Map</label>
+                                                    <input disabled={isEditing} type="text" value={mapLink} onChange={(e) => this.handleInputChange(e)} className="form-control" name="mapLink" placeholder="Lien Google Map" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label for="tags">Tags <strong>(Séparer par des virgules ",")</strong></label>

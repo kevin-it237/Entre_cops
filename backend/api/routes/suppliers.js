@@ -49,6 +49,7 @@ router.post('/new', upload.single('profileImage'), (req, res, next) => {
                             location: req.body.location,
                             services: req.body.services,
                             otherInfos: req.body.otherInfos,
+                            mapLink: req.body.mapLink,
                             accountValidated: false,
                             role: "supplier",
                         }
@@ -77,6 +78,7 @@ router.post('/new', upload.single('profileImage'), (req, res, next) => {
                     tel: req.body.tel,
                     location: req.body.location,
                     services: req.body.services,
+                    mapLink: req.body.mapLink,
                     otherInfos: req.body.otherInfos,
                     accountValidated: false,
                     role: "supplier",

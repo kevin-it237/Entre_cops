@@ -11,6 +11,7 @@ const serviceSchema = mongoose.Schema({
     place: { type: String, required: true },
     owner: { type: Object, required: true },
     tags: { type: String, required: false },
+    mapLink: { type: String, required: false },
     image: { type: String, required: true },
     images: { type: Array, required: true },
     video: { type: String, required: false },

@@ -11,6 +11,7 @@ const eventSchema = mongoose.Schema({
     images: { type: Array, required: true },
     video: { type: String, required: false },
     tags: { type: String, required: false },
+    mapLink: { type: String, required: false },
     reservations: { type: Array, required: false },
     otherInfos: { type: String, required: false },
     youtubeVideoLink: { type: String, required: false },

@@ -49,8 +49,8 @@ class GalleryItem extends Component {
                 {
                     src: rootUrl + '/' + image,
                     thumbnail: rootUrl + '/' + image,
-                    thumbnailWidth: 7,
-                    thumbnailHeight: 5,
+                    thumbnailWidth: 512,
+                    thumbnailHeight: 360,
                     isSelected: false,
                 }
             ));

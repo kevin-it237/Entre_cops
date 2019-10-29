@@ -195,6 +195,10 @@ class AdminSupplier extends Component {
                                                             <th><h4>{supplier.location}</h4></th>
                                                     </tr>
                                                     <tr>
+                                                        <th><h4><strong>Lien google Map</strong></h4></th>
+                                                            <th><h4>{supplier.mapLink ? supplier.mapLink:null}</h4></th>
+                                                    </tr>
+                                                    <tr>
                                                         <th><h4><strong>Services</strong></h4></th>
                                                             <th><h4>{supplier.services}</h4></th>
                                                     </tr>

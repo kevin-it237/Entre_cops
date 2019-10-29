@@ -474,10 +474,13 @@ class DetailsPage extends Component {
                                                         }
                                                     </div>
                                                     <div className="d-flex flex-column">
-                                                        <div className="mt-4">
-                                                            <iframe title="Location"
-                                                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3980.8047750987917!2d11.497123550867022!3d3.852039097184224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x108bcfbe61c08cd3%3A0x355870322ba0a3ce!2sCentre%20r%C3%A9gional%20africain%20d&#39;administration%20du%20travail!5e0!3m2!1sfr!2scm!4v1570633011922!5m2!1sfr!2scm" width="100%" height="250px" frameborder="0" style={{ border: "0" }} allowfullscreen=""></iframe>
-                                                        </div>
+                                                        <h3 className="mb-4">Localisation</h3>
+                                                        {announce.mapLink && announce.mapLink.length ?
+                                                            <Fragment>
+                                                                <h2><a target="_blank" href={announce.mapLink}>Lien Google Map</a></h2>
+                                                                <p>Cliquez sur le lien pour agrandir.</p>
+                                                            </Fragment> :
+                                                            <p>Pas de Localisation disponible</p>}
                                                         <h3 className="mb-3 mt-5">A propos du promoteur</h3>
                                                         <div className="d-flex justify-content-between align-items-center owner">
                                                             <div>
@@ -654,11 +657,13 @@ class DetailsPage extends Component {
                                             </div>
                                             <div className="other-infos mt-4">
                                                 <div className="d-flex flex-column">
-                                                        <h3 className="mb-4">Localisation</h3>
-                                                    <div>
-                                                        <iframe title="Location" 
-                                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3980.8047750987917!2d11.497123550867022!3d3.852039097184224!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x108bcfbe61c08cd3%3A0x355870322ba0a3ce!2sCentre%20r%C3%A9gional%20africain%20d&#39;administration%20du%20travail!5e0!3m2!1sfr!2scm!4v1570633011922!5m2!1sfr!2scm" width="100%" height="250px" frameborder="0" style={{border:"0"}} allowfullscreen=""></iframe>
-                                                    </div>
+                                                    <h3 className="mb-4">Localisation</h3>
+                                                    {announce.mapLink && announce.mapLink.length ?
+                                                    <Fragment>
+                                                        <h2><a target="_blank" href={announce.mapLink}>Lien Google Map</a></h2>
+                                                        <p>Cliquez sur le lien pour agrandir.</p>
+                                                    </Fragment>:
+                                                    <p>Pas de Localisation disponible</p>}
                                                     <h3 className="mb-3 mt-5">A propos du promoteur</h3>
                                                     <div className="d-flex justify-content-between align-items-center owner">
                                                         <div>

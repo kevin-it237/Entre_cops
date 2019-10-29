@@ -60,6 +60,7 @@ router.post('/new', upload.any(), (req, res, next) => {
         duration: req.body.duration,
         place: req.body.place,
         tags: req.body.tags,
+        mapLink: req.body.mapLink,
         validated: false,
         comments: [],
         reservations: [],

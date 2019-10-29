@@ -6,7 +6,7 @@ import { signup, renderLoader, clearError } from '../../../store/actions';
 import Loader from '../../globalComponent/Loader';
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
 
-import userLogo from '../../../assets/images/event.png';
+import userLogo from '../../../assets/images/logo.png';
 
 class SignUpForm extends Component {
     state = {

@@ -58,6 +58,7 @@ router.post('/new', upload.any(), (req, res, next) => {
         category: req.body.category,
         otherInfos: req.body.otherInfos,
         tags: req.body.tags,
+        mapLink: req.body.mapLink,
         validated: false,
         date: req.body.date,
         comments: [],

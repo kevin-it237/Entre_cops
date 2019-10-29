@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import {connect} from 'react-redux';
 
 import Home from './ui/Home';
@@ -18,6 +18,7 @@ import Profile from './ui/users/Profile/Profile';
 import Notifications from './ui/users/Notifications/NotificationsPage';
 import UserReservations from './ui/users/Reservations/Reservations';
 import FilterResults from './ui/components/Filter/FilterResults';
+import NotFound from './ui/components/NotFound/NotFound';
 
 import {autoSignIn} from './store/actions';
 
@@ -35,6 +36,7 @@ class App extends Component {
   render() {
       return (
         <BrowserRouter>
+          <Switch>
             <Route path="/" exact component={Home}  />
             <Route path="/auth/login" exact component={LoginPage}  />
             <Route path="/auth/signup" exact component={SignupPage}  />
@@ -59,6 +61,10 @@ class App extends Component {
     
             {/* Admin Routes */}
             <PrivateRoute path="/admin" component={Admin} />
+
+            {/* 404 page error*/}
+            <Route path="*" component={NotFound} />
+          </Switch>
         </BrowserRouter>
       );
   }

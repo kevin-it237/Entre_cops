@@ -6,6 +6,7 @@ import imgBar from '../../../assets/icons/meat.svg';
 import imgVoyage from '../../../assets/icons/map-location.svg';
 import imgSortir from '../../../assets/icons/idea.svg';
 import imgCoupons from '../../../assets/icons/graphic-design.svg';
+import madein from '../../../assets/icons/237maded.png';
 
 const CategoryItem = (props) => {
     const {category} = props;
@@ -30,6 +31,7 @@ const CategoryItem = (props) => {
                         {(category.name === "Beauté & Santé") && <img src={imgSante} alt="" />}
                         {(category.name === "Voyages") && <img src={imgVoyage} alt="" />}
                         {(category.name === "Shopping") && <img src={imgShopping} alt="" />}
+                        {(category.name === "Made in 237") && <img src={madein} alt="" />}
                     </center>
                 </div>
                 <div className="wrimagecard-topimage_title">

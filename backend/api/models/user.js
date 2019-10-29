@@ -7,6 +7,7 @@ const userSchema = mongoose.Schema({
     password: { type: String, required: false },
     profileImage: { type: String, required: false },
     tel: { type: Number, required: false },
+    mapLink: { type: String, required: false },
     location: { type: String, required: false },
     services: { type: String, required: false },
     accountValidated: { type: Boolean, required: false },
