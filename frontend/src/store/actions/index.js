@@ -3,7 +3,8 @@ export {
     logout,
     signup,
     autoSignIn,
-    clearError
+    clearError,
+    soclialAuthStart
 } from './auth';
 
 export {

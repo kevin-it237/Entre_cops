@@ -151,3 +151,25 @@ export const autoSignIn = () => {
         }
     }
 };
+
+
+export const soclialAuthStart = (name, photo) => {
+    return dispatch => {
+        try {
+            axios.post('/api/user/socialauth', {
+                "name": name,
+                "photo": photo
+            })
+            .then(res => {
+                // Save in localstorage
+                localStorage.setItem('authData', JSON.stringify(res.data));
+                dispatch(startLogin(res.data))
+            })
+            .catch(err => {
+                console.log({err})
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+};

@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import './Forms.scss'; 
 import { connect } from 'react-redux';
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import { login, renderLoader, clearError } from '../../../store/actions';
 import Loader from '../../globalComponent/Loader';
-import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
+import OAuth from '../Oauth/OAuth'
+import io from 'socket.io-client';
+import { rootUrl } from '../../../configs/config'
 
 import userLogo from '../../../assets/images/logo.png';
+const socket = io(rootUrl);
 
 class LoginForm extends Component {
 
@@ -96,8 +99,16 @@ class LoginForm extends Component {
                     </form>
                     <p>Ou bien connectez vous avec:</p>
                     <div className="d-flex socialWrapper">
-                        <GoogleLoginButton onClick={() => alert("Hello")} iconSize="23px" />
-                        <FacebookLoginButton onClick={() => alert("Hello")} iconSize="23px" />
+                        <OAuth
+                            provider={"google"}
+                            key={"google"}
+                            socket={socket}
+                        />
+                        <OAuth
+                            provider={"facebook"}
+                            key={"facebook"}
+                            socket={socket}
+                        />
                     </div>
 
                     <div id="formFooter">
@@ -125,4 +136,4 @@ const mapDispatchToState = dispatch => {
     }
 }
 
-export default connect(mapPropsToState, mapDispatchToState)(LoginForm);
+export default connect(mapPropsToState, mapDispatchToState)(withRouter(LoginForm));

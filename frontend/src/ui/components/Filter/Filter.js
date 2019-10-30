@@ -51,6 +51,7 @@ class Filter extends Component {
                                 <option>Shopping</option>
                                 <option>Beauté & Santé</option>
                                 <option>Voyages</option>
+                                <option>Made in 237</option>
                             </select>
                         </div>
                         <div className="form-group col-sm-6 col-md-2 mt-sm-2">

@@ -4,9 +4,12 @@ import { connect } from 'react-redux';
 import {Link} from 'react-router-dom';
 import { signup, renderLoader, clearError } from '../../../store/actions';
 import Loader from '../../globalComponent/Loader';
-import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
+import OAuth from '../Oauth/OAuth'
+import io from 'socket.io-client';
+import { rootUrl } from '../../../configs/config'
 
 import userLogo from '../../../assets/images/logo.png';
+const socket = io(rootUrl);
 
 class SignUpForm extends Component {
     state = {
@@ -107,8 +110,16 @@ class SignUpForm extends Component {
 
                     <p>Ou bien inscrivez vous avec:</p>
                     <div className="d-flex socialWrapper">
-                        <GoogleLoginButton onClick={() => alert("Hello")} iconSize="23px" />
-                        <FacebookLoginButton onClick={() => alert("Hello")} iconSize="23px" />
+                        <OAuth
+                            provider={"google"}
+                            key={"google"}
+                            socket={socket}
+                        />
+                        <OAuth
+                            provider={"facebook"}
+                            key={"facebook"}
+                            socket={socket}
+                        />
                     </div>
 
                     <div id="formFooter">

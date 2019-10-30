@@ -41,13 +41,12 @@ class Profile extends Component {
 
     componentDidUpdate(prevProps) {
         if(this.props.user !== prevProps.user) {
-            const { name, email, profileImage, location, tel} = this.props.user
+            const { name, email, location, tel} = this.props.user
             this.setState({
                 name: name,
                 email: email,
                 location: location,
                 tel: tel === null ? "" : tel,
-                profileImage: profileImage,
                 formValid: name&&email ? true: false,
                 nameValid: name ? true : false,
                 emailValid: email ? true: false,
@@ -112,8 +111,7 @@ class Profile extends Component {
             this.setState({ loading: true });
             const { name, email, tel, location, profileImage } = this.state;
             let url = '/api/user/' + this.props.user._id;
-            console.log(profileImage)
-            if(profileImage.type) {
+            if (profileImage&&profileImage.type) {
                 const formData = new FormData();
                 formData.append('name', name);
                 formData.append('email', email);
@@ -137,12 +135,11 @@ class Profile extends Component {
                 axios.patch(url, {
                     name: name,
                     email: email,
-                    tel: tel.length < 0 ? "" : tel,
+                    tel: tel&&tel.length < 0 ? "" : tel,
                     location: location.trim().length < 0 ? "" : location
                 })
                 .then(res => {
                     this.setState({ loading: false, successModify: true })
-                    console.log(res.data)
                 })
                 .catch(err => {
                     this.setState({error: "Une érreur s'est produite", loading: false})
@@ -200,7 +197,10 @@ class Profile extends Component {
                                 <hr/>
                             </div>
                             <div className="col-sm-12 col-md-2 col-lg-2 mt-3 d-flex flex-column align-items-center">
-                                <img src={user&& user.profileImage ? rootUrl+'/'+user.profileImage: userImg} className="img-fluid rounded-circle" alt="" width="200" height="200" />
+                                {user&&user.provider!=="social"&&<img src={user&& user.profileImage ? rootUrl+'/'+user.profileImage: userImg} 
+                                className="rounded-circle" alt="" width="200" height="200" />}
+                                {user&&user.provider==="social"&&<img src={user&& user.profileImage ? user.profileImage: userImg} 
+                                className="rounded-circle" alt="" width="200" height="200" />}
                                 <h4 className="mt-3 text-center"><strong>{user ? user.name :null}</strong></h4>
                                 <h5 className="text-center">{user ? user.email: null}</h5>
                             </div>
@@ -216,7 +216,7 @@ class Profile extends Component {
                                     <input type="text" value={location} onChange={(e) => this.handleInputChange(e)}  name="location" placeholder="Adresse" />
                                     <input type="text" value={tel} onChange={(e) => this.handleInputChange(e)} name="tel" placeholder="Numéro de Téléphone" />
                                     <div className="py-3 justify-content-center">
-                                        <Upload type="image" oldUrl={profileImage} setFile={(name, file) => this.setFile(name, file)} name="profileImage" label={"Importer une image de profile"} />
+                                        {user && user.provider !== "social"&&<Upload type="image" oldUrl={profileImage} setFile={(name, file) => this.setFile(name, file)} name="profileImage" label={"Importer une image de profile"} />}
                                     </div>
                                     <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} id="signBtn" className="button mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer"}</button>
                                 </form>

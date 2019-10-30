@@ -3,8 +3,11 @@ const mongoose = require('mongoose');
 const config = require('./config/database');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const passport = require('passport')
+const session = require('express-session')
 const http = require('http');
-const socketIo = require("socket.io");;
+const socketIo = require("socket.io");
+const passportInit = require('./api/lib/passport-init')
 
 // Routes
 const userRoutes = require('./api/routes/users');
@@ -14,6 +17,7 @@ const eventRoutes = require('./api/routes/events');
 const serviceRoutes = require('./api/routes/services');
 const galleryRoutes = require('./api/routes/galleries');
 const bannersRoutes = require('./api/routes/banners');
+const authRoutes = require('./api/routes/auth');
 
 const send = require('./api/mailing/sendGrid')
 
@@ -25,9 +29,19 @@ db.on('error', console.error.bind(console, 'connection error'));
 db.once('open', function() {
     console.log('Connected to mongodb');
 })
-
+require('dotenv').config();
 // App initialization
 const app = express();
+app.use(express.json())
+app.use(passport.initialize())
+passportInit()
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true
+}))
+
 const server = http.createServer(app);
 
 app.use(morgan('dev'))
@@ -53,6 +67,7 @@ app.use('/api/event', eventRoutes);
 app.use('/api/service', serviceRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/banner', bannersRoutes);
+app.use('/', authRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not Found');
@@ -72,6 +87,7 @@ app.use((error, req, res, next) => {
 
 // Init socket io
 var io = socketIo.listen(server);
+app.set('io', io)
 
 io.on('connection', function (socket) {
     // let client = socket.request._query

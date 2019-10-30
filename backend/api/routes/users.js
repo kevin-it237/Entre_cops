@@ -60,6 +60,7 @@ router.post('/signup', (req, res, next) => {
                             location: '',
                             accountValidated: false,
                             role: "user",
+                            provider: "email",
                             password: hash,
                             date: new Date()
                         });
@@ -133,6 +134,53 @@ router.post('/login', (req, res, next) => {
             console.log(err)
             return res.status(500).json({ error: err })
         })
+})
+
+// Social media account Login
+router.post('/socialauth', (req, res, next) => {
+    User.findOne({ name: req.body.name })
+        .exec()
+        .then(user => {
+            const token = jwt.sign({
+                name: req.body.name,
+            }, "ENTRECOPS_SECRET.JWT_KEY",
+                {
+                    expiresIn: "24h"
+                });
+            const now = new Date();
+            const expiresDate = now.getTime() + 60 * 60 * 24 * 1000;
+            if(user && user.provider == "social") {
+                return res.status(201).json({
+                    message: 'User Created with his social account',
+                    user: user,
+                    token: token,
+                    expiresDate: expiresDate
+                })
+            } else {
+                const newUser = new User({
+                    _id: mongoose.Types.ObjectId(),
+                    name: req.body.name,
+                    profileImage: req.body.photo,
+                    provider: "social",
+                    role: "user"
+                })
+                newUser.save()
+                .then(user => {
+                    return res.status(201).json({
+                        message: 'User Created with his social account',
+                        user: user,
+                        token: token,
+                        expiresDate: expiresDate
+                    })
+                })
+                .catch(err => {
+                    return res.status(500).json({ error: err })
+                })
+            }
+        })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
 })
 
 // Regenarate token

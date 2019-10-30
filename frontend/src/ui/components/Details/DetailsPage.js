@@ -477,7 +477,7 @@ class DetailsPage extends Component {
                                                         <h3 className="mb-4">Localisation</h3>
                                                         {announce.mapLink && announce.mapLink.length ?
                                                             <Fragment>
-                                                                <h2><a target="_blank" href={announce.mapLink}>Lien Google Map</a></h2>
+                                                                <h2><a target="blank" href={announce.mapLink}>Lien Google Map</a></h2>
                                                                 <p>Cliquez sur le lien pour agrandir.</p>
                                                             </Fragment> :
                                                             <p>Pas de Localisation disponible</p>}
@@ -660,7 +660,7 @@ class DetailsPage extends Component {
                                                     <h3 className="mb-4">Localisation</h3>
                                                     {announce.mapLink && announce.mapLink.length ?
                                                     <Fragment>
-                                                        <h2><a target="_blank" href={announce.mapLink}>Lien Google Map</a></h2>
+                                                        <h2><a target="blank" href={announce.mapLink}>Lien Google Map</a></h2>
                                                         <p>Cliquez sur le lien pour agrandir.</p>
                                                     </Fragment>:
                                                     <p>Pas de Localisation disponible</p>}
