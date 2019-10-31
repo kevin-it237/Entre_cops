@@ -8,14 +8,24 @@ class UserGallery extends Component {
     state = { images: [], loading: true, currentImage: 0};
 
     componentDidMount() {
+        this.loadGallery()
+    }
+
+    componentDidUpdate(prevProps) {
+        if(prevProps !== this.props) {
+            this.loadGallery()
+        }
+    }
+
+    loadGallery = () => {
         const authData = JSON.parse(localStorage.getItem("authData"));
-        if(authData&&authData.user) {
+        if (authData && authData.user) {
             let images = authData.user.gallery.map((image, id) => (
                 {
                     src: image,
                     thumbnail: image,
                     thumbnailWidth: 320,
-                    thumbnailHeight: 174
+                    thumbnailHeight: 200
                 }
             ));
             images.reverse()

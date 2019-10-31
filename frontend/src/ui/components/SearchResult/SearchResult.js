@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import './SearchResult.scss';
 import img from '../../../assets/images/logo.png';
 import axios from 'axios';
 import Loader from  '../../globalComponent/Loader'
 import {rootUrl} from '../../../configs/config'
 
-class SearchResultList extends Component {
+class SearchResultList extends PureComponent {
 
     state = {
         searching: false,
@@ -21,7 +21,13 @@ class SearchResultList extends Component {
                 // search form events
                 axios.get('/api/event/'+query+'/search')
                     .then(res => {
-                        const data = res.data.events.map(event => { event.eventType = "event"; return event });
+                        let data = []; 
+                        res.data.events.forEach(event => { 
+                            event.eventType = "event";
+                            if (!this.state.results.includes(event)) {
+                                data.push(event) ; 
+                            }
+                        });
                         this.setState({
                             results: [...this.state.results, ...data],
                             searching: false
@@ -33,7 +39,13 @@ class SearchResultList extends Component {
                 // search form services
                 axios.get('/api/service/' + query + '/search')
                     .then(res => {
-                        const data = res.data.services.map(service => {service.eventType = "service"; return service});
+                        let data = [];
+                        res.data.services.forEach(service => {
+                            service.eventType = "service"; 
+                            if (!this.state.results.includes(service)) {
+                                data.push(service);
+                            }
+                        });
                         this.setState({
                             results: [...this.state.results, ...data],
                             searching: false

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
@@ -13,7 +13,7 @@ import { rootUrl } from '../../configs/config';
 import {autoSignIn} from '../../store/actions';
 import SearchResult from '../components/SearchResult/SearchResult'
 
-class Header extends Component {
+class Header extends PureComponent {
 
     state = {
         user: null,
@@ -149,13 +149,13 @@ class Header extends Component {
                                 {
                                     token && (role === "user" || role === "supplier") ?
                                     <li className="nav-item">
-                                        <NavLink className="nav-link" to="/user/reservations">Mes réservations</NavLink>
+                                        <NavLink className="nav-link" to="/user/reservations">Mon Activité</NavLink>
                                     </li>:null
                                 }
                                 {
                                     token && (role === "user" || role === "supplier") ?
                                     <li className="nav-item">
-                                        <NavLink className="nav-link" to="/user/gallery">Galerie</NavLink>
+                                        <NavLink className="nav-link" to="/user/gallery">Ma Galerie</NavLink>
                                     </li>:null
                                 }
                                 {
