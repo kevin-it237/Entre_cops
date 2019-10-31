@@ -21,39 +21,38 @@ class SearchResultList extends PureComponent {
                 // search form events
                 axios.get('/api/event/'+query+'/search')
                     .then(res => {
-                        let data = []; 
+                        let eventList = []; 
                         res.data.events.forEach(event => { 
                             event.eventType = "event";
                             if (!this.state.results.includes(event)) {
-                                data.push(event) ; 
+                                eventList.push(event) ; 
                             }
+                            console.log(eventList)
+                            console.log(res.data.events)
                         });
-                        this.setState({
-                            results: [...this.state.results, ...data],
-                            searching: false
-                        })
+                        // search form services
+                        axios.get('/api/service/' + query + '/search')
+                            .then(res => {
+                                let serviceList = [];
+                                res.data.services.forEach(service => {
+                                    service.eventType = "service";
+                                    if (!this.state.results.includes(service)) {
+                                        serviceList.push(service);
+                                    }
+                                });
+                                this.setState({
+                                    results: [...eventList, ...serviceList],
+                                    searching: false
+                                })
+                            })
+                            .catch(err => {
+                                this.setState({ error: "Une érreur s'est produite. Veuillez recharger", searching: false })
+                            })
                     })
                     .catch(err => {
                         this.setState({ error: "Une érreur s'est produite. Veuillez recharger", searching: false })
                     })
-                // search form services
-                axios.get('/api/service/' + query + '/search')
-                    .then(res => {
-                        let data = [];
-                        res.data.services.forEach(service => {
-                            service.eventType = "service"; 
-                            if (!this.state.results.includes(service)) {
-                                data.push(service);
-                            }
-                        });
-                        this.setState({
-                            results: [...this.state.results, ...data],
-                            searching: false
-                        })
-                    })
-                    .catch(err => {
-                        this.setState({ error: "Une érreur s'est produite. Veuillez recharger", searching: false })
-                    })
+                
             } else {
                 this.setState({ searching: false })
             }
