@@ -7,6 +7,7 @@ import axios from 'axios'
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import {rootUrl} from '../../../configs/config';
 import logo from '../../../assets/images/logo.png';
+import Loader from '../../globalComponent/Loader';
 
 class GalleryItem extends Component {
 
@@ -15,6 +16,7 @@ class GalleryItem extends Component {
 
         this.state = {
             loading: false, 
+            deleting: false, 
             user: null, 
             images: [],
             currentImage: 0
@@ -80,6 +82,13 @@ class GalleryItem extends Component {
                                 </div>
                             </div>
                         </div>
+                        {
+                            this.state.user && this.state.user.role === "admin" ?
+                                <div className="ml-auto flex-shrink-0">
+                                    <button onClick={() => this.props.deletePublication(this.props.id)} className="btn btn-danger btn-lg">Supprimer cette publication {this.props.deleting&&<Loader color="white"/>}</button>
+                                </div>
+                                : null
+                        }
                     </div>
                    
                     <div className="body">
@@ -102,8 +111,8 @@ class GalleryItem extends Component {
                                 currentImageWillChange={this.onCurrentImageChange}
                             />
                         }
-                    </div>
                 </div>
+            </div>
             </Fragment>
         );
     }

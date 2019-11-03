@@ -13,17 +13,22 @@ class GalleryList extends Component {
         error: '',
         query: '',
         loading: true,
+        deleting: false,
         haveSearched: false
     };
 
     componentDidMount() {
+        this.loadGallery()
+    }
+
+    loadGallery = () => {
         axios.get('/api/gallery/all')
-        .then(res => {
-            this.setState({ loading: false, publications: res.data.publications })
-        })
-        .catch(err => {
-            this.setState({ loading: false })
-        })
+            .then(res => {
+                this.setState({ loading: false, publications: res.data.publications })
+            })
+            .catch(err => {
+                this.setState({ loading: false })
+            })
     }
 
     filter = () => {
@@ -41,6 +46,18 @@ class GalleryList extends Component {
         if (event.key === "Enter") {
             this.filter()
         }
+    }
+
+    deletePublication = (id) => {
+        this.setState({ deleting: true })
+        axios.delete('/api/gallery/' + id)
+            .then(res => {
+                this.setState({ deleting: false, loading: true })
+                this.loadGallery()
+            })
+            .catch(err => {
+                this.setState({ deleting: false })
+            })
     }
 
     render() {
@@ -67,7 +84,12 @@ class GalleryList extends Component {
                             this.state.publications.map((pub, id) => (
                                 <div key={id} className="row pt-5 gallery-row pb-5">
                                     <div className="col-sm-12 mt-4 mb-3">
-                                        <GalleryItem key={id} content={pub.content} images={pub.images} date={pub.date} />
+                                        <GalleryItem key={id} id={pub._id} 
+                                            deletePublication={this.deletePublication} 
+                                            deleting={this.state.deleting}
+                                            content={pub.content} 
+                                            images={pub.images} 
+                                            date={pub.date} />
                                     </div>
                                 </div>
                             ))

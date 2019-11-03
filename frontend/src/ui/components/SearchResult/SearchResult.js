@@ -27,8 +27,6 @@ class SearchResultList extends PureComponent {
                             if (!this.state.results.includes(event)) {
                                 eventList.push(event) ; 
                             }
-                            console.log(eventList)
-                            console.log(res.data.events)
                         });
                         // search form services
                         axios.get('/api/service/' + query + '/search')

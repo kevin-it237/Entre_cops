@@ -8,7 +8,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
-import {rootUrl} from './configs/config';
+import  {rootUrl} from './configs/config'
 import Footer from './ui/globalComponent/Footer';
 
 axios.defaults.baseURL = rootUrl;

@@ -331,6 +331,19 @@ class DetailsPage extends Component {
         });
     }
 
+    openMap = (e, url) => {
+        e.preventDefault()
+        const width = 600, height = 600
+        const left = (window.innerWidth / 2) - (width / 2)
+        const top = (window.innerHeight / 2) - (height / 2)
+
+        return window.open(url, '',
+            `toolbar=no, location=no, directories=no, status=no, menubar=no, 
+      scrollbars=no, resizable=no, copyhistory=no, width=${width}, 
+      height=${height}, top=${top}, left=${left}`
+        )
+    }
+
     render() {
         const { announce, error, loading, name, email, tel, messageValid, reserving, downloadingCoupon,
                 numberOfPlaces, formValid, reservationError, recError, sendingComment, userEmail, userName, userMessage } = this.state;
@@ -477,7 +490,7 @@ class DetailsPage extends Component {
                                                         <h3 className="mb-4">Localisation</h3>
                                                         {announce.mapLink && announce.mapLink.length ?
                                                             <Fragment>
-                                                                <h2><a target="blank" href={announce.mapLink}>Lien Google Map</a></h2>
+                                                                <h2><a onClick={(e) => this.openMap(e, announce.mapLink)} >Lien Google Map</a></h2>
                                                                 <p>Cliquez sur le lien pour agrandir.</p>
                                                             </Fragment> :
                                                             <p>Pas de Localisation disponible</p>}
@@ -660,7 +673,7 @@ class DetailsPage extends Component {
                                                     <h3 className="mb-4">Localisation</h3>
                                                     {announce.mapLink && announce.mapLink.length ?
                                                     <Fragment>
-                                                        <h2><a target="blank" href={announce.mapLink}>Lien Google Map</a></h2>
+                                                        <h2><a onClick={(e) => this.openMap(e, announce.mapLink)} >Lien Google Map</a></h2>
                                                         <p>Cliquez sur le lien pour agrandir.</p>
                                                     </Fragment>:
                                                     <p>Pas de Localisation disponible</p>}

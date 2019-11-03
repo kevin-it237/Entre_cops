@@ -1,11 +1,18 @@
 import React, { Component, Fragment } from 'react';
 import Header from '../../globalComponent/Header';
 import Gallery from 'react-grid-gallery';
+import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
 
 class UserGallery extends Component {
 
-    state = { images: [], loading: true, currentImage: 0};
+    constructor(props) {
+        super(props);
+
+        this.state = { images: [], loading: true, currentImage: 0, isImageToDelete: false, deleting: false };
+    }
+
+    
 
     componentDidMount() {
         this.loadGallery()
@@ -19,8 +26,9 @@ class UserGallery extends Component {
 
     loadGallery = () => {
         const authData = JSON.parse(localStorage.getItem("authData"));
-        if (authData && authData.user) {
-            let images = authData.user.gallery.map((image, id) => (
+        axios.get('/api/user/' + authData.user._id)
+        .then(res => {
+            let images = res.data.user.gallery.map((image, id) => (
                 {
                     src: image,
                     thumbnail: image,
@@ -30,11 +38,41 @@ class UserGallery extends Component {
             ));
             images.reverse()
             this.setState({ images: images, loading: false })
-        }
+        })
+        .catch(err => {
+            console.log(err)
+            this.setState({ images: [], loading: false })
+        })
+    }    
+    
+    onSelectImageToRemove = (index, image) => {
+        var images = this.state.images.slice();
+        var img = images[index];
+        if (img.hasOwnProperty("isSelected"))
+            img.isSelected = !img.isSelected;
+        else
+            img.isSelected = true;
+
+        this.setState({
+            images: images
+        }, () => {
+            const selectedImages = this.state.images.filter(image => image.isSelected === true)
+            selectedImages.length ? this.setState({ isImageToDelete: true }) : this.setState({ isImageToDelete: false })
+        });
     }
 
-    onCurrentImageChange(index) {
-        this.setState({ currentImage: index });
+    deleteFromMyGallery = () => {
+        const userId = JSON.parse(localStorage.getItem('authData')).user._id
+        this.setState({ deleting: true })
+        const remainingImages = this.state.images.filter(image => image.isSelected !== true);
+        let newImages = remainingImages.map(image => image.src);
+        axios.patch('/api/user/'+ userId +'/gallery/delete', { images: newImages})
+        .then(res => {
+            this.setState({ deleting: false, images: remainingImages, isImageToDelete: false});
+        })
+        .catch(err => {
+            this.setState({ deleting: false, isImageToDelete: false })
+        })
     }
 
     render() {
@@ -50,9 +88,15 @@ class UserGallery extends Component {
                                     this.state.loading ? <div className="d-flex justify-content-center"><Loader /></div>:
                                         this.state.images.length > 0 ?
                                         <Fragment>
+                                            {this.state.isImageToDelete?
+                                            this.state.deleting ?<div className="d-flex justify-content-center"><Loader /></div>:
+                                            <div className="d-flex justify-content-center">
+                                            <button onClick={this.deleteFromMyGallery} className="btn btn-danger my-3">Supprimer</button></div>:null
+                                            }
                                             <Gallery 
                                                 enableLightbox={true}
-                                                enableImageSelection={false}
+                                                enableImageSelection={true}
+                                                onSelectImage={this.onSelectImageToRemove}
                                                 images={this.state.images}
                                                 currentImageWillChange={this.onCurrentImageChange}
                                             />

@@ -52,7 +52,7 @@ class Caroussel extends Component {
                                 {this.state.images.map((image, i) => {
                                     return (
                                         <div key={i}  className={i=== 0 ? "carousel-item active": "carousel-item"}>
-                                            <img className="d-block w-100" src={rootUrl + '/' + image.link} alt="First slide"/>
+                                            <img className="d-block w-100" src={image.link} alt="First slide"/>
                                             <div className="container">
                                                 <div className="carousel-caption d-none d-sm-block text-bottom mb-5">
                                                     {/* <h1 className="">SOYEZ A L'ACTU DE TOUS LES EVENEMENTS ET SERVICES</h1> */}
