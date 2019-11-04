@@ -4,6 +4,7 @@ import './Gallery.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {DateFormat} from '../../utils/DateFormat'
 import axios from 'axios'
+import {Notification, addNotification} from '../../globalComponent/Notifications'
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import {rootUrl} from '../../../configs/config';
 import logo from '../../../assets/images/logo.png';
@@ -31,11 +32,11 @@ class GalleryItem extends Component {
         const {images} = this.state;
         if(this.state.user.gallery) {
             if (this.state.user.gallery.includes(images[this.state.currentImage].src)) {
-                alert("Cette image est déja incluse dans votre Galerie.")
+                addNotification("warning", "Galerie!", "Cette image est déja incluse dans votre Galerie.")
             } else {
                 axios.patch('/api/user/' + this.state.user._id + '/galleryimages/save', { gallery: [images[this.state.currentImage].src]})
                 .then(res => {
-                    alert("Image importée avec succès!!")
+                    addNotification("success", "Galerie!", "Image importée avec succès!!")
                 })
                 .catch(err => {
                     console.log(err)
@@ -70,6 +71,7 @@ class GalleryItem extends Component {
         const {images} = this.state;
         return (
             <Fragment>
+                <Notification/>
                 <div className="gallery-item d-block">
                     <div className="header d-flex">
                         <img src={logo} width="70px" height="50px" className="mr-3" alt="" />

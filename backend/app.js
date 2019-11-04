@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const passport = require('passport')
 const session = require('express-session')
 const http = require('http');
+const path = require('path');
 const socketIo = require("socket.io");
 const passportInit = require('./api/lib/passport-init')
 
@@ -18,8 +19,7 @@ const serviceRoutes = require('./api/routes/services');
 const galleryRoutes = require('./api/routes/galleries');
 const bannersRoutes = require('./api/routes/banners');
 const authRoutes = require('./api/routes/auth');
-
-const send = require('./api/mailing/sendGrid')
+const emailsRoutes = require('./api/routes/emails');
 
 // Connect to db
 mongoose.connect(config.database, { useNewUrlParser: true });
@@ -32,6 +32,7 @@ db.once('open', function() {
 require('dotenv').config();
 // App initialization
 const app = express();
+app.use(express.static(path.join(__dirname, 'build')));
 app.use(express.json())
 app.use(passport.initialize())
 passportInit()
@@ -67,7 +68,12 @@ app.use('/api/event', eventRoutes);
 app.use('/api/service', serviceRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/banner', bannersRoutes);
-app.use('/', authRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/email', emailsRoutes); 
+
+app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.use((req, res, next) => {
     const error = new Error('Not Found');

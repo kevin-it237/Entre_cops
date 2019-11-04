@@ -17,8 +17,7 @@
             }
 
             &:hover {
-                border: solid 1px #dddddd !important;
-                border-bottom: solid 1px #dfdfdf !important;
+                background-color: #f5f8fa;
                 cursor: pointer;
             }
             img {
@@ -31,7 +30,16 @@
             border-bottom: none;
         }
         .notvisited {
-            background-color: #f5f8fa;
+            background-color: #fafafa;
+        }
+
+        .nav-item {
+            font-size: 1.6rem;
+            color: #333333;
+        }
+        .active {
+            color: black !important;
+            font-weight: bold;
         }
     }
 }

@@ -1,4 +1,4 @@
-module.exports = function (email, subject, name, id) {
+module.exports = function (email, subject, name, id, cb) {
     const nodemailer = require('nodemailer');
     const {rootUrl} = require('../../config/rootUrl');
     
@@ -19,7 +19,7 @@ module.exports = function (email, subject, name, id) {
     const data = `
         <div style="width: 100%;background-color: #f6f6f6;padding-top: 3rem;padding-bottom: 3rem">
         <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-        <div style="width: 50%;display: block;margin-left: auto;margin-right: auto;padding:
+        <div style="width: 70%;display: block;margin-left: auto;margin-right: auto;padding:
             4rem;background-color: white;height: 100%;position: relative;">
             <div style="min-height: 20rem">
                 <h2 style="font-family: 'Roboto', Helvetica, sans-serif;">Hello Mr., Mme. ${name}</h2>
@@ -48,11 +48,5 @@ module.exports = function (email, subject, name, id) {
     };
 
     // send mail with defined transport object
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.log(error);
-        }
-        console.log('Message sent: %s', info.messageId);
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    });
+    transporter.sendMail(mailOptions, cb);
 }

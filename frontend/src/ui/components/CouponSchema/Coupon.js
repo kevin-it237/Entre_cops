@@ -21,7 +21,7 @@ export let counponToPrint = (logoBase64, infos, montant, datelimite, title, qr, 
                         { text: '\nOffre valable jusqu\'au ' + datelimite +' sous présentation au guichet. \n\n', fontSize: 10, style: { italics: true, alignment: 'center' } }
                     ]
                 },
-                { qr: qr, fit: '80', style: { alignment: 'center' } },
+                // { qr: qr, fit: '80', style: { alignment: 'center' } },
                 { text: '\n www.entrecops.co', fontSize: 10, style: { italics: true, alignment: 'center' } }
             ]
 })

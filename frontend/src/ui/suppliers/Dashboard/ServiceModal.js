@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Upload from '../../components/Forms/Upload';
 import axios from 'axios';
 import socketIOClient from 'socket.io-client';
+import {Notification, addNotification} from '../../globalComponent/Notifications'
 import Loader from '../../globalComponent/Loader';
 import { rootUrl } from '../../../configs/config';
 import './EventForm.scss';
@@ -274,7 +275,7 @@ class ServiceModal extends Component {
                 this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
             }
         } else {
-            alert("Aucune modification éffectuée")
+            addNotification("warning", "Modification!", "Aucune modification éffectuée")
         }
     }
 
@@ -357,6 +358,7 @@ class ServiceModal extends Component {
                     <Modal.Title>Ajouter un nouveau Service</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <Notification />
                     <form>
                         <div className="container">
                             <div className="row">

@@ -1,7 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
-import {rootUrl} from '../../../configs/config';
 import './Caroussel.scss';
 
 class Caroussel extends Component {

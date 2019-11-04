@@ -1,5 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { Notification, addNotification } from '../../globalComponent/Notifications'
 
 import Modal from 'react-bootstrap/Modal';
 import Loader from '../../globalComponent/Loader';
@@ -7,14 +10,20 @@ import Loader from '../../globalComponent/Loader';
 
 class AdminEmails extends Component {
 
-    state = {
-        users: [],
-        suppliers: [],
-        loading: true,
-        selectedUsers: [],
-        content: '',
-        object: '',
-        error: ''
+    constructor(props) {
+        super(props);
+        this.state = { 
+            users: [],
+            suppliers: [],
+            loading: true,
+            sending: false,
+            selectedUsers: [],
+            content: '',
+            object: '',
+            error: '',
+            emailError: '',
+        };
+        this.onChange = (editorState) => this.setState({ editorState });
     }
 
     handleInputChange = (e) => {
@@ -52,6 +61,43 @@ class AdminEmails extends Component {
         })
     }
 
+    sendEmails = () => {
+        const {object, content, selectedUsers} = this.state;
+        if(object.length <= 0 || content.length <= 0 || selectedUsers.length === 0 ) {
+            addNotification("warning", "Envoi des Emails!", "Selectionez des utilisateurs et remplissez tous les champs")
+        } else {
+            this.setState({ sending: true })
+            let emails = selectedUsers.filter(user => user.trim().length > 0);
+            // Envoi des Emails avec AWS SES
+           /*  
+            axios.post('/api/email/sendemail', {
+                object: object,
+                emails: emails,
+                html: JSON.stringify(content)
+            })
+            .then(res => {
+                this.setState({ sending: false, showModal: false })
+            })
+            .catch(err => {
+                this.setState({ sending: false, emailError: "Une érreur ss'est produite" })
+                console.log(err)
+            }) */
+            // Sending with gmail
+            axios.post('/api/email/sendemail/gmail', {
+                object: object,
+                emails: emails,
+                html: JSON.stringify(content)
+            })
+            .then(res => {
+                this.setState({ sending: false, showModal: false, emailError: '', content: '', object: '', selectedUsers: [] })
+            })
+            .catch(err => {
+                this.setState({ sending: false, emailError: "Une érreur ss'est produite" })
+                console.log(err)
+            })
+        }
+    }
+
     selectAllUsers = (e, inputClass, toggleBtn) => {
         let usersCheckboxToggleAll = document.getElementsByClassName(toggleBtn)
         let usersCheckboxes = document.getElementsByClassName(inputClass)
@@ -73,9 +119,11 @@ class AdminEmails extends Component {
     }
 
     render() {
-        const {loading, users, suppliers, error, selectedUsers, content, object} = this.state;
+        const {loading, users, suppliers, error, selectedUsers, content, object, sending, emailError} = this.state;
+        console.log(content)
         return (
             <Fragment>
+                <Notification />
                 <div className="container mt-4">
                     <div className="row pt-5 pb-3">
                         <div className="col-sm-12">
@@ -150,6 +198,7 @@ class AdminEmails extends Component {
                         <div className="container">
                             <div className="row">
                                <div className="col">
+                                    {emailError && emailError.length ? <div className="alert alert-danger">{emailError}</div> : null}
                                     <div className="d-flex mb-4 flex-wrap">
                                         {
                                             selectedUsers.map((user, i) => <p className="user-email-item" key={i}>{user}</p>)
@@ -161,10 +210,32 @@ class AdminEmails extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label for="name">Contenu</label>
-                                        <textarea style={{fontSize: "1.5rem"}} type="text" className="form-control" value={content} onChange={(e) => this.handleInputChange(e)} name="content" rows={5} placeholder="Contenu de l'email"></textarea>
+                                        <CKEditor
+                                            editor={ClassicEditor}
+                                            data=""
+                                            config={{
+                                                toolbar: ['heading', '|', 'bold', 'italic', 'insertTable',
+                                                    'tableColumn', 'tableRow', 'mergeTableCells', '|', 'undo', 'redo']
+                                            }} 
+                                            onInit={editor => {
+                                                // You can store the "editor" and use when it is needed.
+                                                console.log('Editor is ready to use!', editor);
+                                            }}
+                                            onChange={(event, editor) => {
+                                                const data = editor.getData();
+                                                this.setState({content: data})
+                                            }}
+                                            onBlur={(event, editor) => {
+                                                console.log('Blur.', editor);
+                                            }}
+                                            onFocus={(event, editor) => {
+                                                console.log('Focus.', editor);
+                                            }}
+                                        />
+                                        {/* <textarea style={{fontSize: "1.5rem"}} type="text" className="form-control" value={content} onChange={(e) => this.handleInputChange(e)} name="content" rows={5} placeholder="Contenu de l'email"></textarea> */}
                                     </div>
                                     <div className="d-flex justify-content-end">
-                                        <button className="button my-4">Envoyer ({selectedUsers.length}) {loading&&<Loader color="white"/>}</button>
+                                        <button onClick={this.sendEmails} className="button my-4">Envoyer ({selectedUsers.length}) {sending&&<Loader color="white"/>}</button>
                                     </div>
                                </div>
                             </div>

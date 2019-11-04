@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import {DateFormat} from '../../utils/DateFormat'
 import Modal from 'react-bootstrap/Modal';
+import { Notification, addNotification } from '../../globalComponent/Notifications'
 import Button from 'react-bootstrap/Button';
 import SupplierForm from '../../components/Forms/SuplierForm';
 import Loader from '../../globalComponent/Loader';
@@ -158,7 +159,7 @@ class AdminHome extends Component {
                 this.setState({ publishError: "Erreur de connexion. Veuillez reéssayer", publishing: false });
             }
         } else {
-            alert("Veuillez entrer toutes les informations")
+            addNotification("warning", "Galerie!", "Veuillez entrer toutes les informations")
         }
     }
 
@@ -166,6 +167,7 @@ class AdminHome extends Component {
         const { events, eventsLoading, services, servicesLoading, error } = this.state;
         return (
             <Fragment>
+                <Notification />
                 <div className="container">
                     <div className="row  pt-3 mt-5">
                         <div className="col-sm-12">

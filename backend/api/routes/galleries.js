@@ -80,4 +80,19 @@ router.get('/:query/filter', (req, res, next) => {
         })
 })
 
+// Delete a publication on gallery
+router.delete('/:id', (req, res, next) => {
+    const id = req.params.id
+    Gallery.remove({ _id: id })
+        .exec()
+        .then(publications => {
+            return res.status(201).json({
+                publications: publications
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
 module.exports = router;

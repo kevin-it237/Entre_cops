@@ -4,7 +4,7 @@ const {apiUrl} = require('./rootUrl')
 require('dotenv').config();
 
 const callbacks = providers.map(provider => {
-    return `${apiUrl}/${provider}/callback`
+    return `${apiUrl}/api/auth/${provider}/callback`
 })
 const [googleURL, facebookURL] = callbacks
 

@@ -149,7 +149,7 @@ class Header extends PureComponent {
                                 {
                                     token && (role === "user" || role === "supplier") ?
                                     <li className="nav-item">
-                                        <NavLink className="nav-link" to="/user/reservations">Mon Activité</NavLink>
+                                        <NavLink className="nav-link" to="/user/reservations">Mes Réservations</NavLink>
                                     </li>:null
                                 }
                                 {

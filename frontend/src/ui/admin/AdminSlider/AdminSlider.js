@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Loader from '../../globalComponent/Loader';
 import Gallery from 'react-grid-gallery';
+import { Notification, addNotification } from '../../globalComponent/Notifications'
 import axios from 'axios';
 import { rootUrl } from '../../../configs/config';
 
@@ -118,7 +119,7 @@ class AdminSlider extends Component {
                 })
             });
         } else {
-            alert("Choisissez des images à importer")
+            addNotification("warning", "Bannière!", "Choisissez des images à importer")
         }
     } */
 
@@ -136,7 +137,7 @@ class AdminSlider extends Component {
                 this.setState({loading: false, error: "Une erreur s'est produite, veuillez reéssayer",})
             })
         } else {
-            alert("Sélectionnez des images à configurer sur la bannière")
+            addNotification("warning", "Bannière!", "Sélectionnez des images à configurer sur la bannière")
         }
     }
 
@@ -154,7 +155,7 @@ class AdminSlider extends Component {
                 this.setState({loading: false, error: "Une erreur s'est produite, veuillez reéssayer", imageToDelete: false})
             })
         } else {
-            alert("Sélectionnez des images à enlever de la bannière")
+            addNotification("warning", "Bannière!", "Sélectionnez des images à enlever de la bannière")
         }
     }
 
@@ -224,6 +225,7 @@ class AdminSlider extends Component {
         const {loading, showModal} = this.state;
         return (
             <Fragment>
+                <Notification />
                 <div className="container mt-4 mb-5">
                     <div className="row pt-5 pb-3">
                         <div className="col d-flex justify-content-between align-items-center">

@@ -399,23 +399,21 @@ router.get('/:userId', (req, res, next) => {
         })
 });
 
-// send mail
-router.post('/sendmail/:email/:subject/:name/:id/:to', (req, res, next) => {
-    var sendmail = null;
-    if(req.params.to == "validatesupplier") {
-        sendmail = require('../mailing/validate_supplier_email');
-    }
-    try {
-        sendmail(req.params.email, req.params.subject, req.params.name, req.params.id);
+
+// Detele an image from gallery
+router.patch('/:id/gallery/delete', (req, res, next) => {
+    User.updateOne({ _id: req.params.id }, {
+        $set: { gallery: req.body.images }
+    })
+    .exec()
+    .then(user => {
         return res.status(201).json({
-            mail: "Email sent",
+            user: user
         })
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            "error": error
-        })  
-    }
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
 })
 
 // Make a recommandation

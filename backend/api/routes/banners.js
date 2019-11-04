@@ -51,10 +51,15 @@ router.post('/', upload.single('image'), (req, res, next) => {
 })
 
 // Set images on banner
-router.patch('/set', (req, res, next) => {
+router.post('/set', (req, res, next) => {
     req.body.bannerImages.forEach((banner, i) => {
-        Banner.updateOne({_id: banner.id}, {$set: {isCurrent: true}})
-        .exec()
+        const newBanner = new Banner({ 
+            _id: mongoose.Types.ObjectId(), 
+            link: banner.src, 
+            followlink: banner.followlink, 
+            title: banner.title, 
+            date: new Date() });
+        newBanner.save()
         .then(banner => {
             if(req.body.bannerImages.length === (i+1)) {
                 return res.status(201).json({
@@ -66,7 +71,6 @@ router.patch('/set', (req, res, next) => {
             if(req.body.bannerImages.length === (i+1)) {
                 return res.status(500).json({ error: err })
             }
-            console.log(err) 
         })
     });
 })
@@ -75,7 +79,7 @@ router.patch('/set', (req, res, next) => {
 // remove images on banner
 router.patch('/remove', (req, res, next) => {
     req.body.bannerImages.forEach((banner, i) => {
-        Banner.updateOne({_id: banner.id}, {$set: {isCurrent: false}})
+        Banner.deleteOne({_id: banner.id})
         .exec()
         .then(banner => {
             if(req.body.bannerImages.length === (i+1)) {
@@ -88,14 +92,13 @@ router.patch('/remove', (req, res, next) => {
             if(req.body.bannerImages.length === (i+1)) {
                 return res.status(500).json({ error: err })
             }
-            console.log(err) 
         })
     });
 })
 
 // Get current banner
 router.get('/current', (req, res, next) => {
-    Banner.find({isCurrent: true})
+    Banner.find({})
     .exec()
     .then(banners => {
         return res.status(200).json({

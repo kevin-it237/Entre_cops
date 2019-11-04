@@ -8,6 +8,7 @@ import axios from 'axios';
 import socketIOClient from 'socket.io-client';
 import Loader from '../../globalComponent/Loader';
 import {rootUrl} from '../../../configs/config';
+import { Notification, addNotification } from '../../globalComponent/Notifications'
 import './EventForm.scss';
 
 class EventModal extends Component {
@@ -186,7 +187,7 @@ class EventModal extends Component {
                 this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
             }
         } else {
-            alert("Aucune modification éffectuée")
+            addNotification("warning", "Modification!", "Aucune modification éffectuée")
         }
     }
 
@@ -347,6 +348,7 @@ class EventModal extends Component {
                     <Modal.Title>Ajouter une nouvelle Actualité</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <Notification/>
                     <form>
                         <div className="container">
                             <div className="row">

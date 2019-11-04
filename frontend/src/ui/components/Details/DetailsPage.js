@@ -16,16 +16,18 @@ import ImageGallery from 'react-image-gallery';
 import "react-image-gallery/styles/scss/image-gallery.scss";
 
 import Header from '../../globalComponent/Header';
+import {Notification, addNotification} from '../../globalComponent/Notifications'
 import Hoc from '../../globalComponent/Hoc';
 import ReviewItem from '../Reviews/ReviewItem';
 import SearchResultItem from '../UserSearchResult/UserSearchResult';
 import Stars from '../Stars/Stars';
 import Loader from '../../globalComponent/Loader';
+import {CouponPreview} from '../CouponSchema/CouponPreview'
 import {rootUrl} from '../../../configs/config';
-import logo from '../../../assets/images/logo.png';
-import {counponToPrint} from '../CouponSchema/Coupon'
+// import logo from '../../../assets/images/logo.png';
+// import {counponToPrint} from '../CouponSchema/Coupon'
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-const image2base64 = require('image-to-base64');
+// const image2base64 = require('image-to-base64');
 
 
 class DetailsPage extends Component {
@@ -169,9 +171,12 @@ class DetailsPage extends Component {
                 projectId: this.props.match.params.id,
                 date: new Date()
             }
+            let announce = { ...this.state.announce}
+            announce.reservations.push(reservation)
             axios.patch(url, { reservation: reservation })
             .then(res => {
-                this.setState({ reserving: false, reservationError: '', showReservationModal: false })
+                this.setState({ reserving: false, reservationError: '', showReservationModal: false, announce: announce })
+                addNotification("success", "Reservation!", "Reservation effectueé avec succès")
             })
             .catch(err => {
                 this.setState({ reserving: false, reservationError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
@@ -279,37 +284,51 @@ class DetailsPage extends Component {
             if (this.state.announce.coupons && this.state.announce.coupons.clients) {
                 // Verify if i have not already download the this coupons
                 if (this.state.announce.coupons.clients.includes(this.props.user._id)) {
-                    alert("Vous avez déja télécharger le coupon.");
+                    addNotification("warning", "Coupon Info!", "Vous avez déja télécharger le coupon.")
                 } else {
-                    this.setState({downloadingCoupon: true})
-                    // update the the remainings coupons
-                    let url = rootUrl + '/api/' + this.props.match.params.anounceType + '/' + this.state.announce._id + '/add/coupon';
-                    let coupon = { ...this.state.announce.coupons};
-                    coupon.nCoupons = Number(coupon.nCoupons) - 1;
-                    coupon.clients.push(this.props.user._id);
-                    axios.patch(url, { coupon: coupon })
-                    .then(res => {
-                        let newAnnounce = {...this.state.announce}
-                        newAnnounce.coupons.clients.push(this.props.user._id)
-                        // Generate the pdf
-                        image2base64(logo) // you can also to use url
-                            .then(response => {
-                                const {infos, montant, datelimite} = this.state.announce.coupons;
-                                let docDefinition = counponToPrint(response, infos, montant, datelimite, 
-                                    this.state.announce.title, window.location.href, this.state.announce.title.split(' ').join('-'))
-                                const pdfDocGenerator = pdfMake.createPdf(docDefinition).open();
-                                this.setState({ downloadingCoupon: false, announce: newAnnounce, showCouponModal: false });
-                                pdfDocGenerator.getDataUrl((dataUrl) => {
-                                    const iframe = document.createElement('iframe');
-                                    iframe.src = dataUrl;
-                                    // document.getElementById("couponpreview").appendChild(iframe);
-                                });
-                            })
-                            .catch((error) => console.log(error))
+                    // Verify if user have already make reservation
+                    let haveMakedReservation = false;
+                    this.state.announce.reservations.forEach(res => {
+                        if (res.userId === this.props.user._id) {
+                            haveMakedReservation = true;
+                            return;
+                        }
                     })
-                    .catch(err => {
-                        this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
-                    })
+                    if(haveMakedReservation) {
+                        // this.setState({downloadingCoupon: true})
+                        // update the the remainings coupons
+                        let url = rootUrl + '/api/' + this.props.match.params.anounceType + '/' + this.state.announce._id + '/add/coupon';
+                        let coupon = { ...this.state.announce.coupons};
+                        coupon.nCoupons = Number(coupon.nCoupons) - 1;
+                        coupon.clients.push(this.props.user._id);
+                        axios.patch(url, { coupon: coupon })
+                        .then(res => {
+                            let newAnnounce = {...this.state.announce}
+                            newAnnounce.coupons.clients.push(this.props.user._id)
+                            this.setState({showCouponModal: false})
+                            addNotification("success", "Coupon!", "Le coupon a été sauvegardé dans votre espace personnel.")
+                            // Generate the pdf
+                            /* image2base64(logo) // you can also to use url
+                                .then(response => {
+                                    const {infos, montant, datelimite} = this.state.announce.coupons;
+                                    let docDefinition = counponToPrint(response, infos, montant, datelimite, 
+                                        this.state.announce.title, window.location.href, this.state.announce.title.split(' ').join('-'))
+                                    const pdfDocGenerator = pdfMake.createPdf(docDefinition).open();
+                                    this.setState({ downloadingCoupon: false, announce: newAnnounce, showCouponModal: false });
+                                    pdfDocGenerator.getDataUrl((dataUrl) => {
+                                        const iframe = document.createElement('iframe');
+                                        iframe.src = dataUrl;
+                                        // document.getElementById("couponpreview").appendChild(iframe);
+                                    });
+                                })
+                                .catch((error) => console.log(error)) */
+                        })
+                        .catch(err => {
+                            this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
+                        })
+                    } else {
+                        addNotification("warning", "Coupon Info!", "Veuillez effectuer une reservation avant de télécharger le coupon.")
+                    }
                 }
             }
         } else {
@@ -362,6 +381,7 @@ class DetailsPage extends Component {
         return (
             <Hoc>
                 <Header />
+                <Notification />
                 <section className="project-details">
                     <div className="container" id="projectdetails">
                         <div className="row">
@@ -446,7 +466,7 @@ class DetailsPage extends Component {
                                                                 <h3 className="pb-3">Coupon  disponible !!</h3>
                                                                 <h3 style={{ color: "#DC3545" }}>{announce.coupons.infos}</h3><br />
                                                                 <h4>Coupon de réduction de <strong>{announce.coupons.montant}</strong>.</h4><br />
-                                                                <button className="button mt-2 book" onClick={this.getCoupon}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
+                                                                <button className="button mt-2 book" onClick={() => this.setState({showCouponModal: true})}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
                                                             </div> :
                                                             <div className="d-flex flex-column py-2">
                                                                 <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
@@ -490,7 +510,7 @@ class DetailsPage extends Component {
                                                         <h3 className="mb-4">Localisation</h3>
                                                         {announce.mapLink && announce.mapLink.length ?
                                                             <Fragment>
-                                                                <h2><a onClick={(e) => this.openMap(e, announce.mapLink)} >Lien Google Map</a></h2>
+                                                                <h2><a href="#map" style={{"cursor":"pointer"}} onClick={(e) => this.openMap(e, announce.mapLink)} >Lien Google Map</a></h2>
                                                                 <p>Cliquez sur le lien pour agrandir.</p>
                                                             </Fragment> :
                                                             <p>Pas de Localisation disponible</p>}
@@ -637,7 +657,7 @@ class DetailsPage extends Component {
                                                         <h3 className="pb-3">Coupon  disponible !!</h3>
                                                         <h3 style={{ color: "#DC3545"}}>{announce.coupons.infos}</h3><br/>
                                                         <h4>Coupon de réduction de <strong>{announce.coupons.montant}</strong>.</h4><br/>
-                                                            <button className="button mt-2 book" onClick={this.getCoupon}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
+                                                        <button className="button mt-2 book" onClick={() => this.setState({ showCouponModal: true })}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
                                                     </div>:
                                                     <div className="d-flex flex-column py-2">
                                                         <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
@@ -673,7 +693,7 @@ class DetailsPage extends Component {
                                                     <h3 className="mb-4">Localisation</h3>
                                                     {announce.mapLink && announce.mapLink.length ?
                                                     <Fragment>
-                                                        <h2><a onClick={(e) => this.openMap(e, announce.mapLink)} >Lien Google Map</a></h2>
+                                                        <h2><a href="#map" style={{ "cursor": "pointer" }} onClick={(e) => this.openMap(e, announce.mapLink)} >Lien Google Map</a></h2>
                                                         <p>Cliquez sur le lien pour agrandir.</p>
                                                     </Fragment>:
                                                     <p>Pas de Localisation disponible</p>}
@@ -787,7 +807,7 @@ class DetailsPage extends Component {
                 </Modal>
 
                 {/* Coupon */}
-                {/* <Modal show={this.state.showCouponModal} onHide={() => this.setState({showCouponModal: false})} size="md" >
+                <Modal show={this.state.showCouponModal} onHide={() => this.setState({showCouponModal: false})} size="md" >
                     <Modal.Header closeButton>
                     <Modal.Title>Coupon de réduction</Modal.Title>
                     </Modal.Header>
@@ -799,10 +819,11 @@ class DetailsPage extends Component {
                                         {
                                             this.state.announce&&this.state.announce.coupons ?
                                             <Fragment>
+                                                <CouponPreview coupon={this.state.announce.coupons} />
                                                 <div className="d-flex justify-content-center" id="couponpreview">
                                                     <button 
-                                                        className="btn btn-danger btn-lg mb-2 mt-3" 
-                                                        onClick={this.getCoupon}>Télécharger le coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
+                                                        className="btn btn-danger btn-lg mb-2 mt-4" 
+                                                        onClick={this.getCoupon}>Sauvegarder le coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
                                                 </div>
                                             </Fragment>
                                             :null
@@ -819,7 +840,7 @@ class DetailsPage extends Component {
                             </Button>
                         </div>
                     </Modal.Footer>
-                </Modal> */}
+                </Modal>
 
                 {/* Video */}
                 <Modal show={this.state.showVideo} onHide={() => this.setState({showVideo: false})} size="lg" >

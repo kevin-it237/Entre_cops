@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import Loader from '../../globalComponent/Loader'
+import {addNotification} from '../../globalComponent/Notifications'
 import axios from 'axios';
 
 import './Stars.scss';
@@ -36,7 +37,7 @@ class Stars extends Component {
                 this.setState({ voting: false })
             })
         } else {
-            alert('Veuillez vous connecté')
+            addNotification("warning", "Authentification!", "Veuillez vous connecté")
         }
     }
 

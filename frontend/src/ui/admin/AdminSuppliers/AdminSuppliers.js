@@ -80,7 +80,7 @@ class AdminSupplier extends Component {
             })
             // Send Email to Supplier with link to set his password
             const subject = "Validation de votre compte fournisseur";
-            axios.post('/api/user/sendmail/' +supplier.email+ '/' +subject+ '/' +supplier.name+ '/' +supplier._id+ '/validatesupplier');
+            axios.post('/api/email/sendmail/' +supplier.email+ '/' +subject+ '/' +supplier.name+ '/' +supplier._id+ '/validatesupplier');
         })
         .catch(err => {
             this.setState({
