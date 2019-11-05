@@ -90,6 +90,7 @@ class AdminEmails extends Component {
             })
             .then(res => {
                 this.setState({ sending: false, showModal: false, emailError: '', content: '', object: '', selectedUsers: [] })
+                addNotification("success", "Envoi des Emails!", "Emails envoyés avec succès")
             })
             .catch(err => {
                 this.setState({ sending: false, emailError: "Une érreur ss'est produite" })

@@ -198,8 +198,8 @@ class DetailsPage extends Component {
         if(prevProps.user !== this.props.user) {
             this.setState({ 
                 name: this.props.user.name, 
-                email: this.props.user.email, 
-                userEmail: this.props.user.email, 
+                email: this.props.user.email && this.props.user.email ? this.props.user.email: "", 
+                userEmail: this.props.user.email && this.props.user.email ? this.props.user.email : "", 
                 userName: this.props.user.name})
         }
     }
@@ -731,7 +731,7 @@ class DetailsPage extends Component {
                                         <input type="text" className="form-control" onChange={(e) => this.handleInputChange(e)} value={name} name="name" id="name" placeholder="Nom complet"/>
                                     </div>
                                     <div className="form-group">
-                                        <label for="email">Email address</label>
+                                        <label for="email">Addresse Email</label>
                                         <input type="email" className="form-control" onChange={(e) => this.handleInputChange(e)} value={email} name="email" id="email" placeholder="Adresse Email"/>
                                     </div>
                                     <div className="form-group">
