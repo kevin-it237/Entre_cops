@@ -295,7 +295,7 @@ class DetailsPage extends Component {
                         }
                     })
                     if(haveMakedReservation) {
-                        // this.setState({downloadingCoupon: true})
+                        this.setState({downloadingCoupon: true})
                         // update the the remainings coupons
                         let url = rootUrl + '/api/' + this.props.match.params.anounceType + '/' + this.state.announce._id + '/add/coupon';
                         let coupon = { ...this.state.announce.coupons};
@@ -466,7 +466,7 @@ class DetailsPage extends Component {
                                                                 <h3 className="pb-3">Coupon  disponible !!</h3>
                                                                 <h3 style={{ color: "#DC3545" }}>{announce.coupons.infos}</h3><br />
                                                                 <h4>Coupon de réduction de <strong>{announce.coupons.montant}</strong>.</h4><br />
-                                                                <button className="button mt-2 book" onClick={() => this.setState({showCouponModal: true})}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
+                                                                <button className="button mt-2 book" onClick={() => this.setState({showCouponModal: true})}>Télécharger le Coupon</button>
                                                             </div> :
                                                             <div className="d-flex flex-column py-2">
                                                                 <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
@@ -657,7 +657,7 @@ class DetailsPage extends Component {
                                                         <h3 className="pb-3">Coupon  disponible !!</h3>
                                                         <h3 style={{ color: "#DC3545"}}>{announce.coupons.infos}</h3><br/>
                                                         <h4>Coupon de réduction de <strong>{announce.coupons.montant}</strong>.</h4><br/>
-                                                        <button className="button mt-2 book" onClick={() => this.setState({ showCouponModal: true })}>Télécharger le Coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
+                                                        <button className="button mt-2 book" onClick={() => this.setState({ showCouponModal: true })}>Télécharger le Coupon</button>
                                                     </div>:
                                                     <div className="d-flex flex-column py-2">
                                                         <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>

@@ -50,15 +50,13 @@ class Caroussel extends Component {
                             <Fragment>
                                 {this.state.images.map((image, i) => {
                                     return (
-                                        <a key={i}  href={image.followlink}>
-                                            <div className={i=== 0 ? "carousel-item active": "carousel-item"}>
-                                                <img className="d-block w-100" src={image.link} alt="First slide" />
-                                                <div className="container">
-                                                    <div className="carousel-caption d-none d-sm-block text-bottom mb-5">
-                                                        {/* <h1 className="">SOYEZ A L'ACTU DE TOUS LES EVENEMENTS ET SERVICES</h1> */}
-                                                        {/* <p>Réservez directement vos places.</p> */}
-                                                        {/* <a href="#events" className="btn btn-danger btn-lg">Parcourir les Evènements</a> */}
-                                                    </div>
+                                        <a style={{padding: "0"}} key={i} className={i === 0 ? "carousel-item active" : "carousel-item"} href={image.followlink}>
+                                            <img className="d-block w-100" src={image.link} alt="First slide" />
+                                            <div className="container">
+                                                <div className="carousel-caption d-none d-sm-block text-bottom mb-5">
+                                                    {/* <h1 className="">SOYEZ A L'ACTU DE TOUS LES EVENEMENTS ET SERVICES</h1> */}
+                                                    {/* <p>Réservez directement vos places.</p> */}
+                                                    {/* <a href="#events" className="btn btn-danger btn-lg">Parcourir les Evènements</a> */}
                                                 </div>
                                             </div>
                                         </a>
