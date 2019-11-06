@@ -15,7 +15,7 @@ module.exports = function (email, subject, name, id, cb) {
         }
     });
 
-    const url = 'https://entrecops.co/supplier/'+id+'/account/confirmation';
+    const url = rootUrl + '/supplier/'+id+'/account/confirmation';
     const data = `
         <div style="width: 100%;background-color: #f6f6f6;padding-top: 3rem;padding-bottom: 3rem">
         <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">

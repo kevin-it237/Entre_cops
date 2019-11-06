@@ -9,6 +9,7 @@ const http = require('http');
 const path = require('path');
 const socketIo = require("socket.io");
 const passportInit = require('./api/lib/passport-init')
+const { rootUrl} = require('./config/rootUrl')
 
 // Routes
 const userRoutes = require('./api/routes/users');
@@ -51,7 +52,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Origin', rootUrl)
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-Type, Accept, Content-Type, Authorization')
     if (req.method === 'OPTIONS') {
         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET')

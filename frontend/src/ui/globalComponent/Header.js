@@ -35,26 +35,27 @@ class Header extends PureComponent {
                 role: authData.user.role,
                 accountValidated: authData.user.accountValidated
             })
-        }
 
-        // WHen user send a recommandattion to another
-        const socket = socketIOClient(rootUrl);
-        socket.on('display notification', data => {
-            const authData = JSON.parse(localStorage.getItem("authData"));
-            if (authData&&authData.user) {
-                if (authData.user._id === data.to) {
+            // WHen user send a recommandattion to another
+            const socket = socketIOClient(rootUrl);
+            socket.on('display notification', data => {
+                const authData = JSON.parse(localStorage.getItem("authData"));
+                if (authData&&authData.user) {
+                    if (authData.user._id === data.to) {
+                        this.props.onAutoSign();
+                    }
+                }
+            })
+    
+            // When admin validate an anounce
+            socket.on('display anounce notification', data => {
+                const authData = JSON.parse(localStorage.getItem("authData"));
+                if (authData && authData.user) {
                     this.props.onAutoSign();
                 }
-            }
-        })
+            })
+        }
 
-        // When admin validate an anounce
-        socket.on('display anounce notification', data => {
-            const authData = JSON.parse(localStorage.getItem("authData"));
-            if (authData && authData.user) {
-                this.props.onAutoSign();
-            }
-        })
     }
 
     componentDidUpdate(prevProps) {
