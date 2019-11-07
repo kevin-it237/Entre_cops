@@ -44,6 +44,7 @@ app.use(session({
     saveUninitialized: true
 }))
 
+http.globalAgent.maxSockets = 1
 const server = http.createServer(app);
 
 app.use(morgan('dev'))
@@ -93,7 +94,7 @@ app.use((error, req, res, next) => {
 
 
 // Init socket io
-var io = socketIo.listen(server);
+var io = socketIo.listen(server, { wsEngine: 'ws' });
 app.set('io', io)
 
 io.on('connection', function (socket) {
