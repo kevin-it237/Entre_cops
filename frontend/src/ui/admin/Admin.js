@@ -1,9 +1,14 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, Suspense, lazy  } from 'react';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, faUserFriends } from '@fortawesome/free-solid-svg-icons';
-import AdminCoupons from './AdminCoupons/AdminCoupons';
+import { logout } from '../../store/actions'
+import axios from 'axios';
+import './Admin.scss';
+import logo from '../../assets/images/logo.png';
+
+/* import AdminCoupons from './AdminCoupons/AdminCoupons';
 import AdminHome from './Home/Home';
 import AdminAnnonces from './AdminAnnonces/AdminAnnonces';
 import AdminServices from './AdminServices/AdminServices';
@@ -11,12 +16,17 @@ import AdminSuppliers from './AdminSuppliers/AdminSuppliers';
 import AdminUsers from './AdminUsers/AdminUsers';
 import AdminSlider from './AdminSlider/AdminSlider';
 import AdminEmails from './AdminEMails/AdminEMails';
-import Loader from '../globalComponent/Loader';
-import { logout } from '../../store/actions'
-import axios from 'axios';
-import './Admin.scss';
-import logo from '../../assets/images/logo.png';
+import Loader from '../globalComponent/Loader'; */
 
+const AdminCoupons = lazy(() => import('./AdminCoupons/AdminCoupons'))
+const AdminHome = lazy(() => import('./Home/Home'))
+const AdminAnnonces = lazy(() => import('./AdminAnnonces/AdminAnnonces'))
+const AdminServices = lazy(() => import('./AdminServices/AdminServices'))
+const AdminSuppliers = lazy(() => import('./AdminSuppliers/AdminSuppliers'))
+const AdminUsers = lazy(() => import('./AdminUsers/AdminUsers'))
+const AdminSlider = lazy(() => import('./AdminSlider/AdminSlider'))
+const AdminEmails = lazy(() => import('./AdminEMails/AdminEMails'))
+const Loader = lazy(() => import('../globalComponent/Loader'))
 
 class Admin extends Component {
 
@@ -113,14 +123,16 @@ class Admin extends Component {
                                 <hr/>
                             </div>
                             {/* Admin Component */}
-                            <Route exact path="/admin/home" component={AdminHome} />
-                            <Route exact path="/admin/coupons" component={AdminCoupons} />
-                            <Route exact path="/admin/annonces" component={AdminAnnonces} />
-                            <Route exact path="/admin/services" component={AdminServices} />
-                            <Route exact path="/admin/suppliers" component={AdminSuppliers} />
-                            <Route exact path="/admin/users" component={AdminUsers} />
-                            <Route exact path="/admin/slider" component={AdminSlider} />
-                            <Route exact path="/admin/emails" component={AdminEmails} />
+                            <Suspense fallback={<div className="p-4 d-flex justify-content-center"><Loader /></div>}>
+                                <Route exact path="/admin/home" component={AdminHome} />
+                                <Route exact path="/admin/coupons" component={AdminCoupons} />
+                                <Route exact path="/admin/annonces" component={AdminAnnonces} />
+                                <Route exact path="/admin/services" component={AdminServices} />
+                                <Route exact path="/admin/suppliers" component={AdminSuppliers} />
+                                <Route exact path="/admin/users" component={AdminUsers} />
+                                <Route exact path="/admin/slider" component={AdminSlider} />
+                                <Route exact path="/admin/emails" component={AdminEmails} />
+                            </Suspense>
                         </div>
                     </div>
                 </section>

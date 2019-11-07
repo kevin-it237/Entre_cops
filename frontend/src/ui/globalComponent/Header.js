@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
 import { logout } from '../../store/actions';
@@ -121,9 +121,9 @@ class Header extends PureComponent {
                             </div>:null
                                 
                         }
-                        <a className="navbar-brand" href="/">
+                        <Link className="navbar-brand" to="/">
                             <img src={logo} width="110" height="100%" alt="Logo" />
-                        </a>
+                        </Link>
                         <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
                             <div className="ml-auto search-wrapper">
                                 <form className="form-inline d-none d-lg-block my-2 my-lg-0 ml-auto mr-4 form-desktop">
