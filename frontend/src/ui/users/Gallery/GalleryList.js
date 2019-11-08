@@ -1,10 +1,11 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './Gallery.scss';
 import GalleryItem from './GalleryItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
+import Hoc from '../../globalComponent/Hoc';
 
 class GalleryList extends Component {
 
@@ -62,7 +63,7 @@ class GalleryList extends Component {
 
     render() {
         return (
-            <Fragment>
+            <Hoc>
                 <section className="publications-section-banner">
                     <div className="container">
                         <div className="row my-5">
@@ -97,7 +98,7 @@ class GalleryList extends Component {
                         {this.state.publications.length === 0 ? <p className="text-center py-5">Aucun contenu trouvé.</p>:null}
                     </div>
                 </section>
-            </Fragment>
+            </Hoc>
         );
     }
 }

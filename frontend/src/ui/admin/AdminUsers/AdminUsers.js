@@ -1,10 +1,10 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import {DateFormat} from '../../utils/DateFormat'
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
-
+import Hoc from '../../globalComponent/Hoc';
 
 class AdminUser extends Component {
 
@@ -52,7 +52,7 @@ class AdminUser extends Component {
     render() {
         const {error, loading, deleting, users} = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 <div className="container">
                     <div className="row mt-5">
                         <div className="col-sm-12">
@@ -116,7 +116,7 @@ class AdminUser extends Component {
                         </div>
                     </Modal.Footer>
                 </Modal>
-            </Fragment>
+            </Hoc>
         );
     }
 }

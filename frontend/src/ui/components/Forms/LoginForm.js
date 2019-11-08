@@ -9,6 +9,7 @@ import io from 'socket.io-client';
 import { rootUrl } from '../../../configs/config'
 
 import userLogo from '../../../assets/images/logo.png';
+const socket = io(rootUrl);
 
 class LoginForm extends Component {
 
@@ -81,7 +82,7 @@ class LoginForm extends Component {
     render() {
         const { isTyping, emailValid, email, password } = this.state;
         const { error, loader } = this.props;
-        const socket = io(rootUrl);
+        
         return (
             <div className="wrapper fadeInDown">
                 <div id="formContent">

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import {connect} from 'react-redux';
 import Modal from 'react-bootstrap/Modal';
@@ -7,6 +7,7 @@ import Loader from '../../globalComponent/Loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload} from '@fortawesome/free-solid-svg-icons';
 import EventModal from '../../suppliers/Dashboard/EventModal';
+import Hoc from '../../globalComponent/Hoc';
 
 class AdminAnnonce extends Component {
 
@@ -95,7 +96,7 @@ class AdminAnnonce extends Component {
     render() {
         const { error, events, eventsLoading} = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 <div className="container">
                     <div className="row mt-5">
                         <div className="col-sm-12 d-flex justify-content-between align-items-center mb-5">
@@ -173,7 +174,7 @@ class AdminAnnonce extends Component {
                                     {this.state.loading ? <div className="d-flex justify-content-center"><Loader /></div>:
                                     this.state.event&&this.state.event.reservations && this.state.event.reservations.length ?
                                             (
-                                               <Fragment>
+                                               <Hoc>
                                                <h3 className="mb-3">{this.state.event.title}</h3>
                                                 <table className="table table-bordered reservations-list">
                                                         <tbody>
@@ -191,7 +192,7 @@ class AdminAnnonce extends Component {
                                                     <div className="deleteWrapper d-flex mt-auto">
                                                         <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(this.state.event.reservations, this.state.event.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
                                                     </div>
-                                               </Fragment>
+                                               </Hoc>
                                             ): <div className="d-flex justify-content-center"><p>Aucune réservation.</p></div>
                                     }
                                 </div>
@@ -200,7 +201,7 @@ class AdminAnnonce extends Component {
                     </Modal.Body>
                 </Modal>
 
-            </Fragment>
+            </Hoc>
         );
     }
 }

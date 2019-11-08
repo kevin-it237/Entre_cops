@@ -1,11 +1,14 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Notification, addNotification } from '../../globalComponent/Notifications'
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { EditorState, convertToRaw } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
 
-import Modal from 'react-bootstrap/Modal';
+import { Tab, Tabs, Modal } from 'react-bootstrap';
 import Loader from '../../globalComponent/Loader';
+import Hoc from '../../globalComponent/Hoc';
 
 
 class AdminEmails extends Component {
@@ -22,6 +25,7 @@ class AdminEmails extends Component {
             object: '',
             error: '',
             emailError: '',
+            editorState: EditorState.createEmpty(),
         };
         this.onChange = (editorState) => this.setState({ editorState });
     }
@@ -60,6 +64,13 @@ class AdminEmails extends Component {
             this.setState({loading: false,  error: 'Erreur, Veuillez reéssayer'})
         })
     }
+
+    onEditorStateChange = (editorState) => {
+        this.setState({
+            editorState,
+            content: draftToHtml(convertToRaw(editorState.getCurrentContent()))
+        });
+    };
 
     sendEmails = () => {
         const {object, content, selectedUsers} = this.state;
@@ -120,73 +131,82 @@ class AdminEmails extends Component {
     }
 
     render() {
-        const {loading, users, suppliers, error, selectedUsers, content, object, sending, emailError} = this.state;
-        console.log(content)
+        const { loading, users, suppliers, error, selectedUsers, object, sending, emailError, editorState} = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 <Notification />
                 <div className="container mt-4">
                     <div className="row pt-5 pb-3">
                         <div className="col-sm-12">
-                            <h2>Envoi des Emails</h2>
+                            {error && error.length ? <div className="alert alert-danger">{error}</div> : null}
                         </div>
-                        {error&&error.length ? <div className="alert alert-danger">{error}</div>:null}
-                        {
-                            loading ? <div className="col-sm-12"><div className="d-flex justify-content-center"><Loader /></div></div>:
-                            <Fragment>
-                                <div className="col-sm-12 user-list">
-                                    <h4 className="mb-4 mt-4">Liste des utilisateurs</h4>
-                                    <table className="table table-bordered reservations-list">
-                                        <thead className="thead-inverse thead-dark">
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Nom</th>
-                                                <th>Email</th>
-                                                <th>Actions <input onChange={(e) => this.selectAllUsers(e, "user-check", "user-check-verify")} type="checkbox" className="form-check-inline user-check-verify" /></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        {
-                                            users.map((user, i) => (
-                                                <tr key={i}>
-                                                    <th scope="row">{i + 1}</th>
-                                                    <td>{user.name}</td>
-                                                    <td>{user.email}</td>
-                                                    <td><input onChange={(e) => this.handleInputChange(e)} type="checkbox" className="form-check-inline user-check" value={user.email} /></td>
-                                                </tr>
-                                            ))
-                                        }
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="col-sm-12 supplier-list">
-                                    <h4 className="mb-4 mt-4">Liste des Fournisseurs</h4>
-                                    <table className="table table-bordered reservations-list">
-                                        <thead className="thead-inverse thead-dark">
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Nom</th>
-                                                <th>Email</th>
-                                                <th>Actions <input onChange={(e) => this.selectAllUsers(e, "supplier-check", "supplier-check-verify")} type="checkbox" className="form-check-inline supplier-check-verify" /></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        {
-                                            suppliers.map((supplier, i) => (
-                                                <tr key={i}>
-                                                    <th scope="row">{i + 1}</th>
-                                                    <td>{supplier.name}</td>
-                                                    <td>{supplier.email}</td>
-                                                    <td><input onChange={(e) => this.handleInputChange(e)} type="checkbox" className="form-check-inline supplier-check" name={supplier.email} value={supplier.email} /></td>
-                                                </tr>
-                                            ))
-                                        }
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <button onClick={() => this.setState({showModal: true})} className="button send-email-btn">Envoyer un Email ({this.state.selectedUsers.length})</button>
-                            </Fragment>
-                        }
+                        <div className="col-sm-12">
+                            <Tabs defaultActiveKey="users" id="uncontrolled-tab-example">
+                                <Tab eventKey="users" title="Utilisateurs">
+                                    {
+                                        loading ? <div className="col-sm-12"><div className="d-flex justify-content-center mt-5"><Loader /></div></div> :
+                                            <Hoc>
+                                                <div className="col-sm-12 user-list">
+                                                    <table className="table table-bordered reservations-list">
+                                                        <thead className="thead-inverse thead-dark">
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Nom</th>
+                                                                <th>Email</th>
+                                                                <th>Actions <input onChange={(e) => this.selectAllUsers(e, "user-check", "user-check-verify")} type="checkbox" className="form-check-inline user-check-verify" /></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                users.map((user, i) => (
+                                                                    <tr key={i}>
+                                                                        <th scope="row">{i + 1}</th>
+                                                                        <td>{user.name}</td>
+                                                                        <td>{user.email}</td>
+                                                                        <td><input onChange={(e) => this.handleInputChange(e)} type="checkbox" className="form-check-inline user-check" value={user.email} /></td>
+                                                                    </tr>
+                                                                ))
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </Hoc>
+                                    }
+                                </Tab>
+                                <Tab eventKey="suppliers" title="Fournisseurs">
+                                    {
+                                        loading ? <div className="col-sm-12"><div className="d-flex justify-content-center mt-5"><Loader /></div></div> :
+                                            <Hoc>
+                                                <div className="col-sm-12 supplier-list">
+                                                    <table className="table table-bordered reservations-list">
+                                                        <thead className="thead-inverse thead-dark">
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>Nom</th>
+                                                                <th>Email</th>
+                                                                <th>Actions <input onChange={(e) => this.selectAllUsers(e, "supplier-check", "supplier-check-verify")} type="checkbox" className="form-check-inline supplier-check-verify" /></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                suppliers.map((supplier, i) => (
+                                                                    <tr key={i}>
+                                                                        <th scope="row">{i + 1}</th>
+                                                                        <td>{supplier.name}</td>
+                                                                        <td>{supplier.email}</td>
+                                                                        <td><input onChange={(e) => this.handleInputChange(e)} type="checkbox" className="form-check-inline supplier-check" name={supplier.email} value={supplier.email} /></td>
+                                                                    </tr>
+                                                                ))
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </Hoc>
+                                    }
+                                </Tab>
+                            </Tabs>
+                            <button onClick={() => this.setState({ showModal: true })} className="button send-email-btn">Envoyer un Email ({this.state.selectedUsers.length})</button>
+                        </div>
                     </div>
                 </div>
 
@@ -198,7 +218,7 @@ class AdminEmails extends Component {
                     <Modal.Body>
                         <div className="container">
                             <div className="row">
-                               <div className="col">
+                               <div className="col-sm-12">
                                     {emailError && emailError.length ? <div className="alert alert-danger">{emailError}</div> : null}
                                     <div className="d-flex mb-4 flex-wrap">
                                         {
@@ -206,12 +226,12 @@ class AdminEmails extends Component {
                                         }
                                     </div>
                                     <div className="form-group">
-                                        <label for="name">Objet</label>
+                                        <label for="name">Objet</label><br/>
                                         <input  type="text" className="form-control" value={object} onChange={(e) => this.handleInputChange(e)} name="object" placeholder="Objet" required />
                                     </div>
                                     <div className="form-group">
                                         <label for="name">Contenu</label>
-                                        <CKEditor
+                                        {/* <CKEditor
                                             editor={ClassicEditor}
                                             data=""
                                             config={{
@@ -219,19 +239,22 @@ class AdminEmails extends Component {
                                                     'tableColumn', 'tableRow', 'mergeTableCells', '|', 'undo', 'redo']
                                             }} 
                                             onInit={editor => {
-                                                // You can store the "editor" and use when it is needed.
-                                                console.log('Editor is ready to use!', editor);
                                             }}
                                             onChange={(event, editor) => {
                                                 const data = editor.getData();
                                                 this.setState({content: data})
                                             }}
                                             onBlur={(event, editor) => {
-                                                console.log('Blur.', editor);
                                             }}
                                             onFocus={(event, editor) => {
-                                                console.log('Focus.', editor);
                                             }}
+                                        /> */}
+                                        <Editor
+                                            editorState={editorState}
+                                            wrapperClassName="wrapper-class"
+                                            editorClassName="editor-class"
+                                            toolbarClassName="toolbar-class"
+                                            onEditorStateChange={this.onEditorStateChange}
                                         />
                                         {/* <textarea style={{fontSize: "1.5rem"}} type="text" className="form-control" value={content} onChange={(e) => this.handleInputChange(e)} name="content" rows={5} placeholder="Contenu de l'email"></textarea> */}
                                     </div>
@@ -243,7 +266,7 @@ class AdminEmails extends Component {
                         </div>
                     </Modal.Body>
                 </Modal>
-            </Fragment>
+            </Hoc>
         );
     }
 }

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Upload from '../../components/Forms/Upload';
@@ -8,6 +8,7 @@ import {Notification, addNotification} from '../../globalComponent/Notifications
 import Loader from '../../globalComponent/Loader';
 import { rootUrl } from '../../../configs/config';
 import './EventForm.scss';
+import Hoc from '../../globalComponent/Hoc';
 
 class ServiceModal extends Component {
     state = {
@@ -359,13 +360,13 @@ class ServiceModal extends Component {
                 </Modal.Header>
                 <Modal.Body>
                     <Notification />
-                    <form>
+                    <form className="create-form">
                         <div className="container">
                             <div className="row">
                                 <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
                                     {
                                         loadingAn ? <div className="d-flex justify-content-center"><Loader /></div> :
-                                            <Fragment>
+                                            <Hoc>
                                                 {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
                                                 <div className="form-group">
                                                     <label for="name">Nom du Service</label>
@@ -464,7 +465,7 @@ class ServiceModal extends Component {
                                                             <button disabled={loading} type="submit" onClick={(e) => this.updateService(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer la modification"}</button>
                                                         </div> : null
                                                 }
-                                            </Fragment>
+                                            </Hoc>
                                     }
                                 </div>
                             </div>
@@ -474,10 +475,10 @@ class ServiceModal extends Component {
                 <Modal.Footer>
                     {
                         isEditing ?
-                            <Fragment>
+                            <Hoc>
                                 {!this.state.validated ? <Button disabled={validating} variant="dark" className="mr-3" onClick={() => this.validateservice(service)}>{validating ? <Loader color="white" /> : "Valider le service"}</Button> : null}
                                 <Button variant="danger" disabled={deleting} className="mr-3" onClick={() => this.deleteservice(service)}>{deleting ? <Loader color="white" /> : "Supprimer"}</Button>
-                            </Fragment> : null
+                            </Hoc> : null
                     }
                     <Button variant="default" onClick={() => closeModal()}>Fermer</Button>
                 </Modal.Footer>

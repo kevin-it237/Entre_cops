@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Gallery from 'react-grid-gallery';
 import './Gallery.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,6 +9,7 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import {rootUrl} from '../../../configs/config';
 import logo from '../../../assets/images/logo.png';
 import Loader from '../../globalComponent/Loader';
+import Hoc from '../../globalComponent/Hoc';
 
 class GalleryItem extends Component {
 
@@ -70,7 +71,7 @@ class GalleryItem extends Component {
     render() {
         const {images} = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 <Notification/>
                 <div className="gallery-item d-block">
                     <div className="header d-flex">
@@ -115,7 +116,7 @@ class GalleryItem extends Component {
                         }
                 </div>
             </div>
-            </Fragment>
+            </Hoc>
         );
     }
 }

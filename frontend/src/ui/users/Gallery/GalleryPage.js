@@ -1,7 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Header from '../../globalComponent/Header';
 import { connect } from 'react-redux';
 import GalleryList from './GalleryList';
+import Hoc from '../../globalComponent/Hoc';
 
 class Gallery extends Component {
 
@@ -13,10 +14,10 @@ class Gallery extends Component {
 
     render() {
         return (
-            <Fragment>
+            <Hoc>
                 <Header />
                 <GalleryList />
-            </Fragment>
+            </Hoc>
         );
     }
 }

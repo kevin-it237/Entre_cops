@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import Header from '../../globalComponent/Header';
@@ -7,6 +7,7 @@ import Upload from '../../components/Forms/Upload';
 import {rootUrl} from '../../../configs/config';
 import userImg from '../../../assets/images/user.png';
 import './Profile.scss';
+import Hoc from '../../globalComponent/Hoc';
 
 class Profile extends Component {
 
@@ -44,12 +45,28 @@ class Profile extends Component {
             const { name, email, location, tel} = this.props.user
             this.setState({
                 name: name,
-                email: email,
+                email: email === null ? "" : email,
                 location: location,
                 tel: tel === null ? "" : tel,
                 formValid: name&&email ? true: false,
                 nameValid: name ? true : false,
                 emailValid: email ? true: false,
+                user: this.props.user
+            })
+        }
+    }
+
+    componentDidMount() {
+        if (this.props.user) {
+            const { name, email, location, tel } = this.props.user
+            this.setState({
+                name: name,
+                email: email === null ? "" : email,
+                location: location,
+                tel: tel === null ? "" : tel,
+                formValid: name && email ? true : false,
+                nameValid: name ? true : false,
+                emailValid: email ? true : false,
                 user: this.props.user
             })
         }
@@ -186,7 +203,7 @@ class Profile extends Component {
             changingPassword, password1, newpassword1, newpassword2, location, profileImage, error, successReset, successModify } = this.state;
 
         return (
-            <Fragment>
+            <Hoc>
                 <Header />
                 <section className="profile-section">
                     <div className="container my-5">
@@ -237,7 +254,7 @@ class Profile extends Component {
                         </div>
                     </div>
                 </section>
-            </Fragment>
+            </Hoc>
         );
     }
 }

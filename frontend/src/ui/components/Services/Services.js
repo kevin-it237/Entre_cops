@@ -1,9 +1,10 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import ServiceItem from './ServicesItem';
 import Loader from '../../globalComponent/Loader';
 import axios from 'axios';
 import './Services.scss';
 import Filter from '../Filter/Filter'
+import Hoc from '../../globalComponent/Hoc'
 
 class Services extends Component {
 
@@ -48,7 +49,7 @@ class Services extends Component {
     render() {
         const {error, services, loading} = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 {!this.props.isHomePage&&<Filter />}
                 <section className={this.props.isHomePage ? "services bg-white pb-5" : "services pb-5"}>
                     <div className="container pt-3 pb-5">
@@ -90,7 +91,7 @@ class Services extends Component {
                             }
                     </div>
                 </section>
-            </Fragment>
+            </Hoc>
         );
     }
 }

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './Filter.scss';
 import Header from '../../globalComponent/Header';
 import Categories from '../Categories/Categories';
@@ -6,7 +6,7 @@ import axios from 'axios';
 import Services from '../Services/Services'
 import Events from '../Events/Events'
 import Loader from '../../globalComponent/Loader'
-
+import Hoc from '../../globalComponent/Hoc';
 class FilterResults extends Component {
 
     state = {
@@ -54,16 +54,16 @@ class FilterResults extends Component {
 
     render() {
         return (
-            <Fragment>
+            <Hoc>
                 <Header />
                 <Categories />
                 {this.state.loading ?   <div className="d-flex justify-content-center py-5"><Loader/></div>:
-                <Fragment>
+                <Hoc>
                     <Events eventType="Actualités" events={this.state.events} isFilterPage={true} />
                     <Services eventType="Services" services={this.state.services} isFilterPage={true} />  
-                </Fragment>
+                </Hoc>
                 }
-            </Fragment>
+            </Hoc>
         )
     }
 }

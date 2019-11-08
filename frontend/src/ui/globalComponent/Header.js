@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
@@ -12,6 +12,7 @@ import Notifications from '../users/Notifications/Notifications';
 import { rootUrl } from '../../configs/config';
 import {autoSignIn} from '../../store/actions';
 import SearchResult from '../components/SearchResult/SearchResult'
+import Hoc from './Hoc';
 
 class Header extends PureComponent {
 
@@ -89,7 +90,7 @@ class Header extends PureComponent {
             nNotifications = unOpened.length;
         }
         return (
-            <Fragment>
+            <Hoc>
                 <nav className={this.props.home ? "navbar navbar-expand-lg navbar-light bg-light navbar-shadow": "navbar navbar-expand-lg navbar-light bg-light navbar-shadow" }>
                     <div className="container">
                         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
@@ -170,7 +171,7 @@ class Header extends PureComponent {
                                                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                     <Notifications recommandations={user.recommandations.reverse()} />
                                                     <div className="notifications-link py-2">
-                                                        <a id="notifications-link" className="notifications-link pt-3 text-center" href="/user/notifications">Voir toutes les notifications</a>
+                                                        <Link id="notifications-link" className="notifications-link pt-3 text-center" to="/user/notifications">Voir toutes les notifications</Link>
                                                     </div>
                                                 </div> : null
                                             }
@@ -180,14 +181,14 @@ class Header extends PureComponent {
                                 }
                                 {
                                     !token ?
-                                        <Fragment>
+                                        <Hoc>
                                             <li className="nav-item">
                                                 <NavLink className="nav-link" to="/auth/signup"><i className="fa fa-user"></i>Créer un compte</NavLink>
                                             </li>
                                             <li className="nav-item">
                                                 <NavLink className="nav-link" to="/auth/login"><i className="fa fa-user"></i>Se connecter</NavLink>
                                             </li>
-                                        </Fragment>
+                                        </Hoc>
                                         :null
                                 }
                             </ul>
@@ -196,7 +197,7 @@ class Header extends PureComponent {
                                     <div className="dropdown">
                                         <p className="dropbtn">{name}</p>
                                         <div className="dropdown-content">
-                                            <a className="nav-link" href="/user/profile"><i className="fa fa-user"></i>Mon profil</a>
+                                            <NavLink className="nav-link" to="/user/profile"><i className="fa fa-user"></i>Mon profil</NavLink>
                                             <a href="/auth/login" onClick={this.logout}><i className="fa fa-sign-out"></i>Logout</a>
                                         </div>
                                     </div>: null
@@ -204,7 +205,7 @@ class Header extends PureComponent {
                         </div>
                     </div>
                 </nav>
-            </Fragment>
+            </Hoc>
         );
     }
 }

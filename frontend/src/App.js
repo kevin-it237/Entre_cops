@@ -1,10 +1,10 @@
 import React, { Component, Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import {connect} from 'react-redux';
-import Loader from './ui/globalComponent/Loader'
 
+import ReactLoader from './ui/globalComponent/ReactLoader';
 import { autoSignIn } from './store/actions';
-import { PrivateRoute } from './ui/utils/PrivateRoute';
+import { PrivateRoute } from './ui/utils/PrivateRoute'; 
 
 const Home = lazy(() => import('./ui/Home'))
 const SignupPage = lazy(() => import('./ui/components/Forms/SignupPage'))
@@ -46,8 +46,6 @@ import NotFound from './ui/components/NotFound/NotFound'; */
 /* Admin Pages */
 // import Admin from './ui/admin/Admin';
 
-
-
 class App extends Component {
   componentDidMount() {
     if(!this.props.user) {
@@ -58,7 +56,7 @@ class App extends Component {
   render() {
       return (
         <BrowserRouter>
-          <Suspense fallback={<div className="p-4 d-flex justify-content-center"><Loader /></div>}>
+          <Suspense fallback={<ReactLoader />}>
             <Switch>
               <Route path="/" exact component={Home}  />
               <Route path="/auth/login" exact component={LoginPage}  />

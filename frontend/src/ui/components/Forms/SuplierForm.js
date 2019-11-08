@@ -1,8 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import './SupplierForms.scss';
 import {Redirect} from 'react-router-dom';
 import Upload from '../Forms/Upload';
+import Hoc from '../../globalComponent/Hoc'
 import Loader from '../../globalComponent/Loader';
 
 class SupplierForm extends Component {
@@ -143,7 +144,7 @@ class SupplierForm extends Component {
         const { isTyping, name, tel, services, location, locationValid, otherInfos,  emailValid, telValid, email, 
                 nameValid, profileImage, servicesValid, otherInfosValid, profileImageValid, error, loading, mapLink } = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 {this.state.redirect ? this.props.closeTo ? <Redirect to={this.props.closeTo} />: null : null}
                 <form>
                     {error && error.length ? <div className="alert alert-danger" style={{fontSize: "1.3rem"}}>{error}</div> : null}
@@ -191,7 +192,7 @@ class SupplierForm extends Component {
                         <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Valider"}</button>
                     </div>
                 </form>
-            </Fragment>
+            </Hoc>
         );
     }
 }

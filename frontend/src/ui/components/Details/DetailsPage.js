@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
@@ -10,8 +10,8 @@ import './DetailsPage.scss';
 import {DateFormat} from "../../utils/DateFormat"
 // import AwesomeSlider from 'react-awesome-slider';
 // import AwsSliderStyles from 'react-awesome-slider/src/styles';
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+// import pdfMake from "pdfmake/build/pdfmake";
+// import pdfFonts from "pdfmake/build/vfs_fonts";
 import ImageGallery from 'react-image-gallery';
 import "react-image-gallery/styles/scss/image-gallery.scss";
 
@@ -26,7 +26,7 @@ import {CouponPreview} from '../CouponSchema/CouponPreview'
 import {rootUrl} from '../../../configs/config';
 // import logo from '../../../assets/images/logo.png';
 // import {counponToPrint} from '../CouponSchema/Coupon'
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+// pdfMake.vfs = pdfFonts.pdfMake.vfs;
 // const image2base64 = require('image-to-base64');
 
 
@@ -305,7 +305,7 @@ class DetailsPage extends Component {
                         .then(res => {
                             let newAnnounce = {...this.state.announce}
                             newAnnounce.coupons.clients.push(this.props.user._id)
-                            this.setState({showCouponModal: false})
+                            this.setState({ downloadingCoupon: false, announce: newAnnounce, showCouponModal: false });
                             addNotification("success", "Coupon!", "Le coupon a été sauvegardé dans votre espace personnel.")
                             // Generate the pdf
                             /* image2base64(logo) // you can also to use url
@@ -390,7 +390,7 @@ class DetailsPage extends Component {
                         <div className="row pb-5 pt-3">
                             {
                                 loading ? <div className="d-block mr-auto ml-auto py-5 mt-5"><Loader /></div>:
-                                <Fragment>
+                                <Hoc>
                                     <div className="col-sm-12 col-md-8 col-lg-8 left">
                                         <div className="infos pb-4">
                                             {/* <img src={rootUrl + '/' +announce.image} alt="service" /> */}
@@ -421,7 +421,7 @@ class DetailsPage extends Component {
                                                 <div className="infos">
                                                 {
                                                     anounceType === "event" ?
-                                                    <Fragment>
+                                                    <Hoc>
                                                         <div className="d-flex py-2">
                                                             <FontAwesomeIcon icon={faCalendar} size={"2x"} />
                                                             <h2>Date: <DateFormat date={announce.date} /></h2>
@@ -431,11 +431,11 @@ class DetailsPage extends Component {
                                                             <FontAwesomeIcon icon={faMapMarked} size={"2x"} />
                                                             <h2>Lieu: {announce.place}</h2>
                                                         </div>
-                                                    </Fragment>:null
+                                                    </Hoc>:null
                                                 }
                                                 {
                                                     anounceType === "service" ?
-                                                    <Fragment>
+                                                    <Hoc>
                                                         <div className="d-flex py-2">
                                                             <FontAwesomeIcon icon={faCalendar} size={"2x"} />
                                                             <h2>Durée: {announce.duration}</h2>
@@ -450,7 +450,7 @@ class DetailsPage extends Component {
                                                             <FontAwesomeIcon icon={faAnchor} size={"2x"} />
                                                             <h2>Cible: {announce.target}</h2>
                                                         </div>
-                                                    </Fragment>:null
+                                                    </Hoc>:null
                                                 }
                                                     <hr />
                                                     <button className="button mt-3 book" 
@@ -490,29 +490,29 @@ class DetailsPage extends Component {
                                                     <div className="d-flex flex-column">
                                                         {
                                                             announce.video&&announce.video.length ?
-                                                            <Fragment>
+                                                            <Hoc>
                                                                 <h3 className="mb-3">Regardez l'aperçu en video</h3>
                                                                 <video src={rootUrl + '/' + announce.video} width="100%" height="100%" controls onClick={() => this.setState({ showVideo: true })}>
                                                                 </video>
-                                                            </Fragment> :
+                                                            </Hoc> :
                                                                     announce.youtubeVideoLink&&announce.youtubeVideoLink.length ?
-                                                                <Fragment>
+                                                                <Hoc>
                                                                     <h3 className="mb-3">Regardez l'aperçu en video</h3>
                                                                     <iframe width="100%" height="100%" title="Video de l'annonce"
                                                                         src={announce.youtubeVideoLink}
                                                                         onClick={() => this.setState({ showVideo: true })}>
                                                                     </iframe>
-                                                                </Fragment> :
+                                                                </Hoc> :
                                                                 <h3 className="mb-3 text-center">Aucune vidéo disponible.</h3>
                                                         }
                                                     </div>
                                                     <div className="d-flex flex-column">
                                                         <h3 className="mb-4">Localisation</h3>
                                                         {announce.mapLink && announce.mapLink.length ?
-                                                            <Fragment>
+                                                            <Hoc>
                                                                 <h2><a href="#map" style={{"cursor":"pointer"}} onClick={(e) => this.openMap(e, announce.mapLink)} >Lien Google Map</a></h2>
                                                                 <p>Cliquez sur le lien pour agrandir.</p>
-                                                            </Fragment> :
+                                                            </Hoc> :
                                                             <p>Pas de Localisation disponible</p>}
                                                         <h3 className="mb-3 mt-5">A propos du promoteur</h3>
                                                         <div className="d-flex justify-content-between align-items-center owner">
@@ -528,7 +528,7 @@ class DetailsPage extends Component {
 
                                             {
                                                 anounceType === "event" ?
-                                                <Fragment>
+                                                <Hoc>
                                                     <div className="otherinfos">
                                                         <div className="d-flex flex-column">
                                                             <h3>Description</h3>
@@ -542,11 +542,11 @@ class DetailsPage extends Component {
                                                         </div>
                                                         <hr/>
                                                     </div>
-                                                </Fragment>:null
+                                                </Hoc>:null
                                             }
                                             {
                                                 anounceType === "service" ?
-                                                <Fragment>
+                                                <Hoc>
                                                     <div className="otherinfos">
                                                         <div className="d-flex flex-column">
                                                             <h3>Offre</h3>
@@ -560,7 +560,7 @@ class DetailsPage extends Component {
                                                         </div>
                                                         <hr/>
                                                     </div>
-                                                </Fragment>:null
+                                                </Hoc>:null
                                             }
 
                                             <div className="moreinfos d-flex justify-content-between mb-3">
@@ -612,7 +612,7 @@ class DetailsPage extends Component {
                                             <div className="infos">
                                             {
                                                 anounceType === "event" ?
-                                                <Fragment>
+                                                <Hoc>
                                                     <div className="d-flex py-2">
                                                         <FontAwesomeIcon icon={faCalendar} size={"2x"} />
                                                         <h2>Date: <DateFormat date={announce.date} /></h2>
@@ -622,11 +622,11 @@ class DetailsPage extends Component {
                                                         <FontAwesomeIcon icon={faMapMarked} size={"2x"} />
                                                         <h2>Lieu: {announce.place}</h2>
                                                     </div>
-                                                </Fragment>:null
+                                                </Hoc>:null
                                             }
                                             {
                                                 anounceType === "service" ?
-                                                <Fragment>
+                                                <Hoc>
                                                     <div className="d-flex py-2">
                                                         <FontAwesomeIcon icon={faCalendar} size={"2x"} />
                                                         <h2>Durée: {announce.duration}</h2>
@@ -641,7 +641,7 @@ class DetailsPage extends Component {
                                                         <FontAwesomeIcon icon={faAnchor} size={"2x"} />
                                                         <h2>Cible: {announce.target}</h2>
                                                     </div>
-                                                </Fragment>:null
+                                                </Hoc>:null
                                             }
                                                 <hr />
                                                 <button className="button mt-3 book" 
@@ -671,19 +671,19 @@ class DetailsPage extends Component {
                                                 <div className="d-flex flex-column">
                                                         {
                                                             announce.video&&announce.video.length ?
-                                                                <Fragment>
+                                                                <Hoc>
                                                                     <h3 className="mb-3">Regardez l'aperçu en video</h3>
                                                                     <video src={rootUrl + '/' + announce.video} width="100%" height="100%" controls onClick={() => this.setState({ showVideo: true })}>
                                                                     </video>
-                                                                </Fragment> :
+                                                                </Hoc> :
                                                                 announce.youtubeVideoLink&&announce.youtubeVideoLink.length ?
-                                                                    <Fragment>
+                                                                    <Hoc>
                                                                         <h3 className="mb-3">Regardez l'aperçu en video</h3>
                                                                         <iframe width="100%" height="100%" title="Video de l'annonce"
                                                                             src={announce.youtubeVideoLink}
                                                                             onClick={() => this.setState({ showVideo: true })}>
                                                                         </iframe>
-                                                                    </Fragment> :
+                                                                    </Hoc> :
                                                                 <h3 className="mb-3 text-center">Aucune vidéo disponible.</h3>
                                                         }
                                                 </div>
@@ -692,10 +692,10 @@ class DetailsPage extends Component {
                                                 <div className="d-flex flex-column">
                                                     <h3 className="mb-4">Localisation</h3>
                                                     {announce.mapLink && announce.mapLink.length ?
-                                                    <Fragment>
+                                                    <Hoc>
                                                         <h2><a href="#map" style={{ "cursor": "pointer" }} onClick={(e) => this.openMap(e, announce.mapLink)} >Lien Google Map</a></h2>
                                                         <p>Cliquez sur le lien pour agrandir.</p>
-                                                    </Fragment>:
+                                                    </Hoc>:
                                                     <p>Pas de Localisation disponible</p>}
                                                     <h3 className="mb-3 mt-5">A propos du promoteur</h3>
                                                     <div className="d-flex justify-content-between align-items-center owner">
@@ -709,7 +709,7 @@ class DetailsPage extends Component {
                                             </div>
                                         </div>
                                     </div>
-                            </Fragment>
+                            </Hoc>
                             }
                         </div>
                     </div>
@@ -815,20 +815,20 @@ class DetailsPage extends Component {
                         <div className="container">
                             <div className="row justify-content-between">
                                 <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3 text-center">
-                                    <Fragment>
+                                    <Hoc>
                                         {
                                             this.state.announce&&this.state.announce.coupons ?
-                                            <Fragment>
+                                            <Hoc>
                                                 <CouponPreview coupon={this.state.announce.coupons} />
                                                 <div className="d-flex justify-content-center" id="couponpreview">
                                                     <button 
                                                         className="btn btn-danger btn-lg mb-2 mt-4" 
                                                         onClick={this.getCoupon}>Sauvegarder le coupon {downloadingCoupon ? <Loader color="white" /> : null}</button>
                                                 </div>
-                                            </Fragment>
+                                            </Hoc>
                                             :null
                                         }
-                                    </Fragment>
+                                    </Hoc>
                                 </div>
                             </div>
                         </div>
@@ -850,19 +850,19 @@ class DetailsPage extends Component {
                     <Modal.Body>
                         {
                             this.state.announce && this.state.announce.video && this.state.announce.video.length ?
-                                <Fragment>
+                                <Hoc>
                                     <h3 className="mb-3">Regardez l'aperçu en video</h3>
                                     <video src={rootUrl + '/' + this.state.announce.video} width="100%" height="100%" controls onClick={() => this.setState({ showVideo: true })}>
                                     </video>
-                                </Fragment> :
+                                </Hoc> :
                                 this.state.announce && this.state.announce.youtubeVideoLink && this.state.announce.youtubeVideoLink.length ?
-                                    <Fragment>
+                                    <Hoc>
                                         <h3 className="mb-3">Regardez l'aperçu en video</h3>
                                         <iframe width="100%" height="100%" title="Video de l'annonce"
                                             src={this.state.announce.youtubeVideoLink}
                                             onClick={() => this.setState({ showVideo: true })}>
                                         </iframe>
-                                    </Fragment> :
+                                    </Hoc> :
                                     <h3 className="mb-3 text-center">Aucune vidéo disponible.</h3>
                         }
                     </Modal.Body>

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Header from '../../globalComponent/Header';
 import axios from 'axios';
 import {Redirect} from 'react-router-dom';
@@ -6,6 +6,7 @@ import Loader from '../../globalComponent/Loader';
 import {connect} from 'react-redux';
 import {login} from '../../../store/actions';
 import './Supplier.scss';
+import Hoc from '../../globalComponent/Hoc'
 
 class SupplierConfirmationForm extends Component {
 
@@ -92,7 +93,7 @@ class SupplierConfirmationForm extends Component {
     render() {
         const {password, password2, passwordValid, error, isTyping, submitting, supplier, loading, redirect} = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 {redirect ? <Redirect to="/dashboard/reservations" />:null}
                 <Header />
                 <section className="supplier-view-page">
@@ -133,7 +134,7 @@ class SupplierConfirmationForm extends Component {
                         </div>
                     </div>
                 </section>
-            </Fragment>
+            </Hoc>
         );
     }
 }

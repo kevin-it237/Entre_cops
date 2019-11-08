@@ -1,11 +1,12 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './Supplier.scss';
 import img from '../../../assets/images/b2.png';
+import Hoc from '../../globalComponent/Hoc'
 
 class Home extends Component {
     render() {
         return (
-            <Fragment>
+            <Hoc>
                 <section className=" bannerwrapper">
                     <div className="container py-5 banner">
                         <div className="row py-5 justify-content-between align-items-center">
@@ -20,7 +21,7 @@ class Home extends Component {
                         </div>
                     </div>
                 </section>
-            </Fragment>
+            </Hoc>
         );
     }
 }

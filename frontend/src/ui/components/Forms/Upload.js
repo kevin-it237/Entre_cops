@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
+import Hoc from '../../globalComponent/Hoc';
 
 // Task component - represents a single todo item
 export default class Upload extends Component {
@@ -21,7 +22,7 @@ export default class Upload extends Component {
         let accept = type === "image" ? "image/png,image/jpeg,image/jpg" : (type === "document" ? ".docx, .pptx, .pdf" : "video/*");
 
     return ( 
-        <Fragment>
+        <Hoc>
             <button disabled={isEditing} type="button" className="btn btn-dark mb-2" onClick={()=>this.inputElement.click()}>{label} </button>
             <input style={{visibility:'hidden'}} accept={accept} onChange={(event) => this.preview(event)} ref={input => this.inputElement = input} type="file" />
             <div className="ibox">
@@ -37,7 +38,7 @@ export default class Upload extends Component {
                     </div>
                 </div>
             </div>
-        </Fragment>
+        </Hoc>
         );
     }
 }

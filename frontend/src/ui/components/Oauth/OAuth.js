@@ -1,8 +1,9 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { rootUrl } from '../../../configs/config';
 import { connect } from 'react-redux';
 import {soclialAuthStart} from '../../../store/actions'
 import { FacebookLoginButton, GoogleLoginButton } from "react-social-login-buttons";
+import Hoc from '../../globalComponent/Hoc'
 
 class OAuth extends Component {
 
@@ -14,6 +15,7 @@ class OAuth extends Component {
         const { socket, provider } = this.props
 
         socket.on(provider, user => {
+            console.log(user)
             this.popup.close()
             const { name, photo } = user;
             this.props.onLogin(name, photo)
@@ -61,10 +63,10 @@ class OAuth extends Component {
         const { disabled } = this.state
 
         return (
-            <Fragment>
+            <Hoc>
                 {provider ==="google"&&<GoogleLoginButton disabled={disabled} onClick={this.startAuth} iconSize="23px" />}
                 {provider ==="facebook"&&<FacebookLoginButton disabled={disabled} onClick={this.startAuth} iconSize="23px" />}
-            </Fragment>
+            </Hoc>
         )
     }
 }

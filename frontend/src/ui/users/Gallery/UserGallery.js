@@ -1,8 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Header from '../../globalComponent/Header';
 import Gallery from 'react-grid-gallery';
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
+import Hoc from '../../globalComponent/Hoc';
 
 class UserGallery extends Component {
 
@@ -77,7 +78,7 @@ class UserGallery extends Component {
 
     render() {
         return (
-            <Fragment>
+            <Hoc>
                 <Header />
                 <section>
                     <div className="container py-5 mt-5">
@@ -87,7 +88,7 @@ class UserGallery extends Component {
                                 {
                                     this.state.loading ? <div className="d-flex justify-content-center"><Loader /></div>:
                                         this.state.images.length > 0 ?
-                                        <Fragment>
+                                        <Hoc>
                                             {this.state.isImageToDelete?
                                             this.state.deleting ?<div className="d-flex justify-content-center"><Loader /></div>:
                                             <div className="d-flex justify-content-center">
@@ -100,14 +101,14 @@ class UserGallery extends Component {
                                                 images={this.state.images}
                                                 currentImageWillChange={this.onCurrentImageChange}
                                             />
-                                        </Fragment>
+                                        </Hoc>
                                         : <div className="d-flex justify-content-center py-5"><h4>Aucune image dans votre galerie.</h4></div>
                                 }
                             </div>
                         </div>
                     </div>
                 </section>
-            </Fragment>
+            </Hoc>
         );
     }
 }

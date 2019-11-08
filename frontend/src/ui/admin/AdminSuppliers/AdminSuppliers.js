@@ -1,11 +1,13 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
 import {DateFormat} from '../../utils/DateFormat'
 import Button from 'react-bootstrap/Button';
 import Loader from '../../globalComponent/Loader';
+import Hoc from '../../globalComponent/Hoc';
 import SupplierForm from '../../components/Forms/SuplierForm';
 import {rootUrl} from '../../../configs/config';
+
 
 class AdminSupplier extends Component {
 
@@ -114,7 +116,7 @@ class AdminSupplier extends Component {
     render() {
         const { loading, suppliers, supplier, validating, deleting, error, fetcherror, loadinSingle } = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 <div className="container">
                     <div className="row mt-5">
                         <div className="col-sm-12 d-flex justify-content-between align-items-center mb-5">
@@ -254,7 +256,7 @@ class AdminSupplier extends Component {
                         </div>
                     </Modal.Footer>
                 </Modal>
-            </Fragment>
+            </Hoc>
         );
     }
 }

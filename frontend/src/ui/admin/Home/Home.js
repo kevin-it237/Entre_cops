@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import {DateFormat} from '../../utils/DateFormat'
@@ -11,6 +11,7 @@ import EventModal from '../../suppliers/Dashboard/EventModal';
 import ServiceModal from '../../suppliers/Dashboard/ServiceModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
+import Hoc from '../../globalComponent/Hoc';
 
 class AdminHome extends Component {
 
@@ -166,7 +167,7 @@ class AdminHome extends Component {
     render() {
         const { events, eventsLoading, services, servicesLoading, error } = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 <Notification />
                 <div className="container">
                     <div className="row  pt-3 mt-5">
@@ -410,7 +411,7 @@ class AdminHome extends Component {
                     </Modal.Footer>
                 </Modal>
 
-            </Fragment>
+            </Hoc>
         );
     }
 }

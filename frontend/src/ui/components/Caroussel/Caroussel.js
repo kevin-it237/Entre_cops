@@ -1,7 +1,8 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
 import './Caroussel.scss';
+import Hoc from '../../globalComponent/Hoc'
 
 class Caroussel extends Component {
     state = {
@@ -40,14 +41,14 @@ class Caroussel extends Component {
                     <ol className="carousel-indicators">
                         {
                             this.state.images.length ? 
-                            <Fragment>
+                            <Hoc>
                                 {this.state.images.map((image, i) => (<li key={i} data-target="#carouselExampleIndicators" data-slide-to={i} className={i===0&&"active"}></li>))}
-                            </Fragment>:null
+                            </Hoc>:null
                         }
                     </ol>
                     <div className="carousel-inner">
                         {this.state.loading ? <div className="d-flex justify-content-center align-items-center" style={{minHeight: "75vh"}}><Loader /></div> :
-                            <Fragment>
+                            <Hoc>
                                 {this.state.images.map((image, i) => {
                                     return (
                                         <a style={{padding: "0"}} key={i} className={i === 0 ? "carousel-item active" : "carousel-item"} href={image.followlink}>
@@ -62,7 +63,7 @@ class Caroussel extends Component {
                                         </a>
                                     )
                                 })}
-                            </Fragment> 
+                            </Hoc> 
                         }
                     </div>
                     <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">

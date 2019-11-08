@@ -1,10 +1,11 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Loader from '../../globalComponent/Loader';
 import Gallery from 'react-grid-gallery';
 import { Notification, addNotification } from '../../globalComponent/Notifications'
 import axios from 'axios';
 import { rootUrl } from '../../../configs/config';
+import Hoc from '../../globalComponent/Hoc';
 
 class AdminSlider extends Component {
 
@@ -224,7 +225,7 @@ class AdminSlider extends Component {
     render() {
         const {loading, showModal} = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 <Notification />
                 <div className="container mt-4 mb-5">
                     <div className="row pt-5 pb-3">
@@ -235,7 +236,7 @@ class AdminSlider extends Component {
                     </div>
                     {this.state.error.length ? <div className="d-flex justify-content-center alert-danger alert">{this.state.error}</div>:null}
                     {this.state.loading ? <div className="d-flex justify-content-center"><Loader /></div> : 
-                        <Fragment>
+                        <Hoc>
                             <div className="row mt-2">
                                 <div className="col-sm-12 d-flex mt-5 mb-4">
                                     <h2>Images sur la Bannière actuelle</h2>
@@ -289,7 +290,7 @@ class AdminSlider extends Component {
                                         </div>
                                     </div>:null
                             }
-                        </Fragment>
+                        </Hoc>
                     }
                 </div>
 
@@ -330,7 +331,7 @@ class AdminSlider extends Component {
                         </form>
                     </Modal.Body>
                 </Modal>
-            </Fragment>
+            </Hoc>
         );
     }
 }

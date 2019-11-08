@@ -1,12 +1,13 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Header from '../../globalComponent/Header';
 import SuplierForm from '../Forms/SuplierForm';
+import Hoc from '../../globalComponent/Hoc'
 import './Supplier.scss';
 
 class SupplierRegistration extends Component {
     render() {
         return (
-            <Fragment>
+            <Hoc>
                 <Header />
                 <section className="supplier-view-page" style={{marginTop: "5rem"}}>
                     <div className="container my-5">
@@ -24,7 +25,7 @@ class SupplierRegistration extends Component {
                         </div>
                     </div>
                 </section>
-            </Fragment>
+            </Hoc>
         );
     }
 }

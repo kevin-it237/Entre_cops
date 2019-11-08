@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import Header from '../../globalComponent/Header';
@@ -7,6 +7,7 @@ import {Tab, Tabs, Modal, Button} from 'react-bootstrap';
 import {CouponPreview} from '../../components/CouponSchema/CouponPreview'
 import { DateFormat } from '../../utils/DateFormat'
 import './Reservations.scss';
+import Hoc from '../../globalComponent/Hoc';
 
 class Reservation extends Component {
 
@@ -84,7 +85,7 @@ class Reservation extends Component {
 
     render() {
         return (
-            <Fragment>
+            <Hoc>
                 <Header />
                 <section className="res-section">
                     <div className="container my-5">
@@ -159,7 +160,7 @@ class Reservation extends Component {
                         </div>
                     </Modal.Footer>
                 </Modal>
-            </Fragment>
+            </Hoc>
         );
     }
 }

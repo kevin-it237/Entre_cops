@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload} from '@fortawesome/free-solid-svg-icons';
 import ServiceModal from '../../suppliers/Dashboard/ServiceModal';
 import Loader from '../../globalComponent/Loader';
+import Hoc from '../../globalComponent/Hoc';
 
 class AdminService extends Component {
 
@@ -93,7 +94,7 @@ class AdminService extends Component {
     render() {
         const { error, services, servicesLoading } = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 <div className="container">
                     <div className="row mt-5">
                         <div className="col-sm-12 text-center d-flex justify-content-between align-items-center mb-5">
@@ -171,7 +172,7 @@ class AdminService extends Component {
                                     {this.state.loading ? <div className="d-flex justify-content-center"><Loader /></div>:
                                     this.state.service&&this.state.service.reservations && this.state.service.reservations.length ?
                                             (
-                                               <Fragment>
+                                               <Hoc>
                                                <h3 className="mb-3">{this.state.service.title}</h3>
                                                     <table className="table table-bordered reservations-list">
                                                         <tbody>
@@ -189,7 +190,7 @@ class AdminService extends Component {
                                                     <div className="deleteWrapper d-flex mt-auto">
                                                         <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(this.state.service.reservations, this.state.service.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
                                                     </div>
-                                               </Fragment>
+                                               </Hoc>
                                             ): <div className="d-flex justify-content-center"><p>Aucune réservation.</p></div>
                                     }
                                 </div>
@@ -198,7 +199,7 @@ class AdminService extends Component {
                     </Modal.Body>
                 </Modal>
 
-            </Fragment>
+            </Hoc>
         );
     }
 }

@@ -1,17 +1,20 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import { rootUrl } from '../../../configs/config';
 
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
+import { Tab, Tabs, Modal, Button } from 'react-bootstrap';
 import Loader from '../../globalComponent/Loader';
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import Hoc from '../../globalComponent/Hoc';
+import {CouponPreview} from '../../components/CouponSchema/CouponPreview'
+import { Notification, addNotification } from '../../globalComponent/Notifications'
 
+// For coupon
+/* import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
 import logo from '../../../assets/images/logo.png';
 import {counponToPrint} from '../../components/CouponSchema/Coupon'
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-const image2base64 = require('image-to-base64');
+const image2base64 = require('image-to-base64'); */
 
 class AdminCoupons extends Component {
 
@@ -36,7 +39,10 @@ class AdminCoupons extends Component {
         montant: '',
         couponValid: false,
         couponError: '',
-        removing: false
+        removing: false,
+
+        showCouponPreviewModal: false,
+        coupon: null
     }
 
     handleInputChange = (e) => {
@@ -118,15 +124,17 @@ class AdminCoupons extends Component {
                 }
                 return event;
             })
+            this.setState({ loading: false, showModal: false, [eventType + "s"]: newEvents })
+            addNotification("success", "Coupon!", "Coupon généré avec succès")
             // generate the coupon
-            image2base64(logo) // you can also to use url
+            /* image2base64(logo) // you can also to use url
             .then(response => {
                 let docDefinition = counponToPrint(response, infos, montant, datelimite,
                     selectedAnnonce.title, "Entrecops", selectedAnnonce.title.split(' ').join('-'))
                 pdfMake.createPdf(docDefinition).open();
                 this.setState({ loading: false, showModal: false, [eventType+"s"]: newEvents })
             })
-            .catch((error) => console.log(error))
+            .catch((error) => console.log(error)) */
         })
         .catch(err => {
             this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
@@ -134,14 +142,14 @@ class AdminCoupons extends Component {
     }
 
     previewCoupon = (announce) => {
-        const {infos, datelimite, montant} = announce.coupons;
-        image2base64(logo) // you can also to use url
-            .then(response => {
-                let docDefinition = counponToPrint(response, infos, montant, datelimite,
-                    announce.title, "Entrecops", announce.title.split(' ').join('-'))
-                pdfMake.createPdf(docDefinition).open();
-            })
-            .catch((error) => console.log(error))
+        this.setState({ showCouponPreviewModal: true, coupon: announce.coupons })
+        // image2base64(logo) // you can also to use url
+        //     .then(response => {
+        //         let docDefinition = counponToPrint(response, infos, montant, datelimite,
+        //             announce.title, "Entrecops", announce.title.split(' ').join('-'))
+        //         pdfMake.createPdf(docDefinition).open();
+        //     })
+        //     .catch((error) => console.log(error))
     }
 
     removeCoupon = (id, type) => {
@@ -157,6 +165,7 @@ class AdminCoupons extends Component {
                 return event;
             })
             this.setState({ removing: false, [type + "s"]: newEvents })
+            addNotification("success", "Coupon!", "Coupon annulé avec succès")
         })
         .catch(err => {
             this.setState({ error: 'Une erreur s\'est produite. Veuillez reéssayer.', loading: false })
@@ -167,7 +176,8 @@ class AdminCoupons extends Component {
     render() {
         const { error, events, eventsLoading, services, servicesLoading, selectedAnnonce, loading } = this.state;
         return (
-            <Fragment>
+            <Hoc>
+                <Notification />
                 <div className="container admin-coupons mt-4">
                     <div className="row pt-5 pb-3">
                         <div className="col">
@@ -180,91 +190,86 @@ class AdminCoupons extends Component {
                         </div>
                     </div> */}
                     {/* Evenement */}
-                    <div className="row">
-                        <div className="col-sm-12 py-3">
-                            <h4 className="mt-3">Liste des Evènements</h4>
-                        </div>
+                    <div className="row mt-3">
                         <div className="col-sm-12">
                             {error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
-                            {
-                                eventsLoading ? <div className="d-block mr-auto ml-auto text-center"><Loader /></div> :
-                                    events && events.length ?
-                                    <table className="table table-bordered" id="thetable">
-                                        <thead className="thead-inverse thead-dark">
-                                            <tr>
-                                            <th>#</th>
-                                            <th>Nom de l'évenement</th>
-                                            <th>Coupons Restants</th>
-                                            <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                events.map((event, i) => (
-                                                    <tr key={event._id}>
-                                                        <th scope="row">{i + 1}</th>
-                                                        <td>{event.title}</td>
-                                                        <td>{event.coupons ? event.coupons.nCoupons : 0}</td>
-                                                        <td className="actions text-right">
-                                                            {event.coupons ?
-                                                            <Fragment>
-                                                                <button className="btn btn-dark btn-lg mr-3" onClick={() => this.previewCoupon(event)}>Afficher le coupon</button>
-                                                                <button className="btn btn-outline-danger btn-lg" onClick={() => this.removeCoupon(event._id, "event")}>Annuler coupons</button>
-                                                            </Fragment>:
-                                                            <button className="btn btn-danger btn-lg mr-3" onClick={() => this.openModal(event._id, "event")}>Générer des coupons</button>
-                                                             }
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            }
-                                        </tbody>
-                                    </table>:null
-                            }
-                        </div>
-                    </div>
-
-                    {/* Services */}
-                    <div className="row mt-4">
-                        <div className="col-sm-12 py-3">
-                            <h4 className="mt-3">Liste des Services</h4>
                         </div>
                         <div className="col-sm-12">
-                            {error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
-                            {
-                                servicesLoading ? <div className="d-block mr-auto ml-auto text-center"><Loader /></div> :
-                                    services && services.length ?
-                                        <table className="table table-bordered">
-                                            <thead className="thead-inverse thead-dark">
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Nom du service</th>
-                                                    <th>Coupons Restants</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    services.map((service, i) => (
-                                                        <tr key={service._id}>
-                                                            <th scope="row">{i + 1}</th>
-                                                            <td>{service.title}</td>
-                                                            <td>{service.coupons ? service.coupons.nCoupons : 0}</td>
-                                                            <td className="actions">
-                                                                {
-                                                                    service.coupons ?
-                                                                    <Fragment>
-                                                                        <button className="btn btn-dark btn-lg mr-3" onClick={() => this.previewCoupon(service)}>Afficher le coupon</button>
-                                                                        <button className="btn btn-outline-danger btn-lg" onClick={() => this.removeCoupon(service._id, "service")}>Annuler coupons</button>
-                                                                    </Fragment>:
-                                                                    <button className="btn btn-danger btn-lg mr-3" onClick={() => this.openModal(service._id, "service")}>Générer des coupons</button>
-                                                                }
-                                                            </td>
+                            <Tabs defaultActiveKey="events" id="uncontrolled-tab-example">
+                                <Tab eventKey="events" title="Actualités">
+                                    {
+                                        eventsLoading ? <div className="d-block mr-auto ml-auto text-center mt-5"><Loader /></div> :
+                                            events && events.length ?
+                                                <table className="table table-bordered tabs" id="thetable">
+                                                    <thead className="thead-inverse thead-dark">
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Nom de l'évenement</th>
+                                                            <th>Coupons Restants</th>
+                                                            <th>Actions</th>
                                                         </tr>
-                                                    ))
-                                                }
-                                            </tbody>
-                                        </table> : null
-                            }
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            events.map((event, i) => (
+                                                                <tr key={event._id}>
+                                                                    <th scope="row">{i + 1}</th>
+                                                                    <td>{event.title}</td>
+                                                                    <td>{event.coupons ? event.coupons.nCoupons : 0}</td>
+                                                                    <td className="actions text-right">
+                                                                        {event.coupons ?
+                                                                            <Hoc>
+                                                                                <button className="btn btn-dark btn-lg mr-3" onClick={() => this.previewCoupon(event)}>Afficher le coupon</button>
+                                                                                <button className="btn btn-outline-danger btn-lg" onClick={() => this.removeCoupon(event._id, "event")}>Annuler coupons</button>
+                                                                            </Hoc> :
+                                                                            <button className="btn btn-danger btn-lg mr-3" onClick={() => this.openModal(event._id, "event")}>Générer des coupons</button>
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            ))
+                                                        }
+                                                    </tbody>
+                                                </table> : null
+                                    }
+                                </Tab>
+                                <Tab eventKey="services" title="Services">
+                                    {
+                                        servicesLoading ? <div className="d-block mr-auto ml-auto text-center mt-5"><Loader /></div> :
+                                            services && services.length ?
+                                                <table className="table table-bordered">
+                                                    <thead className="thead-inverse thead-dark">
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Nom du service</th>
+                                                            <th>Coupons Restants</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            services.map((service, i) => (
+                                                                <tr key={service._id}>
+                                                                    <th scope="row">{i + 1}</th>
+                                                                    <td>{service.title}</td>
+                                                                    <td>{service.coupons ? service.coupons.nCoupons : 0}</td>
+                                                                    <td className="actions">
+                                                                        {
+                                                                            service.coupons ?
+                                                                                <Hoc>
+                                                                                    <button className="btn btn-dark btn-lg mr-3" onClick={() => this.previewCoupon(service)}>Afficher le coupon</button>
+                                                                                    <button className="btn btn-outline-danger btn-lg" onClick={() => this.removeCoupon(service._id, "service")}>Annuler coupons</button>
+                                                                                </Hoc> :
+                                                                                <button className="btn btn-danger btn-lg mr-3" onClick={() => this.openModal(service._id, "service")}>Générer des coupons</button>
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            ))
+                                                        }
+                                                    </tbody>
+                                                </table> : null
+                                    }
+                                </Tab>
+                            </Tabs>
                         </div>
                     </div>
                 </div>
@@ -320,7 +325,30 @@ class AdminCoupons extends Component {
                         </div>
                     </Modal.Footer>
                 </Modal>
-            </Fragment>
+                
+                {/* Coupon preview */}
+                <Modal show={this.state.showCouponPreviewModal} onHide={() => this.setState({ showCouponPreviewModal: false })} size="md" >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Coupon de réduction</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="container">
+                            <div className="row justify-content-between">
+                                <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3 text-center">
+                                    <CouponPreview coupon={this.state.coupon} />
+                                </div>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <div className="py-3">
+                            <Button variant="default" onClick={() => this.setState({ showCouponPreviewModal: false })}>
+                                Fermer
+                            </Button>
+                        </div>
+                    </Modal.Footer>
+                </Modal>
+            </Hoc>
         );
     }
 }

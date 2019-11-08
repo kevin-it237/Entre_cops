@@ -1,4 +1,4 @@
-import React, { Component, Fragment, Suspense, lazy  } from 'react';
+import React, { Component, Suspense, lazy  } from 'react';
 import { NavLink, Route, Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +7,7 @@ import { logout } from '../../store/actions'
 import axios from 'axios';
 import './Admin.scss';
 import logo from '../../assets/images/logo.png';
+import Hoc from '../globalComponent/Hoc';
 
 /* import AdminCoupons from './AdminCoupons/AdminCoupons';
 import AdminHome from './Home/Home';
@@ -16,7 +17,9 @@ import AdminSuppliers from './AdminSuppliers/AdminSuppliers';
 import AdminUsers from './AdminUsers/AdminUsers';
 import AdminSlider from './AdminSlider/AdminSlider';
 import AdminEmails from './AdminEMails/AdminEMails';
-import Loader from '../globalComponent/Loader'; */
+ */
+import Loader from '../globalComponent/Loader';
+import ReactLoader from '../globalComponent/ReactLoader';
 
 const AdminCoupons = lazy(() => import('./AdminCoupons/AdminCoupons'))
 const AdminHome = lazy(() => import('./Home/Home'))
@@ -26,7 +29,6 @@ const AdminSuppliers = lazy(() => import('./AdminSuppliers/AdminSuppliers'))
 const AdminUsers = lazy(() => import('./AdminUsers/AdminUsers'))
 const AdminSlider = lazy(() => import('./AdminSlider/AdminSlider'))
 const AdminEmails = lazy(() => import('./AdminEMails/AdminEMails'))
-const Loader = lazy(() => import('../globalComponent/Loader'))
 
 class Admin extends Component {
 
@@ -69,7 +71,7 @@ class Admin extends Component {
         const {user} = this.props;
         const {nSuppliers, nUsers, loadingSuppliers, loadingUsers} = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 {user&&user.role !== "admin" ? <Redirect to="/" />:null }
                 {this.state.redirect ? <Redirect to="/" /> : null}
                 <section className="admin">
@@ -123,7 +125,7 @@ class Admin extends Component {
                                 <hr/>
                             </div>
                             {/* Admin Component */}
-                            <Suspense fallback={<div className="p-4 d-flex justify-content-center"><Loader /></div>}>
+                            <Suspense fallback={<ReactLoader />}>
                                 <Route exact path="/admin/home" component={AdminHome} />
                                 <Route exact path="/admin/coupons" component={AdminCoupons} />
                                 <Route exact path="/admin/annonces" component={AdminAnnonces} />
@@ -132,11 +134,12 @@ class Admin extends Component {
                                 <Route exact path="/admin/users" component={AdminUsers} />
                                 <Route exact path="/admin/slider" component={AdminSlider} />
                                 <Route exact path="/admin/emails" component={AdminEmails} />
+                                
                             </Suspense>
                         </div>
                     </div>
                 </section>
-            </Fragment>
+            </Hoc>
         );
     }
 }

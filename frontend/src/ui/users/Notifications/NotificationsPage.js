@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Header from '../../globalComponent/Header';
 import './Notifications.scss';
 import Loader from '../../globalComponent/Loader';
-
+import Hoc from '../../globalComponent/Hoc';
 class NotificationsPage extends Component {
 
     state = {
@@ -20,7 +20,7 @@ class NotificationsPage extends Component {
         let notifications = [...this.state.notifications];
         notifications.reverse();
         return (
-            <Fragment>
+            <Hoc>
                 <Header/>
                 <section className="rec-section mt-5">
                     <div className="container my-5">
@@ -48,7 +48,7 @@ class NotificationsPage extends Component {
                         </div>
                     </div>
                 </section>
-            </Fragment>
+            </Hoc>
         );
     }
 }

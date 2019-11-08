@@ -7,6 +7,7 @@
         }
     }
 
+    
     h2 {
         @media only screen and (max-width: 900px) {
             font-size: 1.5rem;
@@ -101,4 +102,12 @@
             }
         }
     }
+
+    
+}
+
+.create-form {
+    input[type=text], input[type=email], input[type=password], input[type=tel], input[type=number] {
+            width: 100% !important;
+        }
 }

@@ -1,9 +1,10 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import EventItem from './EventItem';
 import Loader from '../../globalComponent/Loader';
 import axios from 'axios';
 import './Events.scss';
 import Filter from '../Filter/Filter';
+import Hoc from '../../globalComponent/Hoc'
 class Events extends Component {
 
     state = {
@@ -47,7 +48,7 @@ class Events extends Component {
     render() {
         const {error, events, loading} = this.state;
         return (
-            <Fragment>
+            <Hoc>
                 {!this.props.isHomePage&&<Filter />}
                 <section className={this.props.isHomePage ? "events pt-5":"events pt-5 bgWhite"} id="events">
                     <div className="container pb-5">
@@ -89,7 +90,7 @@ class Events extends Component {
                         }
                     </div>
                 </section> 
-            </Fragment>
+            </Hoc>
         );
     }
 }
