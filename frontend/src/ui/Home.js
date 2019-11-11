@@ -1,25 +1,28 @@
-import React, { Component } from 'react';
-import Header from '../ui/globalComponent/Header';
-
+import React, { Component, Suspense, lazy } from 'react';
+import ReactLoader from '../ui/globalComponent/ReactLoader'
 import Hoc from './globalComponent/Hoc';
-import Events from '../ui/components/Events/Events';
-import Services from '../ui/components/Services/Services';
-import Categories from '../ui/components/Categories/Categories';
-import Caroussel from '../ui/components/Caroussel/Caroussel';
-import SupplierBaner from '../ui/components/Supplier/SupplierBanner';
-import Filter from '../ui/components/Filter/Filter'
+
+const Header = lazy(() => import('../ui/globalComponent/Header'))
+const Events = lazy(() => import('../ui/components/Events/Events'))
+const Services = lazy(() => import('../ui/components/Services/Services'))
+const Categories = lazy(() => import('../ui/components/Categories/Categories'))
+const Caroussel = lazy(() => import('../ui/components/Caroussel/Caroussel'))
+const SupplierBaner = lazy(() => import('../ui/components/Supplier/SupplierBanner'))
+const Filter = lazy(() => import('../ui/components/Filter/Filter'))
 
 class Home extends Component {
     render() {
         return (
             <Hoc>
-                <Header home={true} />
-                <Caroussel />
-                <Filter />
-                <Categories />
-                <Events eventType="Actualités" isHomePage={true} />
-                <Services eventType="Services" isHomePage={true} />
-                <SupplierBaner />
+                <Suspense fallback={<ReactLoader />}>
+                    <Header home={true} />
+                    <Caroussel />
+                    <Filter />
+                    <Categories />
+                    <Events eventType="Actualités" isHomePage={true} />
+                    <Services eventType="Services" isHomePage={true} />
+                    <SupplierBaner />
+                </Suspense>
             </Hoc>
         );
     }

@@ -38,7 +38,7 @@ class Header extends PureComponent {
             })
 
             // WHen user send a recommandattion to another
-            const socket = socketIOClient(rootUrl);
+            /*const socket = socketIOClient(rootUrl);
             socket.on('display notification', data => {
                 const authData = JSON.parse(localStorage.getItem("authData"));
                 if (authData&&authData.user) {
@@ -54,7 +54,7 @@ class Header extends PureComponent {
                 if (authData && authData.user) {
                     this.props.onAutoSign();
                 }
-            })
+            })*/
         }
 
     }

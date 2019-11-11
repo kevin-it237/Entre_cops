@@ -79,20 +79,6 @@ class AdminEmails extends Component {
         } else {
             this.setState({ sending: true })
             let emails = selectedUsers.filter(user => user.trim().length > 0);
-            // Envoi des Emails avec AWS SES
-           /*  
-            axios.post('/api/email/sendemail', {
-                object: object,
-                emails: emails,
-                html: JSON.stringify(content)
-            })
-            .then(res => {
-                this.setState({ sending: false, showModal: false })
-            })
-            .catch(err => {
-                this.setState({ sending: false, emailError: "Une érreur ss'est produite" })
-                console.log(err)
-            }) */
             // Sending with gmail
             axios.post('/api/email/sendemail/gmail', {
                 object: object,
