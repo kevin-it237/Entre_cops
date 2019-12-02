@@ -49,6 +49,23 @@ class AdminUser extends Component {
         })
     }
 
+    exportUsersListCSV = (data) => {
+        let csvContent = "data:text/csv;charset=utf-8,";
+        // Format our csv file content
+        csvContent += "id , name, email, tel, places \r\n";
+        data.forEach(function (rowArray, i) {
+            let row = (i + 1) + " , " + rowArray.name + " , " + rowArray.email + " , " + rowArray.tel;
+            csvContent += row + "\r\n";
+        });
+
+        // Creating the file
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "utilisateurs.csv");
+        link.click();
+    }
+
     render() {
         const {error, loading, deleting, users} = this.state;
         return (
@@ -91,6 +108,7 @@ class AdminUser extends Component {
                                     </table>:null
                             }
                         </div>
+                        <button className="btn btn-danger btn-lg export-btn" onClick={() => this.exportUsersListCSV(users)}>Exporter la liste</button>
                     </div>
                 </div>
 

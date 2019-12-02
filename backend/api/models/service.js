@@ -6,7 +6,7 @@ const serviceSchema = mongoose.Schema({
     category: { type: String, required: true },
     problem: { type: String, required: true },
     offre: { type: String, required: true },
-    duration: { type: String, required: true },
+    duration: { type: String, required: false },
     target: { type: String, required: true },
     place: { type: String, required: true },
     owner: { type: Object, required: true },

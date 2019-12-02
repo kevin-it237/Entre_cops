@@ -113,6 +113,23 @@ class AdminSupplier extends Component {
         })
     }
 
+    exportSupplierListCSV = (data) => {
+        let csvContent = "data:text/csv;charset=utf-8,";
+        // Format our csv file content
+        csvContent += "id , name, email, tel, places \r\n";
+        data.forEach(function (rowArray, i) {
+            let row = (i + 1) + " , " + rowArray.name + " , " + rowArray.email + " , " + rowArray.tel;
+            csvContent += row + "\r\n";
+        });
+
+        // Creating the file
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "fournisseurs.csv");
+        link.click();
+    }
+
     render() {
         const { loading, suppliers, supplier, validating, deleting, error, fetcherror, loadinSingle } = this.state;
         return (
@@ -162,6 +179,7 @@ class AdminSupplier extends Component {
                                 }
                                 
                         </div>
+                        <button className="btn btn-danger btn-lg export-btn" onClick={() => this.exportSupplierListCSV(suppliers)}>Exporter la liste</button>
                     </div>
                 </div>
 

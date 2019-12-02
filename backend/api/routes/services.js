@@ -43,13 +43,14 @@ router.post('/new', upload.any(), (req, res, next) => {
             video = file.path;
         }
     })
-    const filesPath = req.files.map(file => file.path)
+    const images = req.files.filter(el => el.fieldname === "images");
+    const filesPath = images.map(file => file.path)
     // Save new supplier
     const service = new Service({
         _id: mongoose.Types.ObjectId(),
         title: req.body.title,
         owner: JSON.parse(req.body.user),
-        image: req.files[0].path,
+        image: images[0].path,
         images: filesPath,
         target: req.body.cible,
         youtubeVideoLink: req.body.youtubeVideoLink,
@@ -80,11 +81,41 @@ router.post('/new', upload.any(), (req, res, next) => {
 })
 
 // Update service
-router.patch('/:id', upload.array('images'), (req, res, next) => {
-    console.log(req.files)
-    const filesPath = req.files.map(file => file.path)
+router.patch('/:id', upload.any(), (req, res, next) => {
+    let request = {
+        title: req.body.title,
+        target: req.body.cible,
+        youtubeVideoLink: req.body.youtubeVideoLink,
+        problem: req.body.problem,
+        category: req.body.category,
+        offre: req.body.offre,
+        duration: req.body.duration,
+        place: req.body.place,
+        tags: req.body.tags,
+        mapLink: req.body.mapLink,
+    };
+
+    if (req.files) {
+        // Vérify if there is new images
+        req.files.forEach(file => {
+            if (file.fieldname === 'images') {
+                const images = req.files.filter(el => el.fieldname === "images");
+                const filesPath = images.map(file => file.path)
+                request = { ...request, images: filesPath, image: images[0].path }
+                return;
+            }
+        })
+
+        // Vérify if there is a new video
+        req.files.forEach(file => {
+            if (file.fieldname === 'serviceVideo') {
+                request = { ...request, video: file.path }
+                return;
+            }
+        })
+    }
     Service.updateOne({ _id: req.params.id }, {
-        $set: { images: filesPath, image: req.files[0].path }
+        $set: request
     })
     .exec()
     .then(service => {

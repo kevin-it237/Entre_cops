@@ -7,6 +7,7 @@ import { faDownload} from '@fortawesome/free-solid-svg-icons';
 import ServiceModal from '../../suppliers/Dashboard/ServiceModal';
 import Loader from '../../globalComponent/Loader';
 import Hoc from '../../globalComponent/Hoc';
+import { Notification, addNotification } from '../../globalComponent/Notifications'
 
 class AdminService extends Component {
 
@@ -95,6 +96,7 @@ class AdminService extends Component {
         const { error, services, servicesLoading } = this.state;
         return (
             <Hoc>
+                <Notification />
                 <div className="container">
                     <div className="row mt-5">
                         <div className="col-sm-12 text-center d-flex justify-content-between align-items-center mb-5">
@@ -151,6 +153,7 @@ class AdminService extends Component {
                     services={this.state.services}
                     loadingAn={this.state.loading}
                     show={this.state.showModal}
+                    addNotification={addNotification}
                     closeModal={this.closeModal} />
 
                 {/* New Service */}

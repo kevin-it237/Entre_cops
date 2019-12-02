@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import Upload from '../../components/Forms/Upload';
 import axios from 'axios';
 import socketIOClient from 'socket.io-client';
-import {Notification, addNotification} from '../../globalComponent/Notifications'
 import Loader from '../../globalComponent/Loader';
 import { rootUrl } from '../../../configs/config';
 import './EventForm.scss';
@@ -27,6 +26,7 @@ class ServiceModal extends Component {
         formValid: false,
         previewImages: null,
         images: null,
+        imageSizeError: false,
         titleValid: false,
         categoryValid: false,
         cibleValid: false,
@@ -82,7 +82,7 @@ class ServiceModal extends Component {
                 placeValid = value.length > 0;
                 break;
             case 'images':
-                placeValid = value;
+                serviceImageValid = value;
                 break;
             default:
                 break;
@@ -127,9 +127,11 @@ class ServiceModal extends Component {
             formData.append('tags', tags);
             formData.append('mapLink', mapLink);
             formData.append('user', JSON.stringify(this.props.user));
-            Array.from(images).forEach(file => {
-                formData.append('images', file);
-            });
+            if(images) {
+                Array.from(images).forEach(file => {
+                    formData.append('images', file);
+                });
+            }
             if (serviceVideo !== "") {
                 formData.append('serviceVideo', serviceVideo);
             }
@@ -140,35 +142,55 @@ class ServiceModal extends Component {
             };
             // Add the service
             this.setState({ loading: true });
-            try {
-                axios.post('/api/service/new', formData, config)
-                    .then(res => {
-                        this.setState({
-                            loading: false,
-                            error: '',
-                            title: '',
-                            cible: '',
-                            category: '',
-                            probleme: '',
-                            serviceVideo: '',
-                            offre:'',
-                            duration: '',
-                            place: '',
-                            tags: '',
-                            mapLink: ''
-                        });
-                        // For admin when he creates service
-                        if (this.props.refreshServiceList) {
-                            this.props.refreshServiceList();
-                        }
-                        this.props.closeModal();
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", loading: false });
-                    })
-            } catch (error) {
-                this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
+            if(this.props.isEditing) {
+                // Editing service
+                try {
+                    axios.patch('/api/service/' + this.props.service._id, formData, config)
+                        .then(res => {
+                            this.setState({
+                                loading: false,
+                            });
+                            this.props.closeModal();
+                            this.props.addNotification("success", "Modification!", "Modification éffectuée avec succès")
+                        })
+                        .catch(err => {
+                            this.setState({ error: "Une érreur s'est produite, veuillez reéssayer.", loading: false });
+                        })
+                } catch (error) {
+                    this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
+                }
+            } else {
+                // Create new service
+                try {
+                    axios.post('/api/service/new', formData, config)
+                        .then(res => {
+                            this.setState({
+                                loading: false,
+                                error: '',
+                                title: '',
+                                cible: '',
+                                category: '',
+                                probleme: '',
+                                serviceVideo: '',
+                                offre:'',
+                                duration: '',
+                                place: '',
+                                tags: '',
+                                mapLink: ''
+                            });
+                            // For admin when he creates service
+                            if (this.props.refreshServiceList) {
+                                this.props.refreshServiceList();
+                            }
+                            this.props.closeModal();
+                        })
+                        .catch(err => {
+                            console.log({err});
+                            this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", loading: false });
+                        })
+                } catch (error) {
+                    this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
+                }
             }
         } else {
             this.setState({ error: "Veuillez remplir tous les champs", isTyping: true });
@@ -177,9 +199,19 @@ class ServiceModal extends Component {
 
     // preview image
     preview = (e) => {
-        let images = Array.from(e.target.files).map(file => URL.createObjectURL(file));
-        this.setState({ previewImages: images, images: e.target.files, serviceImageValid: true }, 
-            () => { this.validateField("images", true) });
+        let imageValid = true;
+        this.setState({ imageSizeError: false, previewImages: [], images: null, serviceImageValid: false })
+        Array.from(e.target.files).map(file => {
+            if ((file.size) / 1024 > 1024) {
+                imageValid = false;
+                this.setState({ imageSizeError: 'La taille d\'une image ne doit pas dépasser 1Mo.' })
+            }
+        });
+        if (imageValid) {
+            let images = Array.from(e.target.files).map(file => URL.createObjectURL(file));
+            this.setState({ previewImages: images, images: e.target.files, serviceImageValid: true },
+                () => { this.validateField("images", true) });
+        }
     }
 
     setFile = (name, file) => {
@@ -213,6 +245,14 @@ class ServiceModal extends Component {
                     validated: service.validated,
                     youtubeVideoLink: service.youtubeVideoLink,
                     tags: service.tags,
+                    titleValid: true,
+                    problemeValid: true,
+                    cibleValid: true,
+                    serviceImageValid: true,
+                    categoryValid: true,
+                    offreValid: true,
+                    placeValid: true,
+                    formValid: true
                 })
             }
         }
@@ -244,39 +284,6 @@ class ServiceModal extends Component {
             } catch (error) {
                 this.setState({ error: "Erreur de chargement des catégories. Veuillez reéssayer." })
             }
-        }
-    }
-
-    updateService = (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        const { images } = this.state;
-        if (images) {
-            Array.from(images).forEach(file => {
-                formData.append('images', file);
-            });
-            const config = {
-                headers: {
-                    'content-type': 'multipart/form-data'
-                }
-            };
-            this.setState({ loading: true });
-            try {
-                axios.patch('/api/service/' + this.props.service._id, formData, config)
-                    .then(res => {
-                        this.setState({ 
-                            loading: false,
-                         });
-                        this.props.closeModal();
-                    })
-                    .catch(err => {
-                        this.setState({ error: "Veuillez faire une modification avant d'enregistrer", loading: false });
-                    })
-            } catch (error) {
-                this.setState({ error: "Erreur de connexion. Veuillez reéssayer", loading: false });
-            }
-        } else {
-            addNotification("warning", "Modification!", "Aucune modification éffectuée")
         }
     }
 
@@ -359,7 +366,6 @@ class ServiceModal extends Component {
                     <Modal.Title>Ajouter un nouveau Service</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Notification />
                     <form className="create-form">
                         <div className="container">
                             <div className="row">
@@ -370,12 +376,12 @@ class ServiceModal extends Component {
                                                 {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
                                                 <div className="form-group">
                                                     <label for="name">Nom du Service</label>
-                                                    <input disabled={isEditing} type="text" className={isTyping && !titleValid ? "form-control is-invalid" : "form-control"} value={title} onChange={(e) => this.handleInputChange(e)} name="title" placeholder="Nom du Service" required />
+                                                    <input type="text" className={isTyping && !titleValid ? "form-control is-invalid" : "form-control"} value={title} onChange={(e) => this.handleInputChange(e)} name="title" placeholder="Nom du Service" required />
                                                     {isTyping && !titleValid ? <div className="invalid-feedback">Invalide</div> : null}
                                                 </div>
                                                 <div className="form-group">
                                                     <label for="category">Catégorie</label>
-                                                    <select disabled={isEditing} id="category" name="category" value={category} onChange={(e) => this.handleInputChange(e)} className={isTyping && !categoryValid ? "form-control is-invalid" : "form-control"} >
+                                                    <select id="category" name="category" value={category} onChange={(e) => this.handleInputChange(e)} className={isTyping && !categoryValid ? "form-control is-invalid" : "form-control"} >
                                                         <option>Choisir...</option>
                                                         {
                                                             categories && categories.length ?
@@ -388,41 +394,41 @@ class ServiceModal extends Component {
                                                 </div>
                                                 <div className="form-group">
                                                     <label for="name">Problème</label>
-                                                    <textarea disabled={isEditing} type="text" value={probleme} className={isTyping && !problemeValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="probleme" rows={2} placeholder="Problème"></textarea>
+                                                    <textarea type="text" value={probleme} className={isTyping && !problemeValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="probleme" rows={2} placeholder="Problème"></textarea>
                                                     {isTyping && !problemeValid ? <div className="invalid-feedback">Invalide</div> : null}
                                                 </div>
                                                 <div className="form-group">
                                                     <label for="name">Offre</label>
-                                                    <textarea disabled={isEditing} type="text" value={offre} className={isTyping && !offreValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="offre" rows={2} placeholder="Offre"></textarea>
+                                                    <textarea type="text" value={offre} className={isTyping && !offreValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="offre" rows={2} placeholder="Offre"></textarea>
                                                     {isTyping && !offreValid ? <div className="invalid-feedback">Invalide</div> : null}
                                                 </div>
                                                 <div className="form-group">
                                                     <label for="name">Cible</label>
-                                                    <input disabled={isEditing} type="text" value={cible} onChange={(e) => this.handleInputChange(e)} className={isTyping && !cibleValid ? "form-control is-invalid" : "form-control"} name="cible" placeholder="Cible" required />
+                                                    <input type="text" value={cible} onChange={(e) => this.handleInputChange(e)} className={isTyping && !cibleValid ? "form-control is-invalid" : "form-control"} name="cible" placeholder="Cible" required />
                                                     {isTyping && !cibleValid ? <div className="invalid-feedback">Invalide</div> : null}
                                                 </div>
                                                 <div className="row">
                                                     <div className="col-md-6 col-sm-12">
                                                         <div className="form-group">
                                                             <label for="name">Lieux&Adresse</label>
-                                                            <input disabled={isEditing} type="text" value={place} onChange={(e) => this.handleInputChange(e)} className={isTyping && !placeValid ? "form-control is-invalid" : "form-control"} name="place" placeholder="Lieu & Adresse" required />
+                                                            <input type="text" value={place} onChange={(e) => this.handleInputChange(e)} className={isTyping && !placeValid ? "form-control is-invalid" : "form-control"} name="place" placeholder="Lieu & Adresse" required />
                                                             {isTyping && !placeValid ? <div className="invalid-feedback">Invalide</div> : null}
                                                         </div>
                                                     </div>
                                                     <div className="col-md-6 col-sm-12">
                                                         <div className="form-group">
                                                             <label for="name">Durée du service/ Dates d'ouverture</label>
-                                                            <input disabled={isEditing} type="text" value={duration} onChange={(e) => this.handleInputChange(e)} className= "form-control" name="duration" placeholder="Exple: 2 Mois" required />
+                                                            <input type="text" value={duration} onChange={(e) => this.handleInputChange(e)} className= "form-control" name="duration" placeholder="Exple: 2 Mois" required />
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div className="form-group">
                                                     <label for="tags">Lien Google Map</label>
-                                                    <input disabled={isEditing} type="text" value={mapLink} onChange={(e) => this.handleInputChange(e)} className="form-control" name="mapLink" placeholder="Lien Google Map" />
+                                                    <input type="text" value={mapLink} onChange={(e) => this.handleInputChange(e)} className="form-control" name="mapLink" placeholder="Lien Google Map" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label for="tags">Tags <strong>(Séparer par des virgules ",")</strong></label>
-                                                    <input disabled={isEditing} type="text" value={tags} onChange={(e) => this.handleInputChange(e)} className= "form-control" name="tags" placeholder="Tags: Exple fete, concert, boutique" />
+                                                    <input type="text" value={tags} onChange={(e) => this.handleInputChange(e)} className= "form-control" name="tags" placeholder="Tags: Exple fete, concert, boutique" />
                                                 </div>
                                                 <div className="row align-items-start py-3">
                                                     <div className="col-sm-12 col-md-6 col-lg-6">
@@ -440,13 +446,14 @@ class ServiceModal extends Component {
                                                                     </div>
                                                                 )) : null
                                                             }
+                                                            {this.state.imageSizeError ? <div className="container"><div className="alert alert-danger">{this.state.imageSizeError}</div></div> : null}
                                                         </div>
                                                     </div>
                                                     <div className="col-sm-12 col-md-6 col-lg-6">
                                                         <label for="name">Importer une vidéo</label><br />
-                                                        <Upload isEditing={isEditing} type="video" oldUrl={serviceVideo} setFile={(name, file) => this.setFile(name, file)} name="serviceVideo" label={"Importer depuis votre ordinateur"} />
+                                                        <Upload type="video" oldUrl={serviceVideo} setFile={(name, file) => this.setFile(name, file)} name="serviceVideo" label={"Importer depuis votre ordinateur"} />
                                                         <span>Ou bien insérez le lien youtube.</span>
-                                                        <input type="text" disabled={isEditing} value={youtubeVideoLink} onChange={(e) => this.handleInputChange(e)} className="form-control" name="youtubeVideoLink" placeholder="Lien youtube" />
+                                                        <input type="text" value={youtubeVideoLink} onChange={(e) => this.handleInputChange(e)} className="form-control" name="youtubeVideoLink" placeholder="Lien youtube" />
                                                         {
                                                             youtubeVideoLink&&youtubeVideoLink.length ?
                                                                 <iframe width="100%" title="video"
@@ -462,7 +469,7 @@ class ServiceModal extends Component {
                                                     </div> :
                                                     !this.state.validated ?
                                                         <div className="d-flex justify-content-end">
-                                                            <button disabled={loading} type="submit" onClick={(e) => this.updateService(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer la modification"}</button>
+                                                            <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer la modification"}</button>
                                                         </div> : null
                                                 }
                                             </Hoc>

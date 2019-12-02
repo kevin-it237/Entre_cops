@@ -44,12 +44,13 @@ router.post('/new', upload.any(), (req, res, next) => {
             video = file.path;
         }
     })
-    const filesPath = req.files.map(file => file.path)
+    const images = req.files.filter(el => el.fieldname === "images");
+    const filesPath = images.map(file => file.path)
     const event = new Event({
         _id: mongoose.Types.ObjectId(),
         title: req.body.title,
         owner: JSON.parse(req.body.user),
-        image: req.files[0].path,
+        image: images[0].path,
         images: filesPath,
         video: video,
         place: req.body.place,
@@ -74,6 +75,52 @@ router.post('/new', upload.any(), (req, res, next) => {
     })
     .catch(err => {
         res.status(500).json({ error: err })
+    })
+})
+
+// Update event
+router.patch('/:id', upload.any(), (req, res, next) => {
+    let request = {
+        title: req.body.title,
+        place: req.body.place,
+        youtubeVideoLink: req.body.youtubeVideoLink,
+        description: req.body.description,
+        date: req.body.date,
+        category: req.body.category,
+        otherInfos: req.body.otherInfos,
+        mapLink: req.body.mapLink,
+        tags: req.body.tags,
+    };
+    if(req.files) {
+        // Vérify if there is new images
+        req.files.forEach(file => {
+            if (file.fieldname === 'images') {
+                const images = req.files.filter(el => el.fieldname === "images");
+                const filesPath = images.map(file => file.path)
+                request = { ...request, images: filesPath, image: images[0].path }
+                return;
+            }
+        })
+
+        // Vérify if there is a new video
+        req.files.forEach(file => {
+            if (file.fieldname === 'eventVideo') {
+                request = { ...request, video: file.path }
+                return;
+            }
+        })
+    }
+    Event.updateOne({ _id: req.params.id }, {
+        $set: request
+    })
+    .exec()
+    .then(event => {
+        return res.status(201).json({
+            event: event
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
     })
 })
 
@@ -205,24 +252,6 @@ router.patch('/validate/:id', (req, res, next) => {
         return res.status(500).json({ error: err })
     })
 })
-
-// Update event
-router.patch('/:id', upload.array('images'), (req, res, next) => {
-    const filesPath = req.files.map(file => file.path)
-    Event.updateOne({ _id: req.params.id }, {
-        $set: { images: filesPath, image: req.files[0].path }
-    })
-    .exec()
-    .then(event => {
-        return res.status(201).json({
-            event: event
-        })
-    })
-    .catch(err => {
-        return res.status(500).json({ error: err })
-    })
-})
-
 
 // Make a reservation
 router.patch('/:id/makereservation', (req, res, next) => {

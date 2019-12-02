@@ -8,7 +8,7 @@ export const CouponPreview = (props) => (
                 <img src={logo} alt="" width="100" />
                 <h3 className="mt-2"><strong>COUPON DE REDUCTION</strong></h3>
                 <h3 className="mt-4"><strong>{props.coupon.infos}</strong></h3>
-                <h3><strong className="text-danger" style={{ "color": "#de0027" }}>Vous béneficiez d'une reduction de {props.coupon.montant}</strong></h3>
+                <h3><strong className="text-danger" style={{ "color": "#de0027" }}>Vous béneficiez d'une reduction de {props.coupon.montant} %.</strong></h3>
                 <h3>Pour l'annonce: {props.coupon.title}</h3>
                 <h5 className="mt-4"><i>Offre valable jusqu'au {props.coupon.datelimite} sous présentation au guichet.</i></h5>
             </div>

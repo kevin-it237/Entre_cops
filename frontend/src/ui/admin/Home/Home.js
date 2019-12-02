@@ -119,9 +119,20 @@ class AdminHome extends Component {
         });
     }
 
+    // Preview images
     preview = (e) => {
-        let images = Array.from(e.target.files).map(file => URL.createObjectURL(file));
-        this.setState({ previewImages: images, images: e.target.files });
+        let imageValid = true;
+        this.setState({ publishError: false, previewImages: [], images: null })
+        Array.from(e.target.files).map(file => {
+            if((file.size)/1024 > 1024) {
+                imageValid = false;
+                this.setState({ publishError: 'La taille d\'une image ne doit pas dépasser 1Mo (1 méga octect).'})
+            }
+        });
+        if(imageValid) {
+            let images = Array.from(e.target.files).map(file => URL.createObjectURL(file));
+            this.setState({ previewImages: images, images: e.target.files });
+        }
     }
     
     // Publish in gallery
@@ -319,6 +330,7 @@ class AdminHome extends Component {
                     events={this.state.events}
                     loadingEv={this.state.loadinSingleEv}
                     show={this.state.showEventModal}
+                    addNotification={addNotification}
                     closeModal={this.closeSupplierModal} />
 
                 {/* View/Update a Service */}
@@ -330,6 +342,7 @@ class AdminHome extends Component {
                     services={this.state.services}
                     loadingAn={this.state.loadinSingleAn}
                     show={this.state.showServiceModal}
+                    addNotification={addNotification}
                     closeModal={this.closeSupplierModal} />
 
                 {/* Add a new Supplier Popup */}
@@ -361,7 +374,7 @@ class AdminHome extends Component {
                             <div className="container">
                                 <div className="row justify-content-center">
                                     <div className="col-sm-12">
-                                        {this.state.publishError.length && <div className="alert alert-danger">{this.state.publishError}</div>}
+                                        {this.state.publishError.length && <div className="alert alert-danger" >{this.state.publishError}</div>}
                                         {this.state.succesPublish && <div className="alert alert-success">Publié avec succès</div>}
                                         <div className="upload">
                                             <label className="mt-3 mb-4">Entrez un message pour votre publication</label>

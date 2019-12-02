@@ -18,7 +18,7 @@ class GalleryItem extends Component {
 
         this.state = {
             loading: false, 
-            deleting: false, 
+            deleting: this.props.deleting, 
             user: null, 
             images: [],
             currentImage: 0
@@ -88,7 +88,7 @@ class GalleryItem extends Component {
                         {
                             this.state.user && this.state.user.role === "admin" ?
                                 <div className="ml-auto flex-shrink-0">
-                                    <button onClick={() => this.props.deletePublication(this.props.id)} className="btn btn-danger btn-lg">Supprimer cette publication {this.props.deleting&&<Loader color="white"/>}</button>
+                                    <button onClick={() => this.props.deletePublication(this.props.id)} className="btn btn-danger btn-lg">Supprimer cette publication {this.state.deleting&&<Loader color="white"/>}</button>
                                 </div>
                                 : null
                         }

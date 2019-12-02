@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload} from '@fortawesome/free-solid-svg-icons';
 import EventModal from '../../suppliers/Dashboard/EventModal';
 import Hoc from '../../globalComponent/Hoc';
+import { Notification, addNotification } from '../../globalComponent/Notifications'
 
 class AdminAnnonce extends Component {
 
@@ -97,6 +98,7 @@ class AdminAnnonce extends Component {
         const { error, events, eventsLoading} = this.state;
         return (
             <Hoc>
+                <Notification />
                 <div className="container">
                     <div className="row mt-5">
                         <div className="col-sm-12 d-flex justify-content-between align-items-center mb-5">
@@ -153,6 +155,7 @@ class AdminAnnonce extends Component {
                     events={this.state.events}
                     loadingEv={this.state.loading}
                     show={this.state.showModal}
+                    addNotification={addNotification}
                     closeModal={this.closeModal} />
 
                 {/* New Event/Annonce */}

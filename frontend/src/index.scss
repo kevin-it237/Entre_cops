@@ -38,6 +38,13 @@ body{
   min-height: 100vh !important;
 }
 
+.alert {
+  font-size: 1.5rem !important;
+}
+.btn {
+  font-size: 1.4rem !important;
+}
+
 @media (min-width: 1200px) {
   .container {
       max-width: 1200px !important;
