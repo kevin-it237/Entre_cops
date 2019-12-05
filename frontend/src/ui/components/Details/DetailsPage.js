@@ -465,7 +465,7 @@ class DetailsPage extends Component {
                                                             <div className="d-flex flex-column py-2">
                                                                 <h3 className="pb-3">Coupon  disponible !!</h3>
                                                                 <h3 style={{ color: "#DC3545" }}>{announce.coupons.infos}</h3><br />
-                                                                <h4>Coupon de réduction de <strong>{announce.coupons.montant}</strong>.</h4><br />
+                                                                <h4>Coupon de réduction de <strong>{announce.coupons.montant}%</strong>.</h4><br />
                                                                 <button className="button mt-2 book" onClick={() => this.setState({showCouponModal: true})}>Télécharger le Coupon</button>
                                                             </div> :
                                                             <div className="d-flex flex-column py-2">
@@ -656,7 +656,7 @@ class DetailsPage extends Component {
                                                     <div className="d-flex flex-column py-2">
                                                         <h3 className="pb-3">Coupon  disponible !!</h3>
                                                         <h3 style={{ color: "#DC3545"}}>{announce.coupons.infos}</h3><br/>
-                                                        <h4>Coupon de réduction de <strong>{announce.coupons.montant}</strong>.</h4><br/>
+                                                        <h4>Coupon de réduction de <strong>{announce.coupons.montant}%</strong>.</h4><br/>
                                                         <button className="button mt-2 book" onClick={() => this.setState({ showCouponModal: true })}>Télécharger le Coupon</button>
                                                     </div>:
                                                     <div className="d-flex flex-column py-2">

@@ -52,7 +52,7 @@ class AdminUser extends Component {
     exportUsersListCSV = (data) => {
         let csvContent = "data:text/csv;charset=utf-8,";
         // Format our csv file content
-        csvContent += "id , name, email, tel, places \r\n";
+        csvContent += "id , name, email, tel \r\n";
         data.forEach(function (rowArray, i) {
             let row = (i + 1) + " , " + rowArray.name + " , " + rowArray.email + " , " + rowArray.tel;
             csvContent += row + "\r\n";

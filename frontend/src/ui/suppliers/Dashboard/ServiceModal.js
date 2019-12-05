@@ -434,7 +434,7 @@ class ServiceModal extends Component {
                                                     <div className="col-sm-12 col-md-6 col-lg-6">
                                                         <label for="name">Importer des images</label><br />
                                                         <div className="custom-file">
-                                                            <input disabled={this.state.validated} onChange={(e) => this.preview(e)} type="file" className="custom-file-input" accept="image/*" id="customFile" multiple />
+                                                            <input onChange={(e) => this.preview(e)} type="file" className="custom-file-input" accept="image/*" id="customFile" multiple />
                                                             <label className="custom-file-label" for="customFile">Choisir les images</label>
                                                         </div>
                                                         {isTyping && !serviceImageValid ? <p className="alert alert-danger">Image Requise</p> : null}
@@ -467,10 +467,9 @@ class ServiceModal extends Component {
                                                     <div className="d-flex justify-content-end">
                                                         <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Ajouter l'Evenement"}</button>
                                                     </div> :
-                                                    !this.state.validated ?
-                                                        <div className="d-flex justify-content-end">
-                                                            <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer la modification"}</button>
-                                                        </div> : null
+                                                    <div className="d-flex justify-content-end">
+                                                        <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer la modification"}</button>
+                                                    </div>
                                                 }
                                             </Hoc>
                                     }

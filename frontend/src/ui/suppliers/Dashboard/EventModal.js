@@ -417,7 +417,7 @@ class EventModal extends Component {
                                                 <div className="col-sm-12 col-md-6 col-lg-6">
                                                     <label for="name">Importer des images</label><br />
                                                     <div className="custom-file">
-                                                        <input disabled={this.state.validated} onChange={(e) => this.preview(e)} type="file" className="custom-file-input" accept="image/*" id="customFile" multiple />
+                                                        <input onChange={(e) => this.preview(e)} type="file" className="custom-file-input" accept="image/*" id="customFile" multiple />
                                                         <label className="custom-file-label" for="customFile">Choisir les images</label>
                                                     </div>
                                                     {isTyping && !imageValid ? <p className="alert alert-danger">Image Requise</p> : null}
@@ -434,7 +434,7 @@ class EventModal extends Component {
                                                 </div>
                                                 <div className="col-sm-12 col-md-6 col-lg-6">
                                                     <label for="name">Importer une vidéo</label><br />
-                                                        <Upload type="video" oldUrl={eventVideo} setFile={(name, file) => this.setFile(name, file)} name="eventVideo" label={"Importer depuis votre ordinateur"} />
+                                                    <Upload type="video" oldUrl={eventVideo} setFile={(name, file) => this.setFile(name, file)} name="eventVideo" label={"Importer depuis votre ordinateur"} />
                                                     <span>Ou bien insérez le lien youtube.</span>
                                                     <input type="text" value={youtubeVideoLink} onChange={(e) => this.handleInputChange(e)} className="form-control" name="youtubeVideoLink" placeholder="Lien youtube" />
                                                     {
@@ -450,10 +450,9 @@ class EventModal extends Component {
                                                 <div className="d-flex justify-content-end">
                                                     <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Ajouter l'Evenement"}</button>
                                                 </div>:
-                                                    !this.state.validated ?
-                                                    <div className="d-flex justify-content-end">
-                                                        <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer la modification"}</button>
-                                                    </div>:null
+                                                <div className="d-flex justify-content-end">
+                                                    <button disabled={loading} type="submit" onClick={(e) => this.handleSubmit(e)} className="button fourth mt-4 mb-5">{loading ? <Loader color="white" /> : "Enregistrer la modification"}</button>
+                                                </div>
                                             }
                                         </Hoc>
                                     }
