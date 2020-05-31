@@ -50,7 +50,7 @@ class Services extends Component {
         const {error, services, loading} = this.state;
         return (
             <Hoc>
-                {!this.props.isHomePage&&<Filter />}
+                {/* {this.props.displayFilter&&<Filter />} */}
                 <section className={this.props.isHomePage ? "services bg-white pb-5" : "services pb-5"}>
                     <div className="container pt-3 pb-5">
                         <div className="row pt-5">

@@ -65,7 +65,7 @@ class AdminCoupons extends Component {
         this.setState({
             couponValid: nCoupons.trim().length > 0
                         && infos.trim().length > 0
-                        && datelimite.trim().length > 0
+                        && datelimite != null
                         && montant.trim().length > 0
         })
     }
@@ -113,7 +113,7 @@ class AdminCoupons extends Component {
         }
         this.setState({loading: true});
         const coupon = {
-            nCoupons: nCoupons,
+            nCoupons: parseInt(nCoupons),
             montant: montant,
             datelimite: datelimite,
             title: selectedAnnonce.title,

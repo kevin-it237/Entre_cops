@@ -211,6 +211,20 @@ router.get('/category/:name', (req, res, next) => {
     })
 })
 
+// Get all events with coupon
+router.get('/with/coupon', (req, res, next) => {
+    Event.find({"coupons": { $ne:null }, "coupons.nCoupons":  {$gt: 0 }})
+        .exec()
+        .then(events => {
+            return res.status(200).json({
+                events: events
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
 // Get a single event
 router.get('/:id', (req, res, next) => {
     Event.findById(req.params.id)

@@ -201,6 +201,20 @@ router.get('/category/:name', (req, res, next) => {
     })
 })
 
+// Get all services with coupon
+router.get('/with/coupon', (req, res, next) => {
+    Service.find({"coupons": { $ne:null }, "coupons.nCoupons":  {$gt: 0 }})
+        .exec()
+        .then(services => {
+            return res.status(200).json({
+                services: services
+            })
+        })
+        .catch(err => {
+            return res.status(500).json({ error: err })
+        })
+})
+
 // Get last 4 validated services
 router.get('/4', (req, res, next) => {
     Service.find({validated: true}).sort({ $natural: -1 }).limit(4)

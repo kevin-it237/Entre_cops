@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Header from '../../globalComponent/Header';
-import Hoc from '../../globalComponent/Hoc';
 import Categories from './Categories';
 import Events from '../Events/Events';
 import Services from '../Services/Services';
+import CouponsList from '../CouponsList/CouponsList'
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
 import './Categories.scss';
 
-class Home extends Component {
+class SingleCategoryPage extends Component {
 
     state = {
         loadingServices: true,
@@ -69,22 +69,31 @@ class Home extends Component {
         const category = this.props.match.params.id.split("-").join(" ");
         const isAllAnoucesPage = window.location.pathname.split('/')[1] === "category";
         return (
-            <Hoc>
+            <Fragment>
                 <Header />
                 <Categories selected={category} />
                 {
-                    this.props.match.params.AnounceType === "events" || isAllAnoucesPage ?
-                        loadingEvents ? <div className="d-flex justify-content-center py-5"><Loader /></div> :
-                        <Events showMore={isAllAnoucesPage} category={category}  events={events} isCategoryPage={true} eventType="Evènements" isHomePage={false} /> : null
+                    category === "Coupons" ?
+                    <Fragment>
+                        {/* Display events, services that have coupons */}
+                        <CouponsList />
+                    </Fragment>:
+                    <Fragment>
+                        {
+                            this.props.match.params.AnounceType === "events" || isAllAnoucesPage ?
+                                loadingEvents ? <div className="d-flex justify-content-center py-5"><Loader /></div> :
+                                <Events showMore={isAllAnoucesPage} category={category}  events={events} isCategoryPage={true} displayFilter={true} eventType="Evènements" isHomePage={false} /> : null
+                        }
+                        {
+                            this.props.match.params.AnounceType === "services" || isAllAnoucesPage ?
+                                loadingServices ? <div className="d-flex justify-content-center py-5"><Loader /></div> :
+                                <Services showMore={isAllAnoucesPage} category={category} services={services} isCategoryPage={true} displayFilter={true}  eventType="Services" isHomePage={false} /> : null
+                        }
+                    </Fragment>
                 }
-                {
-                    this.props.match.params.AnounceType === "services" || isAllAnoucesPage ?
-                        loadingServices ? <div className="d-flex justify-content-center py-5"><Loader /></div> :
-                        <Services showMore={isAllAnoucesPage} category={category} services={services} isCategoryPage={true} eventType="Services" isHomePage={false} /> : null
-                }
-            </Hoc>
+            </Fragment>
         );
     }
 }
 
-export default Home;
+export default SingleCategoryPage;
