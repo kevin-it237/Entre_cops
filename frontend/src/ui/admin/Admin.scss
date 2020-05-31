@@ -310,3 +310,11 @@ input[type=text], input[type=email], input[type=password], input[type=tel], inpu
     bottom: 30px;
     font-size: 1.6rem;
 }
+
+.react-datepicker-wrapper {
+    width: 100% !important;
+}
+
+.react-datepicker {
+    font-size: 1.2rem !important;
+}

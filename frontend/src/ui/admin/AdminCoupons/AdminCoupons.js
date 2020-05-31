@@ -4,6 +4,8 @@ import { rootUrl } from '../../../configs/config';
 
 import { Tab, Tabs, Modal, Button } from 'react-bootstrap';
 import Loader from '../../globalComponent/Loader';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Hoc from '../../globalComponent/Hoc';
 import {CouponPreview} from '../../components/CouponSchema/CouponPreview'
 import { Notification, addNotification } from '../../globalComponent/Notifications'
@@ -52,6 +54,10 @@ class AdminCoupons extends Component {
         this.setState({
             [name]: value
         }, this.validate);
+    }
+
+    pickDate = (date) => {
+        this.setState({ datelimite: date })
     }
 
     validate = () => {
@@ -299,8 +305,8 @@ class AdminCoupons extends Component {
                                             <input type="text" onChange={(e) => this.handleInputChange(e)} value={this.state.montant} name="montant" className="form-control" placeholder="Montant / Pourcentage"/>
                                         </div>
                                         <div className="form-group">
-                                            <label for="name">Date limite de validité</label>
-                                            <input type="text" onChange={(e) => this.handleInputChange(e)} value={this.state.datelimite} name="datelimite" className="form-control" placeholder="Date limite de validité"/>
+                                            <label for="name">Date limite de validité</label><br/>
+                                            <DatePicker showTimeSelect placeholder="Date limite de validité" dateFormat="Pp" className="form-control" selected={this.state.datelimite} onChange={date => this.pickDate(date)} />
                                         </div>
                                         <div className="form-group">
                                             <label for="ncoupons">Nombre de coupons</label>

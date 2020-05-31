@@ -462,12 +462,12 @@ class DetailsPage extends Component {
                                                 <div className="other-infos mt-4">
                                                     {announce.coupons ?
                                                         Number(announce.coupons.nCoupons) > 0 ?
-                                                            <div className="d-flex flex-column py-2">
-                                                                <h3 className="pb-3">Coupon  disponible !!</h3>
-                                                                <h3 style={{ color: "#DC3545" }}>{announce.coupons.infos}</h3><br />
-                                                                <h4>Coupon de réduction de <strong>{announce.coupons.montant}%</strong>.</h4><br />
-                                                                <button className="button mt-2 book" onClick={() => this.setState({showCouponModal: true})}>Télécharger le Coupon</button>
-                                                            </div> :
+                                                        <div className="d-flex flex-column alert alert-warning py-4 px-3">
+                                                            <h3 className="pb-3 text-center mt-3">{announce.coupons.nCoupons} Coupons Restants</h3>
+                                                            <h3 className="text-center" style={{ color: "#DC3545"}}>{announce.coupons.infos}</h3><br/>
+                                                            <h4 className="text-center">Réduction de <strong>{announce.coupons.montant}%</strong>.</h4><br/>
+                                                            <button className="button mt-1 mb-3 book" onClick={() => this.setState({ showCouponModal: true })}>Télécharger le Coupon</button>
+                                                        </div> :
                                                             <div className="d-flex flex-column py-2">
                                                                 <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
                                                             </div> :
@@ -514,13 +514,6 @@ class DetailsPage extends Component {
                                                                 <p>Cliquez sur le lien pour agrandir.</p>
                                                             </Hoc> :
                                                             <p>Pas de Localisation disponible</p>}
-                                                        <h3 className="mb-3 mt-5">A propos du promoteur</h3>
-                                                        <div className="d-flex justify-content-between align-items-center owner">
-                                                            <div>
-                                                                <p>Nom: {announce.owner.name}</p>
-                                                                <p>Tel: {announce.owner.tel}</p>
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -653,11 +646,11 @@ class DetailsPage extends Component {
                                             <div className="other-infos mt-4">
                                                 {announce.coupons ?
                                                     Number(announce.coupons.nCoupons) > 0 ?
-                                                    <div className="d-flex flex-column py-2">
-                                                        <h3 className="pb-3">Coupon  disponible !!</h3>
-                                                        <h3 style={{ color: "#DC3545"}}>{announce.coupons.infos}</h3><br/>
-                                                        <h4>Coupon de réduction de <strong>{announce.coupons.montant}%</strong>.</h4><br/>
-                                                        <button className="button mt-2 book" onClick={() => this.setState({ showCouponModal: true })}>Télécharger le Coupon</button>
+                                                    <div className="d-flex flex-column alert alert-warning py-4 px-3">
+                                                        <h3 className="pb-3 text-center mt-3">{announce.coupons.nCoupons} Coupons Restants</h3>
+                                                        <h3 className="text-center" style={{ color: "#DC3545"}}>{announce.coupons.infos}.</h3><br/>
+                                                        <h4 className="text-center">Réduction de <strong>{announce.coupons.montant}%</strong>.</h4><br/>
+                                                        <button className="button mt-1 mb-3 book mx-4" onClick={() => this.setState({ showCouponModal: true })}>Télécharger le Coupon</button>
                                                     </div>:
                                                     <div className="d-flex flex-column py-2">
                                                         <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
@@ -697,14 +690,6 @@ class DetailsPage extends Component {
                                                         <p>Cliquez sur le lien pour agrandir.</p>
                                                     </Hoc>:
                                                     <p>Pas de Localisation disponible</p>}
-                                                    <h3 className="mb-3 mt-5">A propos du promoteur</h3>
-                                                    <div className="d-flex justify-content-between align-items-center owner">
-                                                        <div>
-                                                            <p>Nom: {announce.owner.name}</p>
-                                                            <p>Tel: {announce.owner.tel}</p>
-                                                        </div>
-                                                        <img src={rootUrl+'/'+announce.owner.profileImage} alt="profileimage" width="100" height="100" className="rounded-circle align-self-center" />
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

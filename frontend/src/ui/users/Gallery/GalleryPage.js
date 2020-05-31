@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Header from '../../globalComponent/Header';
+import {Redirect} from 'react-router';
 import { connect } from 'react-redux';
 import GalleryList from './GalleryList';
 import Hoc from '../../globalComponent/Hoc';
@@ -13,7 +14,9 @@ class Gallery extends Component {
     }
 
     render() {
+
         return (
+            !this.props.user ? <Redirect to="/" />:
             <Hoc>
                 <Header />
                 <GalleryList />
