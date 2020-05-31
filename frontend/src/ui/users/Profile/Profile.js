@@ -153,7 +153,7 @@ class Profile extends Component {
                     name: name,
                     email: email,
                     tel: tel&&tel.length < 0 ? "" : tel,
-                    location: location.trim().length < 0 ? "" : location
+                    location: location&&location.trim().length < 0 ? "" : location
                 })
                 .then(res => {
                     this.setState({ loading: false, successModify: true })

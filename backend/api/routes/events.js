@@ -55,6 +55,7 @@ router.post('/new', upload.any(), (req, res, next) => {
         video: video,
         place: req.body.place,
         youtubeVideoLink: req.body.youtubeVideoLink,
+        maxReservation: parseInt(req.body.maxReservation),
         description: req.body.description,
         category: req.body.category,
         otherInfos: req.body.otherInfos,
@@ -87,6 +88,7 @@ router.patch('/:id', upload.any(), (req, res, next) => {
         description: req.body.description,
         date: req.body.date,
         category: req.body.category,
+        maxReservation: parseInt(req.body.maxReservation),
         otherInfos: req.body.otherInfos,
         mapLink: req.body.mapLink,
         tags: req.body.tags,
@@ -255,14 +257,30 @@ router.patch('/validate/:id', (req, res, next) => {
 
 // Make a reservation
 router.patch('/:id/makereservation', (req, res, next) => {
-    Event.updateOne({ _id: req.params.id }, {
-        $push: { reservations: req.body.reservation }
-    })
+    const userReservation = req.body.reservation;
+    // check if user is already registered to this event
+    Event.findOne({ reservations: { $elemMatch: { userId: userReservation.userId } } })
     .exec()
     .then(event => {
-        return res.status(201).json({
-            event: event
-        })
+        if(event) {
+            // The user is already registered to this event
+            return res.status(200).json({
+                event: event
+            })
+        } else {
+            Event.updateOne({ _id: req.params.id }, {
+                $push: { reservations: userReservation }
+            })
+            .exec()
+            .then(event => {
+                return res.status(201).json({
+                    event: event
+                })
+            })
+            .catch(err => {
+                return res.status(500).json({ error: err })
+            })
+        }
     })
     .catch(err => {
         return res.status(500).json({ error: err })

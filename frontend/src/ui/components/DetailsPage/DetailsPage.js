@@ -46,7 +46,7 @@ class DetailsPage extends Component {
         /* When leaving a comment */
         userMessage: '',
         userEmail: this.props.user ? this.props.user.email : '',
-        userName: this.props.user ? this.props.user.name : '',
+        userName: this.props.user&&this.props.user.name ? this.props.user.name : '',
         sendingComment: false,
         messageValid: false,
         commentError: '',
@@ -77,12 +77,27 @@ class DetailsPage extends Component {
         }, this.validate);
     }
 
+    handleCommentInputChange = (e) => {
+        e.preventDefault();
+        const name = e.target.name;
+        const value = e.target.value;
+        this.setState({
+            [name]: value
+        }, this.validateComment);
+    }
+
     validate = () => {
-        const { name, email, tel, numberOfPlaces, userEmail, userName, userMessage } = this.state;
+        const { name, email, tel, numberOfPlaces } = this.state;
         this.setState({ 
             formValid: name.trim().length > 0 && 
                 email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) 
-                && tel.trim().length > 0 && numberOfPlaces.trim().length > 0,
+                && tel.trim().length > 0 && numberOfPlaces.trim().length > 0
+         })
+    }
+
+    validateComment = () => {
+        const { userEmail, userName, userMessage } = this.state;
+        this.setState({
             messageValid: userName.trim().length > 0 && 
                 userEmail.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i) &&
                 userMessage.trim().length > 0
@@ -149,40 +164,54 @@ class DetailsPage extends Component {
     // When make a reservation
     makeReservation = (e) => {
         e.preventDefault();
-        this.setState({reserving: true})
-        const { anounceType, id } = this.props.match.params;
-        let url = "";
-        if(anounceType === "event") {
-            url = "/api/event/" + id + "/makereservation";
-        } else 
-        if (anounceType === "service"){
-            url = "/api/service/" + id + "/makereservation";
-        }
-        try {
-            const reservation = {
-                userId: this.props.user._id,
-                name: this.state.name,
-                email: this.state.email,
-                tel: this.state.tel,
-                numberOfPlaces: this.state.numberOfPlaces,
-                image: rootUrl + '/' + this.state.announce.image,
-                title: this.state.announce.title,
-                link: '/annonce/' + this.props.match.params.anounceType + '/' + this.props.match.params.id,
-                projectId: this.props.match.params.id,
-                date: new Date()
+        // Check if Max reservation have been reached
+        const maxReservation = this.state.announce.maxReservation;
+        const currentReservation = this.state.announce.reservations.length;
+        if(maxReservation > currentReservation) {
+            // There are available place
+            this.setState({reserving: true})
+            const { anounceType, id } = this.props.match.params;
+            let url = "";
+            if(anounceType === "event") {
+                url = "/api/event/" + id + "/makereservation";
+            } else 
+            if (anounceType === "service"){
+                url = "/api/service/" + id + "/makereservation";
             }
-            let announce = { ...this.state.announce}
-            announce.reservations.push(reservation)
-            axios.patch(url, { reservation: reservation })
-            .then(res => {
-                this.setState({ reserving: false, reservationError: '', showReservationModal: false, announce: announce })
-                addNotification("success", "Reservation!", "Reservation effectueé avec succès")
-            })
-            .catch(err => {
+            try {
+                const reservation = {
+                    userId: this.props.user._id,
+                    name: this.state.name,
+                    email: this.state.email,
+                    tel: this.state.tel,
+                    numberOfPlaces: this.state.numberOfPlaces,
+                    image: rootUrl + '/' + this.state.announce.image,
+                    title: this.state.announce.title,
+                    link: '/annonce/' + this.props.match.params.anounceType + '/' + this.props.match.params.id,
+                    projectId: this.props.match.params.id,
+                    date: new Date()
+                }
+                let announce = { ...this.state.announce}
+                announce.reservations.push(reservation)
+                axios.patch(url, { reservation: reservation })
+                .then(res => {
+                    if(res.status === 200) {
+                        this.setState({ reserving: false, reservationError: '', showReservationModal: false, announce: announce })
+                        addNotification("warning", "Reservation!", "Vous ne pouvez plus effectuer de réservations.");
+                    } else {
+                        this.setState({ reserving: false, reservationError: '', showReservationModal: false, announce: announce })
+                        addNotification("success", "Reservation!", "Reservation effectueé avec succès");
+                    }
+                })
+                .catch(err => {
+                    this.setState({ reserving: false, reservationError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+                })
+            } catch (error) {
                 this.setState({ reserving: false, reservationError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
-            })
-        } catch (error) {
-            this.setState({ reserving: false, reservationError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+            }
+        } else {
+            this.setState({ reserving: false, reservationError: '', showReservationModal: false})
+            addNotification("warning", "Reservation!", "Le nombre de réservation limite a été atteint.");
         }
     }
 
@@ -579,17 +608,17 @@ class DetailsPage extends Component {
                                                     <div className="row">
                                                         <div className="col-sm-6">
                                                             <div className="form-group">
-                                                                    <input placeholder="Votre nom" value={userName} className="form-control" name="userName" onChange={(e) => this.handleInputChange(e)} />
+                                                                    <input placeholder="Votre nom" value={userName} className="form-control" name="userName" onChange={(e) => this.handleCommentInputChange(e)} />
                                                             </div>
                                                         </div>
                                                         <div className="col-sm-6">
                                                             <div className="form-group">
-                                                                    <input placeholder="Adresse email" value={userEmail} className="form-control" name="userEmail" onChange={(e) => this.handleInputChange(e)} />
+                                                                    <input placeholder="Adresse email" value={userEmail} className="form-control" name="userEmail" onChange={(e) => this.handleCommentInputChange(e)} />
                                                             </div>
                                                         </div>
                                                         <div className="col-sm-12 my-2">
                                                             <div className="form-group">
-                                                                    <textarea placeholder="Entrer votre commentaire" value={userMessage} name="userMessage" className="form-control" onChange={(e) => this.handleInputChange(e)} id="textmessage" rows="3"></textarea>
+                                                                    <textarea placeholder="Entrer votre commentaire" value={userMessage} name="userMessage" className="form-control" onChange={(e) => this.handleCommentInputChange(e)} id="textmessage" rows="3"></textarea>
                                                             </div>
                                                         </div>
                                                     </div>

@@ -10,6 +10,7 @@ const eventSchema = mongoose.Schema({
     image: { type: String, required: true },
     images: { type: Array, required: true },
     video: { type: String, required: false },
+    maxReservation: { type: Number, required: true },
     tags: { type: String, required: false },
     mapLink: { type: String, required: false },
     reservations: { type: Array, required: false },

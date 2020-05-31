@@ -22,6 +22,7 @@ class ServiceModal extends Component {
         tags: '',
         place: '',
         mapLink: '',
+        maxReservation: '',
         isTyping: false,
         formValid: false,
         previewImages: null,
@@ -34,6 +35,7 @@ class ServiceModal extends Component {
         offreValid: false,
         problemeValid: false,
         serviceImageValid: false,
+        maxReservationValid: false,
         loading: false,
         error: '',
         categories: [],
@@ -60,7 +62,7 @@ class ServiceModal extends Component {
 
     validateField = (fieldName, value) => {
         let { titleValid, problemeValid, cibleValid, serviceImageValid, 
-            categoryValid, offreValid, placeValid } = this.state;
+            categoryValid, offreValid, placeValid, maxReservationValid } = this.state;
 
         switch (fieldName) {
             case 'title':
@@ -84,6 +86,9 @@ class ServiceModal extends Component {
             case 'images':
                 serviceImageValid = value;
                 break;
+            case 'maxReservation':
+                maxReservationValid = value.length > 0;
+                break;
             default:
                 break;
         }
@@ -95,6 +100,7 @@ class ServiceModal extends Component {
             categoryValid: categoryValid,
             offreValid: offreValid,
             placeValid: placeValid,
+            maxReservationValid: maxReservationValid
         }, this.validateForm);
     }
 
@@ -107,7 +113,8 @@ class ServiceModal extends Component {
                 this.state.categoryValid &&
                 this.state.serviceImageValid &&
                 this.state.offreValid &&
-                this.state.placeValid
+                this.state.placeValid&&
+                this.state.maxReservationValid
         });
     }
 
@@ -115,7 +122,7 @@ class ServiceModal extends Component {
         e.preventDefault();
         if (this.state.formValid) {
             const formData = new FormData();
-            const { title, probleme, cible, category, images, serviceVideo, offre, duration, place, youtubeVideoLink, tags, mapLink } = this.state;
+            const { title, probleme, cible, category, images, serviceVideo, offre, duration, place, youtubeVideoLink, tags, mapLink, maxReservation } = this.state;
             formData.append('title', title);
             formData.append('category', category);
             formData.append('cible', cible);
@@ -125,6 +132,7 @@ class ServiceModal extends Component {
             formData.append('duration', duration);
             formData.append('place', place);
             formData.append('tags', tags);
+            formData.append('maxReservation', maxReservation);
             formData.append('mapLink', mapLink);
             formData.append('user', JSON.stringify(this.props.user));
             if(images) {
@@ -172,6 +180,7 @@ class ServiceModal extends Component {
                                 category: '',
                                 probleme: '',
                                 serviceVideo: '',
+                                maxReservation: '',
                                 offre:'',
                                 duration: '',
                                 place: '',
@@ -240,10 +249,12 @@ class ServiceModal extends Component {
                     probleme: service.problem,
                     serviceVideo: service.video&&service.video.length ? rootUrl + "/" + service.video : null,
                     previewImages: images,
+                    maxReservation: service.maxReservation,
                     duration: service.duration,
                     mapLink: service.mapLink,
                     validated: service.validated,
                     youtubeVideoLink: service.youtubeVideoLink,
+                    maxReservationValid: true,
                     tags: service.tags,
                     titleValid: true,
                     problemeValid: true,
@@ -358,7 +369,8 @@ class ServiceModal extends Component {
     render() {
         const { serviceVideo, title, probleme, cible, problemeValid, youtubeVideoLink,
             category, serviceImageValid, titleValid, cibleValid, categoryValid, offre, place, placeValid,
-            error, loading, isTyping, categories, validating, deleting, duration, offreValid, mapLink } = this.state;
+            error, loading, isTyping, categories, validating, deleting, duration, offreValid, mapLink,
+            maxReservation, maxReservationValid } = this.state;
         const { show, closeModal, loadingAn, isEditing, service, tags } = this.props;
         return (
             <Modal show={show} onHide={() => closeModal()} size="lg" >
@@ -406,6 +418,11 @@ class ServiceModal extends Component {
                                                     <label for="name">Cible</label>
                                                     <input type="text" value={cible} onChange={(e) => this.handleInputChange(e)} className={isTyping && !cibleValid ? "form-control is-invalid" : "form-control"} name="cible" placeholder="Cible" required />
                                                     {isTyping && !cibleValid ? <div className="invalid-feedback">Invalide</div> : null}
+                                                </div>
+                                                <div className="form-group">
+                                                    <label for="name">Nombre Maximal des Réservations</label>
+                                                    <input type="number" value={maxReservation} onChange={(e) => this.handleInputChange(e)} className={isTyping && !maxReservationValid ? "form-control is-invalid" : "form-control"} name="maxReservation" placeholder="Nombre Max de réservations" required />
+                                                    {isTyping && !maxReservationValid ? <div className="invalid-feedback">Invalide</div> : null}
                                                 </div>
                                                 <div className="row">
                                                     <div className="col-md-6 col-sm-12">

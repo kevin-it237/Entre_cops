@@ -8,6 +8,7 @@ const serviceSchema = mongoose.Schema({
     offre: { type: String, required: true },
     duration: { type: String, required: false },
     target: { type: String, required: true },
+    maxReservation: { type: Number, required: true },
     place: { type: String, required: true },
     owner: { type: Object, required: true },
     tags: { type: String, required: false },

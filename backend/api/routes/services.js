@@ -57,6 +57,7 @@ router.post('/new', upload.any(), (req, res, next) => {
         video: video,
         problem: req.body.problem,
         category: req.body.category,
+        maxReservation: parseInt(req.body.maxReservation),
         offre: req.body.offre,
         duration: req.body.duration,
         place: req.body.place,
@@ -90,6 +91,7 @@ router.patch('/:id', upload.any(), (req, res, next) => {
         category: req.body.category,
         offre: req.body.offre,
         duration: req.body.duration,
+        maxReservation: parseInt(req.body.maxReservation),
         place: req.body.place,
         tags: req.body.tags,
         mapLink: req.body.mapLink,
@@ -259,14 +261,30 @@ router.patch('/validate/:id', (req, res, next) => {
 
 // Make a reservation
 router.patch('/:id/makereservation', (req, res, next) => {
-    Service.updateOne({ _id: req.params.id }, {
-        $push: { reservations: req.body.reservation }
-    })
+    const userReservation = req.body.reservation;
+    // check if user is already registered to this service
+    Service.findOne({ reservations: { $elemMatch: { userId: userReservation.userId } } })
     .exec()
     .then(service => {
-        return res.status(201).json({
-            service: service
-        })
+        if(service) {
+            // The user is already registered to this service
+            return res.status(200).json({
+                service: service
+            })
+        } else {
+            Service.updateOne({ _id: req.params.id }, {
+                $push: { reservations: userReservation }
+            })
+            .exec()
+            .then(service => {
+                return res.status(201).json({
+                    service: service
+                })
+            })
+            .catch(err => {
+                return res.status(500).json({ error: err })
+            })
+        }
     })
     .catch(err => {
         return res.status(500).json({ error: err })

@@ -22,6 +22,7 @@ class EventModal extends Component {
         youtubeVideoLink: '',
         previewImages: '',
         imageSizeError: false,
+        maxReservation: '',
         otherInfos: '',
         mapLink: '',
         images: null,
@@ -29,6 +30,7 @@ class EventModal extends Component {
         formValid: false,
         titleValid: false,
         categoryValid: false,
+        maxReservationValid: false,
         placeValid: false,
         descriptionValid: false,
         imageValid: false,
@@ -57,7 +59,7 @@ class EventModal extends Component {
     }
 
     validateField = (fieldName, value) => {
-        let { titleValid, descriptionValid, placeValid, imageValid, categoryValid } = this.state;
+        let { titleValid, descriptionValid, placeValid, imageValid, categoryValid, maxReservationValid } = this.state;
 
         switch (fieldName) {
             case 'title':
@@ -75,6 +77,9 @@ class EventModal extends Component {
             case 'images':
                 imageValid = value;
                 break;
+            case 'maxReservation':
+                maxReservationValid = value.length > 0;
+                break;
             default:
                 break;
         }
@@ -83,7 +88,8 @@ class EventModal extends Component {
             descriptionValid: descriptionValid,
             placeValid: placeValid,
             imageValid: imageValid,
-            categoryValid: categoryValid
+            categoryValid: categoryValid,
+            maxReservationValid: maxReservationValid
         }, this.validateForm);
     }
 
@@ -102,7 +108,7 @@ class EventModal extends Component {
         e.preventDefault();
         if (this.state.formValid) {
             const formData = new FormData();
-            const { title, description, place, category, eventVideo, otherInfos, date, images, youtubeVideoLink, tags, mapLink } = this.state;
+            const { title, description, place, category, eventVideo, otherInfos, date, images, youtubeVideoLink, tags, mapLink, maxReservation } = this.state;
             formData.append('title', title);
             formData.append('category', category);
             formData.append('place', place);
@@ -110,6 +116,7 @@ class EventModal extends Component {
             formData.append('description', description);
             formData.append('otherInfos', otherInfos);
             formData.append('date', date);
+            formData.append('maxReservation', maxReservation);
             formData.append('tags', tags);
             formData.append('mapLink', mapLink);
             formData.append('user', JSON.stringify(this.props.user));
@@ -157,6 +164,7 @@ class EventModal extends Component {
                                 place: '',
                                 category: '',
                                 otherInfos: '',
+                                maxReservation: '',
                                 description: '',
                                 mapLink: '',
                                 eventVideo: '',
@@ -228,6 +236,7 @@ class EventModal extends Component {
                     place: event.place,
                     description: event.description,
                     date: new Date(event.date),
+                    maxReservation: event.maxReservation,
                     eventVideo: event.video&&event.video.length ? rootUrl + "/" + event.video : null,
                     previewImages: images,
                     otherInfos: event.otherInfos ? event.otherInfos : null,
@@ -236,6 +245,7 @@ class EventModal extends Component {
                     tags: event.tags,
                     mapLink: event.mapLink,
                     titleValid: true,
+                    maxReservationValid: true,
                     descriptionValid: true,
                     placeValid: true,
                     imageValid: true,
@@ -347,7 +357,8 @@ class EventModal extends Component {
     render() {
         const { eventVideo, title, description, place, otherInfos, date, youtubeVideoLink,
             category, imageValid, titleValid, descriptionValid, placeValid, categoryValid,
-            error, loading, isTyping, categories, validating, deleting, tags, mapLink } = this.state;
+            error, loading, isTyping, categories, validating, deleting, tags, mapLink,
+            maxReservation, maxReservationValid } = this.state;
         const { show, closeModal, loadingEv, isEditing, event} = this.props;
         return (
             <Modal show={show} onHide={() => closeModal()} size="lg" >
@@ -400,6 +411,11 @@ class EventModal extends Component {
                                                         <DatePicker showTimeSelect dateFormat="Pp" className="form-control" selected={date} onChange={date => this.pickDate(date)} />
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label for="name">Nombre Maximal des Réservations</label>
+                                                <input type="number" value={maxReservation} onChange={(e) => this.handleInputChange(e)} className={isTyping && !maxReservationValid ? "form-control is-invalid" : "form-control"} name="maxReservation" placeholder="Nombre Max de réservations" required />
+                                                {isTyping && !maxReservationValid ? <div className="invalid-feedback">Invalide</div> : null}
                                             </div>
                                             <div className="form-group">
                                                 <label for="tags">Lien Google Map</label>
