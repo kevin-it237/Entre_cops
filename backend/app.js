@@ -23,7 +23,7 @@ const authRoutes = require('./api/routes/auth');
 const emailsRoutes = require('./api/routes/emails');
 
 // Connect to db
-mongoose.connect(config.database, { useNewUrlParser: true });
+mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = global.Promise
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));
