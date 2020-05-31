@@ -49,6 +49,7 @@ class DetailsPage extends Component {
         userName: this.props.user&&this.props.user.name ? this.props.user.name : '',
         sendingComment: false,
         messageValid: false,
+        deletingComment: false,
         commentError: '',
 
         /* When making a reservation */
@@ -298,7 +299,7 @@ class DetailsPage extends Component {
             .then(res => {
                 let newAnnounce = {...this.state.announce};
                 newAnnounce.comments.push(comment);
-                this.setState({ sendingComment: false, commentError: '', userEmail: '', userName: '', userMessage: '', announce: newAnnounce })
+                this.setState({ sendingComment: false, commentError: '', userMessage: '', announce: newAnnounce })
             })
             .catch(err => {
                 this.setState({ sendingComment: false, commentError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
@@ -306,6 +307,33 @@ class DetailsPage extends Component {
         } catch (error) {
             this.setState({ sendingComment: false, commentError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
         }
+    }
+
+    // Delete commet [by admin]
+    deleteComment = (commentId) => {
+        this.setState({deletingComment: true})
+            const { anounceType, id } = this.props.match.params;
+            let url = "";
+            if(anounceType === "event") {
+                url = "/api/event/" + id + "/deletecomment";
+            } else 
+            if (anounceType === "service"){
+                url = "/api/service/" + id + "/deletecomment";
+            }
+            axios.patch(url, { commentId: commentId })
+                .then(res => {
+                    // Romove comment on the frontend
+                    let announce = { ...this.state.announce}
+                    let updatedComments = announce.comments.filter(comment => {
+                        return comment._id !== commentId
+                    })
+                    announce.comments = updatedComments;
+                    this.setState({ deletingComment: false, announce: announce })
+                    addNotification("success", "Commentaire!", "Commentaire supprimé avec succès");
+                })
+                .catch(err => {
+                    this.setState({ reserving: false, reservationError: 'Une érreur s\'est produite. Veuillez recharger la page.' })
+                })
     }
 
     getCoupon = () => {
@@ -596,7 +624,7 @@ class DetailsPage extends Component {
                                                     {
                                                         announce.comments&&announce.comments.length ?
                                                         announce.comments.reverse().map((comment, i) => (
-                                                            <ReviewItem key={i} comment={comment} />
+                                                            <ReviewItem key={i} deleteComment={this.deleteComment} deleting={this.state.deletingComment} role={this.props.user.role} comment={comment} />
                                                         ))
                                                         : <h5 className="text-center py-3">Aucun commentaire</h5>
                                                     }

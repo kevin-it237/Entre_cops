@@ -1,5 +1,13 @@
 const mongoose = require('mongoose');
 
+const Comment = mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    message: { type: String, required: true },
+    date: { type: Date, required: false, default: 0 }
+});
+
 const serviceSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     title: { type: String, required: true },
@@ -18,7 +26,7 @@ const serviceSchema = mongoose.Schema({
     video: { type: String, required: false },
     reservations: { type: Array, required: false },
     youtubeVideoLink: { type: String, required: false },
-    comments: { type: Object, required: false },
+    comments: [Comment],
     coupons: { type: Object, required: false },
     rate: { type: Object, required: false },
     validated: { type: Boolean, required: true },

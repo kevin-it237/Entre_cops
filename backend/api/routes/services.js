@@ -293,8 +293,28 @@ router.patch('/:id/makereservation', (req, res, next) => {
 
 // Submit a comment
 router.patch('/:id/comment', (req, res, next) => {
+    let comment = req.body.comment;
+    comment._id = mongoose.Types.ObjectId();
     Service.updateOne({ _id: req.params.id }, {
-        $push: { comments: req.body.comment }
+        $push: { comments: comment }
+    })
+    .exec()
+    .then(service => {
+        return res.status(201).json({
+            service: service
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
+// Delete a comment
+router.patch('/:id/deletecomment', (req, res, next) => {
+    let commentId = req.body.commentId;
+
+    Service.updateOne({ _id: req.params.id }, {
+        $pull: { comments: {_id: commentId} }
     })
     .exec()
     .then(service => {
