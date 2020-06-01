@@ -5,11 +5,12 @@ const mongoose = require('mongoose')
 const Service = require('../models/service');
 const Event = require('../models/event');
 
+let Announce;
+
 // Delete many reservations
 router.patch('/reservations/delete', (req, res, next) => {
     const reservations = req.body.reservations;
     
-    let Announce;
     
     // Loop and delete all reservations
     reservations.forEach((resa, i) => {
@@ -34,6 +35,31 @@ router.patch('/reservations/delete', (req, res, next) => {
             }
         })
     });
+})
+
+// Retrieve coupon
+router.patch('/:id/retrieve/coupon', (req, res, next) => {
+    const announceType = req.body.announceType;
+    const coupon = req.body.coupon;
+
+    if (announceType === "event") {
+        Announce = require('../models/event');
+    } else if(announceType === "service") {
+        Announce = require('../models/service');
+    }
+
+    Announce.updateOne({ _id: req.params.id }, {
+        $set: { coupons: coupon }
+    })
+    .exec()
+    .then(announce => {
+        return res.status(201).json({
+            announce: announce
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
 })
 
 module.exports = router;

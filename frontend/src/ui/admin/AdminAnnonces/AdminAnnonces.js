@@ -163,7 +163,7 @@ class AdminAnnonce extends Component {
                                             events.map((event, i) => (
                                                 <tr key={event._id}>
                                                     <th scope="row">{i + 1}</th>
-                                                    <td>{event.title}</td>
+                                                    <th>{event.title}</th>
                                                     <td>{event.place}</td>
                                                     <td><DateFormat date={event.date} /></td>
                                                     <td>{event.category}</td>

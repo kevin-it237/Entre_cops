@@ -26,6 +26,8 @@ class AdminCoupons extends Component {
         loading: false,
         selectedAnnonce: null,
         eventType: '',
+        announce: null,
+        announceType: '',
         
         event: null,
         events: [],
@@ -44,7 +46,8 @@ class AdminCoupons extends Component {
         removing: false,
 
         showCouponPreviewModal: false,
-        coupon: null
+        coupon: null,
+        showUserListModal: false // User that took coupon
     }
 
     handleInputChange = (e) => {
@@ -164,13 +167,13 @@ class AdminCoupons extends Component {
         axios.patch(url)
         .then(res => {
             const data = type === "event" ? this.state.events : this.state.services;
-            let newEvents = data.filter(event => {
-                if (event._id === id) {
-                    event.coupons = null;
+            let newAnnounces = data.filter(an => {
+                if (an._id === id) {
+                    an.coupons = null;
                 }
-                return event;
+                return an;
             })
-            this.setState({ removing: false, [type + "s"]: newEvents })
+            this.setState({ removing: false, [type + "s"]: newAnnounces })
             addNotification("success", "Coupon!", "Coupon annulé avec succès")
         })
         .catch(err => {
@@ -178,9 +181,41 @@ class AdminCoupons extends Component {
         })
     }
 
+    // Open modal for retrieve coupon
+    openRetrieveCouponModal = (announce, type) => {
+        this.setState({ showUserListModal: true, announce: announce, announceType: type });
+    }
+
+    // Récupération du coupon
+    retrieveCoupon = (userId) => {
+        const {announce, announceType} = this.state;
+        this.setState({ showUserListModal: true, announce: announce, removing: true });
+
+        let url = rootUrl + '/api/announce/' + announce._id + '/retrieve/coupon';
+        let coupon = { ...announce.coupons};
+        coupon.nCoupons = Number(coupon.nCoupons) + 1;
+        let newClients = coupon.clients.filter(client => client.id !== userId)
+        coupon.clients = newClients;
+        axios.patch(url, { coupon: coupon, announceType: announceType })
+        .then(res => {
+            const data = announceType === "event" ? this.state.events : this.state.services;
+            let newEvents = data.filter(event => {
+                if (event._id === announce._id) {
+                    event.coupons = coupon;
+                }
+                return event;
+            })
+            this.setState({ removing: false, [announceType + "s"]: newEvents, showUserListModal: false })
+            addNotification("success", "Coupon!", "Coupon Récupéré avec succès")
+        })
+        .catch(err => {
+            this.setState({ error: 'Une erreur s\'est produite. Veuillez reéssayer.', removing: false })
+        })
+    }
+
 
     render() {
-        const { error, events, eventsLoading, services, servicesLoading, selectedAnnonce, loading } = this.state;
+        const { error, events, eventsLoading, services, servicesLoading, selectedAnnonce, loading, showUserListModal, announce } = this.state;
         return (
             <Hoc>
                 <Notification />
@@ -226,7 +261,8 @@ class AdminCoupons extends Component {
                                                                         {event.coupons ?
                                                                             <Hoc>
                                                                                 <button className="btn btn-dark btn-lg mr-3" onClick={() => this.previewCoupon(event)}>Afficher le coupon</button>
-                                                                                <button className="btn btn-outline-danger btn-lg" onClick={() => this.removeCoupon(event._id, "event")}>Annuler coupons</button>
+                                                                                <button className="btn btn-outline-danger mr-3 btn-lg" onClick={() => this.removeCoupon(event._id, "event")}>Annuler coupons</button>
+                                                                                <button className="btn btn-outline-dark btn-lg" onClick={() => this.openRetrieveCouponModal(event, "event")}>Liste/Récupération</button>
                                                                             </Hoc> :
                                                                             <button className="btn btn-danger btn-lg mr-3" onClick={() => this.openModal(event._id, "event")}>Générer des coupons</button>
                                                                         }
@@ -263,7 +299,8 @@ class AdminCoupons extends Component {
                                                                             service.coupons ?
                                                                                 <Hoc>
                                                                                     <button className="btn btn-dark btn-lg mr-3" onClick={() => this.previewCoupon(service)}>Afficher le coupon</button>
-                                                                                    <button className="btn btn-outline-danger btn-lg" onClick={() => this.removeCoupon(service._id, "service")}>Annuler coupons</button>
+                                                                                    <button className="btn btn-outline-danger mr-3 btn-lg" onClick={() => this.removeCoupon(service._id, "service")}>Annuler coupons</button>
+                                                                                    <button className="btn btn-outline-dark btn-lg" onClick={() => this.openRetrieveCouponModal(service, "service")}>Liste/Récupération</button>
                                                                                 </Hoc> :
                                                                                 <button className="btn btn-danger btn-lg mr-3" onClick={() => this.openModal(service._id, "service")}>Générer des coupons</button>
                                                                         }
@@ -349,6 +386,55 @@ class AdminCoupons extends Component {
                     <Modal.Footer>
                         <div className="py-3">
                             <Button variant="default" onClick={() => this.setState({ showCouponPreviewModal: false })}>
+                                Fermer
+                            </Button>
+                        </div>
+                    </Modal.Footer>
+                </Modal>
+
+                {/* User list that have coupon */}
+                <Modal show={showUserListModal} onHide={() => this.setState({ showUserListModal: false })} size="lg" >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Récupération du coupon</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="container">
+                            <div className="row justify-content-between">
+                                <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3 text-center">
+                                <table className="table table-bordered">
+                                    <thead className="thead-inverse thead-dark">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Nom</th>
+                                            <th>Email</th>
+                                            <th>Tel</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            announce&&announce.coupons&&announce.coupons.clients&&announce.coupons.clients.map((client, i) => (
+                                                <tr key={client.id}>
+                                                    <th scope="row">{i + 1}</th>
+                                                    <td><h4>{client.name}</h4></td>
+                                                    <td><h4>{client.email}</h4></td>
+                                                    <td><h4>{client.tel}</h4></td>
+                                                    <td className="actions">
+                                                        <button disabled={this.state.removing} className="btn btn-danger btn-lg mr-3" 
+                                                        onClick={() => this.retrieveCoupon(client.id)}>{this.state.removing ? <Loader color="white"/>: "Récupérer le coupon"}</button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                                </div>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <div className="py-3">
+                            <Button variant="default" onClick={() => this.setState({ showUserListModal: false })}>
                                 Fermer
                             </Button>
                         </div>

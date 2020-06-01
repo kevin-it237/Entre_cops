@@ -144,7 +144,7 @@ class EventModal extends Component {
                                 loading: false,
                             });
                             this.props.closeModal();
-                            this.props.addNotification("success", "Modification!", "Modification éffectuée avec succès")
+                            this.props.addNotification("success", "Modification!", "Modification éffectuée avec succès");
                         })
                         .catch(err => {
                             this.setState({ error: "Une érreur s'est produite, veuillez reéssayer.", loading: false });
@@ -175,6 +175,7 @@ class EventModal extends Component {
                             if (this.props.refreshEventList) {
                                 this.props.refreshEventList();
                             }
+                            this.props.addNotification("success", "Actualité!", "Actualité crée avec succès. En attente de validation");
                             this.props.closeModal();
                         })
                         .catch(err => {
@@ -481,7 +482,7 @@ class EventModal extends Component {
                     {
                         isEditing ? 
                         <Hoc>
-                            {!this.state.validated ? <Button disabled={validating} variant="dark" className="mr-3" onClick={() => this.validateEvent(event)}>{validating ? <Loader color="white" /> : "Valider le service"}</Button>: null}
+                            {!this.state.validated ? <Button disabled={validating} variant="dark" className="mr-3" onClick={() => this.validateEvent(event)}>{validating ? <Loader color="white" /> : "Valider l'actualité"}</Button>: null}
                             <Button variant="danger" disabled={deleting} className="mr-3" onClick={() => this.deleteEvent(event)}>{deleting ? <Loader color="white" /> : "Supprimer"}</Button>
                         </Hoc>:null
                     }

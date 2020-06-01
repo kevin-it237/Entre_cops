@@ -340,7 +340,7 @@ class DetailsPage extends Component {
         if(this.props.user) {
             if (this.state.announce.coupons && this.state.announce.coupons.clients) {
                 // Verify if i have not already download the this coupons
-                if (this.state.announce.coupons.clients.includes(this.props.user._id)) {
+                if (this.state.announce.coupons.clients.filter(client => client.id === this.props.user._id).length > 0) {
                     addNotification("warning", "Coupon Info!", "Vous avez déja télécharger le coupon.")
                 } else {
                     // Verify if user have already make reservation
@@ -357,11 +357,12 @@ class DetailsPage extends Component {
                         let url = rootUrl + '/api/' + this.props.match.params.anounceType + '/' + this.state.announce._id + '/add/coupon';
                         let coupon = { ...this.state.announce.coupons};
                         coupon.nCoupons = Number(coupon.nCoupons) - 1;
-                        coupon.clients.push(this.props.user._id);
+                        const user = {"id": this.props.user._id, "name": this.props.user.name, "email": this.props.user.email, "tel": this.props.user.tel}
+                        coupon.clients.push(user);
                         axios.patch(url, { coupon: coupon })
                         .then(res => {
                             let newAnnounce = {...this.state.announce}
-                            newAnnounce.coupons.clients.push(this.props.user._id)
+                            newAnnounce.coupons.clients.push(user)
                             this.setState({ downloadingCoupon: false, announce: newAnnounce, showCouponModal: false });
                             addNotification("success", "Coupon!", "Le coupon a été sauvegardé dans votre espace personnel.")
                             // Generate the pdf

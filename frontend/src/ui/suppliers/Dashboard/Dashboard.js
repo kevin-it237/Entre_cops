@@ -4,6 +4,7 @@ import {Redirect} from 'react-router-dom';
 import './Dashboard.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload} from '@fortawesome/free-solid-svg-icons';
+import {Notification, addNotification} from '../../globalComponent/Notifications';
 import axios from 'axios';
 
 import Hoc from '../../globalComponent/Hoc';
@@ -107,6 +108,7 @@ class Dashboard extends Component {
         const {user} = this.props;
         return (
             <Hoc>
+                <Notification />
                 {user&&user.role !== "supplier" ? <Redirect to="/" />:null }
                 <Header />
                 <section className="dashboard mt-5">
@@ -252,7 +254,7 @@ class Dashboard extends Component {
                                                             <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(service.reservations, service.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
                                                             {/* <button className={service.reservations.length ? "btn btn-danger ml-3 mt-3" : "btn btn-danger ml-auto mt-3"}>Supprimer l'évenement</button> */}
                                                         </div>
-                                                        <div className="row pt-3">
+                                                        {/* <div className="row pt-3">
                                                             <div className="col-sm-12">
                                                                 <h3 className="pt-3 mb-5">Commentaires des utilisateurs</h3>
                                                                 {
@@ -263,7 +265,7 @@ class Dashboard extends Component {
                                                                     : <h5 className="text-center py-3">Aucun commentaire</h5>
                                                                 }
                                                             </div>
-                                                        </div>
+                                                        </div> */}
                                                     </div>
                                                 ): 
                                                 <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={`service${i}`} role="tabpanel">
@@ -296,12 +298,14 @@ class Dashboard extends Component {
                 <EventModal 
                     user={this.props.user}
                     show={this.state.showNewEv} 
+                    addNotification={addNotification}
                     closeModal={this.closeEventModal}  />
 
                 {/* New Service */}
                 <ServiceModal 
                     user={this.props.user}
                     show={this.state.showNewAn}
+                    addNotification={addNotification}
                     closeModal={this.closeEventModal} />
             </Hoc>
         );

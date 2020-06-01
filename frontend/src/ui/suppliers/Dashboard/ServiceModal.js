@@ -191,6 +191,7 @@ class ServiceModal extends Component {
                             if (this.props.refreshServiceList) {
                                 this.props.refreshServiceList();
                             }
+                            this.props.addNotification("success", "Service!", "Service crée avec succès. En attente de validation");
                             this.props.closeModal();
                         })
                         .catch(err => {
