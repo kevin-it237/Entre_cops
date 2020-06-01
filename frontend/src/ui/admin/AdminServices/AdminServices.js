@@ -19,7 +19,9 @@ class AdminService extends Component {
         error: '',
         service: null,
         loading: false,
-        showCreationModal: false
+        showCreationModal: false,
+        selectedReservations: [],
+        deleting: false
     }
 
     componentDidMount() {
@@ -70,6 +72,20 @@ class AdminService extends Component {
         })
     }
 
+    // Handle checkbox
+    handleInputChange = (e) => {
+        const value = e.target.value;
+        const {selectedReservations} = this.state;
+        // When uncheck
+        if (selectedReservations.filter(res => JSON.stringify(res) === value).length > 0) {
+            let reservations = selectedReservations.filter(res => (JSON.stringify(res) !== value))
+            this.setState({selectedReservations: reservations});
+        // When checked
+        }else {
+            this.setState(state => ({selectedReservations: [...state.selectedReservations, JSON.parse(value)]}));
+        }
+    }
+
     closeModal = () => {
         this.setState({ showModal: false, showCreationModal: false });
     }
@@ -92,8 +108,28 @@ class AdminService extends Component {
         link.click();
     }
 
+    deleteReservation = () => { 
+        this.setState({deleting: true});
+        axios.patch('/api/announce/reservations/delete', {reservations: this.state.selectedReservations})
+        .then(res => {
+            // Update view
+            let newReservations = []
+            this.state.service.reservations.forEach(resa => {
+                this.state.selectedReservations.forEach(reservation => {
+                    if(JSON.stringify(resa) !== JSON.stringify(reservation)) {
+                        newReservations.push(resa);
+                    }
+                });
+            });
+            this.setState({deleting: false, service: {...this.state.service, "reservations": newReservations }, selectedReservations: [] });
+        })
+        .catch(err => {
+            this.setState({ error: "Une érreur s'est produite. Veuillez recharger", loading: false })
+        })
+    }
+
     render() {
-        const { error, services, servicesLoading } = this.state;
+        const { error, services, servicesLoading, deleting } = this.state;
         return (
             <Hoc>
                 <Notification />
@@ -182,6 +218,12 @@ class AdminService extends Component {
                                                             {this.state.service.reservations.map((reservation, i) => (
                                                                 <tr key={i}>
                                                                     <th scope="row">{i + 1}</th>
+                                                                    <td>
+                                                                    <div className="form-check">
+                                                                        <input onChange={(e) => this.handleInputChange(e)} type="checkbox" value={JSON.stringify(reservation)} className="form-check-input" />
+                                                                        <label className="form-check-label" for="exampleCheck1"></label>
+                                                                    </div>
+                                                                    </td>
                                                                     <td>{reservation.name}</td>
                                                                     <td>{reservation.email}</td>
                                                                     <td>{reservation.tel}</td>
@@ -191,6 +233,8 @@ class AdminService extends Component {
                                                         </tbody>
                                                     </table>
                                                     <div className="deleteWrapper d-flex mt-auto">
+                                                        {this.state.selectedReservations.length > 0 &&
+                                                        <button disabled={deleting} onClick={() => this.deleteReservation()} className="btn btn-danger btn-sm">{deleting ? <Loader color="white"/>: "Supprimer"}</button>}
                                                         <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(this.state.service.reservations, this.state.service.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
                                                     </div>
                                                </Hoc>

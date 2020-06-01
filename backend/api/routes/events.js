@@ -272,8 +272,9 @@ router.patch('/validate/:id', (req, res, next) => {
 // Make a reservation
 router.patch('/:id/makereservation', (req, res, next) => {
     const userReservation = req.body.reservation;
+    const id = req.params.id;
     // check if user is already registered to this event
-    Event.findOne({ reservations: { $elemMatch: { userId: userReservation.userId } } })
+    Event.findOne({ _id: id, reservations: { $elemMatch: { userId: userReservation.userId } } })
     .exec()
     .then(event => {
         if(event) {

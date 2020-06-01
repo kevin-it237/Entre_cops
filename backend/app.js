@@ -17,6 +17,7 @@ const categoryRoutes = require('./api/routes/categories');
 const supplierRoutes = require('./api/routes/suppliers');
 const eventRoutes = require('./api/routes/events');
 const serviceRoutes = require('./api/routes/services');
+const announceRoutes = require('./api/routes/announces'); // Routes for services and events
 const galleryRoutes = require('./api/routes/galleries');
 const bannersRoutes = require('./api/routes/banners');
 const authRoutes = require('./api/routes/auth');
@@ -68,6 +69,7 @@ app.use('/api/category', categoryRoutes);
 app.use('/api/supplier', supplierRoutes);
 app.use('/api/event', eventRoutes);
 app.use('/api/service', serviceRoutes);
+app.use('/api/announce', announceRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/banner', bannersRoutes);
 app.use('/api/auth', authRoutes);
