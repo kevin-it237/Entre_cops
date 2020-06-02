@@ -6,10 +6,10 @@ import { logout } from '../../store/actions';
 import { faSearch, faBookmark } from '@fortawesome/free-solid-svg-icons';
 import './Header.scss';
 import logo from '../../assets/images/logo.png';
-import socketIOClient from 'socket.io-client';
+// import socketIOClient from 'socket.io-client';
 
 import Notifications from '../users/Notifications/Notifications';
-import { rootUrl } from '../../configs/config';
+// import { rootUrl } from '../../configs/config';
 import {autoSignIn} from '../../store/actions';
 import SearchResult from '../components/SearchResult/SearchResult'
 import Hoc from './Hoc';

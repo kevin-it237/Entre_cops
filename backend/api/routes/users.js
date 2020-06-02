@@ -463,6 +463,25 @@ router.get('/', (req, res, next) => {
     })
 })
 
+// Sanction user [By Admin]
+router.patch('/:id/sanction/set', (req, res, next) => {
+    const sanctionDate = req.body.sanctionDate;
+    const userId = req.params.id;
+
+    User.updateOne({ _id: userId }, {
+        $set: { sanctionDateLimit: sanctionDate }
+    })
+    .exec()
+    .then(user => {
+        return res.status(201).json({
+            user: user
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({ error: err })
+    })
+})
+
 // count all users
 router.get('/count/all', (req, res, next) => {
     User.find({ role: "user" }).count()

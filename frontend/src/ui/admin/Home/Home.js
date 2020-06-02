@@ -123,7 +123,7 @@ class AdminHome extends Component {
     preview = (e) => {
         let imageValid = true;
         this.setState({ publishError: false, previewImages: [], images: null })
-        Array.from(e.target.files).map(file => {
+        Array.from(e.target.files).forEach(file => {
             if((file.size)/1024 > 1024) {
                 imageValid = false;
                 this.setState({ publishError: 'La taille d\'une image ne doit pas dépasser 1Mo (1 méga octect).'})

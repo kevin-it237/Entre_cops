@@ -196,6 +196,7 @@ class AdminService extends Component {
                 <ServiceModal
                     user={this.props.user}
                     show={this.state.showCreationModal}
+                    addNotification={addNotification}
                     closeModal={this.closeModal}
                     refreshServiceList={this.refreshServiceList} />
 

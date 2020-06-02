@@ -211,7 +211,7 @@ class ServiceModal extends Component {
     preview = (e) => {
         let imageValid = true;
         this.setState({ imageSizeError: false, previewImages: [], images: null, serviceImageValid: false })
-        Array.from(e.target.files).map(file => {
+        Array.from(e.target.files).forEach(file => {
             if ((file.size) / 1024 > 1024) {
                 imageValid = false;
                 this.setState({ imageSizeError: 'La taille d\'une image ne doit pas dépasser 1Mo.' })

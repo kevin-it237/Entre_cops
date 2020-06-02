@@ -199,6 +199,7 @@ class AdminAnnonce extends Component {
                     user={this.props.user}
                     show={this.state.showCreationModal}
                     closeModal={this.closeModal}
+                    addNotification={addNotification}
                     refreshEventList={this.refreshEventList} />
 
                 {/* reservation list */}

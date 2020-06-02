@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import {DateFormat} from '../../utils/DateFormat'
+import {DateFormat} from '../../utils/DateFormat';
+import DatePicker from "react-datepicker";
+import { Notification, addNotification } from '../../globalComponent/Notifications'
+import "react-datepicker/dist/react-datepicker.css";
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import Loader from '../../globalComponent/Loader';
@@ -12,8 +15,11 @@ class AdminUser extends Component {
         showModal: false,
         users: [],
         error: '',
+        selectedUser: null,
         loading: true,
-        deleting: false
+        deleting: false,
+        sanctioning: false,
+        date: new Date()
     }
 
     componentWillMount() {
@@ -49,6 +55,30 @@ class AdminUser extends Component {
         })
     }
 
+    pickDate = (date) => {
+        this.setState({ date: date })
+    }
+
+    openSanctionUserModal = (user) => {
+        this.setState({selectedUser: user, showModal: true })
+    }
+
+    sanctionUser = () => {
+        const { selectedUser } = this.state;
+        if(this.state.date) {
+            this.setState({ sanctioning: true, error: '', showModal: true })
+            axios.patch('api/user/' + selectedUser._id + '/sanction/set', {sanctionDate: this.state.date})
+            .then(res => {
+                this.setState({ sanctioning: false, error: '', showModal: false, selectedUser: null });
+                addNotification("success", "Sanction!", "Sanction ajoutée avec succès")
+            })
+            .catch(err => {
+                addNotification("danger", "Sanction!", "Une érreur s'est produite. Veuillez reéssayer")
+                this.setState({ error: "Une érreur s'est produite. Veuillez reéssayer.", sanctioning: false })
+            })
+        }
+    }
+
     exportUsersListCSV = (data) => {
         let csvContent = "data:text/csv;charset=utf-8,";
         // Format our csv file content
@@ -67,9 +97,10 @@ class AdminUser extends Component {
     }
 
     render() {
-        const {error, loading, deleting, users} = this.state;
+        const {error, loading, deleting, users, sanctioning} = this.state;
         return (
             <Hoc>
+                <Notification />
                 <div className="container">
                     <div className="row mt-5">
                         <div className="col-sm-12">
@@ -100,6 +131,7 @@ class AdminUser extends Component {
                                                     <td className="date"><DateFormat date={user.date} /></td>
                                                     <td className="actions">
                                                         <button onClick={() => this.deleteUser(user._id)} className="btn btn-danger btn-md ml-3">{deleting ? <Loader />:"Supprimer"}</button>
+                                                        <button onClick={() => this.openSanctionUserModal(user)} className="btn btn-dark btn-md ml-3">Sanctionner</button>
                                                     </td>
                                                 </tr>
                                             ))
@@ -112,16 +144,21 @@ class AdminUser extends Component {
                     </div>
                 </div>
 
-                 {/* Add a new Supplier Popup */}
-                 <Modal show={this.state.showModal} size="lg" onHide={() => this.setState({showModal: !this.state.showModal})} >
+                 {/* Sanction user Modal */}
+                 <Modal show={this.state.showModal} size="md" onHide={() => this.setState({showModal: !this.state.showModal})} >
                     <Modal.Header closeButton>
-                    <Modal.Title>Détails</Modal.Title>
+                    <Modal.Title>Définition de la sanction</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="container">
                             <div className="row">
-                                <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3">
-                                    
+                                <div className="col-sm-12 pl-4 pr-4 mt-4 mb-3 d-flex flex-column justify-content-end">
+                                    <h4>Choisissez la nouvelle date à laquelle cet utilisateur sera de nouveau autorisé à télécharger un coupon.</h4>
+                                    <h4 className="py-3">Utilisateur: {this.state.selectedUser&&this.state.selectedUser.name}</h4>
+                                    <div className="form-group">
+                                            <DatePicker showTimeSelect placeholder="Date limite de validité" dateFormat="Pp" className="form-control" selected={this.state.date} onChange={date => this.pickDate(date)} />
+                                        </div>
+                                    <button onClick={() => this.sanctionUser()} className="btn btn-dark btn-md">{sanctioning ? <Loader />:"Sanctionner"}</button>
                                 </div>
                             </div>
                         </div>

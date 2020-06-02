@@ -3,7 +3,7 @@ import ServiceItem from './ServicesItem';
 import Loader from '../../globalComponent/Loader';
 import axios from 'axios';
 import './Services.scss';
-import Filter from '../Filter/Filter'
+// import Filter from '../Filter/Filter'
 import Hoc from '../../globalComponent/Hoc'
 
 class Services extends Component {

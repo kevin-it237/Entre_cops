@@ -55,9 +55,9 @@ class Caroussel extends Component {
                                             <img className="d-block w-100" src={image.link} alt="First slide" />
                                             
                                             <div id="carousel-caption" className="carousel-caption d-none d-sm-block text-bottom mb-5">
-                                                <h1 className="">SOYEZ A L'ACTU DE TOUS LES EVENEMENTS ET SERVICES</h1>
+                                                <h1 className="">SOYEZ AU COURANT DE TOUS LES SERVICES ET ACTUALITES</h1>
                                                 <p className="mt-3">Réservez directement vos places.</p>
-                                                <a href="#events" className="btn btn-danger btn-lg mt-3">Parcourir les Evènements</a>
+                                                <a href="#events" className="btn btn-danger btn-lg mt-3">Parcourir les Annonces</a>
                                             </div>
                                         </a>
                                     )

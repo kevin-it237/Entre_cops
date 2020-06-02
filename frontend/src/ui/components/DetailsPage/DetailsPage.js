@@ -336,56 +336,64 @@ class DetailsPage extends Component {
                 })
     }
 
+    // Téléchargement du coupon
     getCoupon = () => {
         if(this.props.user) {
-            if (this.state.announce.coupons && this.state.announce.coupons.clients) {
-                // Verify if i have not already download the this coupons
-                if (this.state.announce.coupons.clients.filter(client => client.id === this.props.user._id).length > 0) {
-                    addNotification("warning", "Coupon Info!", "Vous avez déja télécharger le coupon.")
-                } else {
-                    // Verify if user have already make reservation
-                    let haveMakedReservation = false;
-                    this.state.announce.reservations.forEach(res => {
-                        if (res.userId === this.props.user._id) {
-                            haveMakedReservation = true;
-                            return;
-                        }
-                    })
-                    if(haveMakedReservation) {
-                        this.setState({downloadingCoupon: true})
-                        // update the the remainings coupons
-                        let url = rootUrl + '/api/' + this.props.match.params.anounceType + '/' + this.state.announce._id + '/add/coupon';
-                        let coupon = { ...this.state.announce.coupons};
-                        coupon.nCoupons = Number(coupon.nCoupons) - 1;
-                        const user = {"id": this.props.user._id, "name": this.props.user.name, "email": this.props.user.email, "tel": this.props.user.tel}
-                        coupon.clients.push(user);
-                        axios.patch(url, { coupon: coupon })
-                        .then(res => {
-                            let newAnnounce = {...this.state.announce}
-                            newAnnounce.coupons.clients.push(user)
-                            this.setState({ downloadingCoupon: false, announce: newAnnounce, showCouponModal: false });
-                            addNotification("success", "Coupon!", "Le coupon a été sauvegardé dans votre espace personnel.")
-                            // Generate the pdf
-                            /* image2base64(logo) // you can also to use url
-                                .then(response => {
-                                    const {infos, montant, datelimite} = this.state.announce.coupons;
-                                    let docDefinition = counponToPrint(response, infos, montant, datelimite, 
-                                        this.state.announce.title, window.location.href, this.state.announce.title.split(' ').join('-'))
-                                    const pdfDocGenerator = pdfMake.createPdf(docDefinition).open();
-                                    this.setState({ downloadingCoupon: false, announce: newAnnounce, showCouponModal: false });
-                                    pdfDocGenerator.getDataUrl((dataUrl) => {
-                                        const iframe = document.createElement('iframe');
-                                        iframe.src = dataUrl;
-                                        // document.getElementById("couponpreview").appendChild(iframe);
-                                    });
-                                })
-                                .catch((error) => console.log(error)) */
-                        })
-                        .catch(err => {
-                            this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
-                        })
+            const sanctionDateLimit = this.props.user.sanctionDateLimit;
+            const haveAccessToCoupon = !sanctionDateLimit || (new Date(sanctionDateLimit).getTime() - new Date().getTime()) < 0;
+            // Verify if user is not sanctionned to access coupon
+            if(!haveAccessToCoupon) {
+                addNotification("danger", "Coupon Info!", "Vous n'avez pas accès aux coupons. Nouvelle accès jusqu'à la date du: "+sanctionDateLimit);
+            } else {
+                if (this.state.announce.coupons && this.state.announce.coupons.clients) {
+                    // Verify if i have not already download the this coupons
+                    if (this.state.announce.coupons.clients.filter(client => client.id === this.props.user._id).length > 0) {
+                        addNotification("warning", "Coupon Info!", "Vous avez déja télécharger le coupon.")
                     } else {
-                        addNotification("warning", "Coupon Info!", "Veuillez effectuer une reservation avant de télécharger le coupon.")
+                        // Verify if user have already make reservation
+                        let haveMakedReservation = false;
+                        this.state.announce.reservations.forEach(res => {
+                            if (res.userId === this.props.user._id) {
+                                haveMakedReservation = true;
+                                return;
+                            }
+                        })
+                        if(haveMakedReservation) {
+                            this.setState({downloadingCoupon: true})
+                            // update the the remainings coupons
+                            let url = rootUrl + '/api/' + this.props.match.params.anounceType + '/' + this.state.announce._id + '/add/coupon';
+                            let coupon = { ...this.state.announce.coupons};
+                            coupon.nCoupons = Number(coupon.nCoupons) - 1;
+                            const user = {"id": this.props.user._id, "name": this.props.user.name, "email": this.props.user.email, "tel": this.props.user.tel}
+                            coupon.clients.push(user);
+                            axios.patch(url, { coupon: coupon })
+                            .then(res => {
+                                let newAnnounce = {...this.state.announce}
+                                newAnnounce.coupons.clients.push(user)
+                                this.setState({ downloadingCoupon: false, announce: newAnnounce, showCouponModal: false });
+                                addNotification("success", "Coupon!", "Le coupon a été sauvegardé dans votre espace personnel.")
+                                // Generate the pdf
+                                /* image2base64(logo) // you can also to use url
+                                    .then(response => {
+                                        const {infos, montant, datelimite} = this.state.announce.coupons;
+                                        let docDefinition = counponToPrint(response, infos, montant, datelimite, 
+                                            this.state.announce.title, window.location.href, this.state.announce.title.split(' ').join('-'))
+                                        const pdfDocGenerator = pdfMake.createPdf(docDefinition).open();
+                                        this.setState({ downloadingCoupon: false, announce: newAnnounce, showCouponModal: false });
+                                        pdfDocGenerator.getDataUrl((dataUrl) => {
+                                            const iframe = document.createElement('iframe');
+                                            iframe.src = dataUrl;
+                                            // document.getElementById("couponpreview").appendChild(iframe);
+                                        });
+                                    })
+                                    .catch((error) => console.log(error)) */
+                            })
+                            .catch(err => {
+                                this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
+                            })
+                        } else {
+                            addNotification("warning", "Coupon Info!", "Veuillez effectuer une reservation avant de télécharger le coupon.")
+                        }
                     }
                 }
             }
@@ -527,10 +535,10 @@ class DetailsPage extends Component {
                                                             <button className="button mt-1 mb-3 book" onClick={() => this.setState({ showCouponModal: true })}>Télécharger le Coupon</button>
                                                         </div> :
                                                             <div className="d-flex flex-column py-2">
-                                                                <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
+                                                                <h3 className="text-center">Pas de Coupons de réductions disponible pour cette annonce.</h3>
                                                             </div> :
                                                         <div className="d-flex flex-column py-2">
-                                                            <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
+                                                            <h3 className="text-center">Pas de Coupons de réductions disponible pour cette annonce.</h3>
                                                         </div>
                                                     }
                                                 </div>
@@ -711,10 +719,10 @@ class DetailsPage extends Component {
                                                         <button className="button mt-1 mb-3 book mx-4" onClick={() => this.setState({ showCouponModal: true })}>Télécharger le Coupon</button>
                                                     </div>:
                                                     <div className="d-flex flex-column py-2">
-                                                        <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
+                                                        <h3 className="text-center">Pas de Coupons de réductions disponible pour cette annonce.</h3>
                                                     </div>:
                                                     <div className="d-flex flex-column py-2">
-                                                        <h3>Pas de Coupons de réductions disponible pour cette annonce.</h3>
+                                                        <h3 className="text-center">Pas de Coupons de réductions disponible pour cette annonce.</h3>
                                                     </div>
                                                 }
                                             </div>
