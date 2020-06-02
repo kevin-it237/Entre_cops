@@ -203,7 +203,7 @@ router.get('/category/:name', (req, res, next) => {
 
 // Get all services with coupon
 router.get('/with/coupon', (req, res, next) => {
-    Service.find({"coupons": { $ne:null }, "coupons.nCoupons":  {$gt: 0 }})
+    Service.find({"coupons": { $ne:null }, "coupons.nCoupons":  {$gt: 0 }, validated: true})
         .exec()
         .then(services => {
             return res.status(200).json({
@@ -417,15 +417,15 @@ router.post('/filter', (req, res, next) => {
     const date2 = req.body.date2
     // Category, town, date1, tag, date2
     if (category.length&& town.length&& date1 && date2 && tag.length) {
-        query = { $and: [{ category: category, place: townRegex, validated: true, tags: tagRegex }, { date: { $gt: date1 } }, { date: { $lt: date2 } }] }
+        query = { $and: [{ category: category, place: townRegex, validated: true, tags: tagRegex }, { createdAt: { $gt: date1 } }, { createdAt: { $lt: date2 } }] }
     }
     // Category, town, date1, date2
     if (category.length&& town.length&& date1 && date2 && !tag.length) {
-        query = { $and: [{ category: category, place: townRegex, validated: true }, { date: { $gt: date1 } }, { date: { $lt: date2 } }] }
+        query = { $and: [{ category: category, place: townRegex, validated: true }, { createdAt: { $gt: date1 } }, { createdAt: { $lt: date2 } }] }
     }
     // Category, town, date1
     if (category.length && town.length && date1 && !date2&& !tag.length) {
-        query = { category: category, place: townRegex, date: { $gt: date1 }, validated: true }
+        query = { category: category, place: townRegex, createdAt: { $gt: date1 }, validated: true }
     }
     // Category, town
     if (category.length && town.length && !date1 && !date2&& !tag.length) {
@@ -441,15 +441,15 @@ router.post('/filter', (req, res, next) => {
     }
     // date1
     if (!category.length && !town.length && date1 && !date2&& !tag.length) {
-        query = { date: { $gt: date1 }, validated: true }
+        query = { createdAt: { $gt: date1 }, validated: true }
     }
     // Category, date1
     if (category.length && !town.length && date1 && !date2&& !tag.length) {
-        query = { category: category, date: { $gt: date1 }, validated: true }
+        query = { category: category, createdAt: { $gt: date1 }, validated: true }
     }
     // town, date1
     if (!category.length && town.length && date1 && !date2&& !tag.length) {
-        query = { place: townRegex, date: { $gt: date1 }, validated: true }
+        query = { place: townRegex, createdAt: { $gt: date1 }, validated: true }
     }
     // Category,town, date2
     if (category.length && town.length && !date1 && date2&& !tag.length) {
@@ -457,11 +457,11 @@ router.post('/filter', (req, res, next) => {
     }
     // date1, date2
     if (!category.length && !town.length && date1 && date2&& !tag.length) {
-        query = { $and: [{ date: { $gt: date1 } }, { date: { $lt: date2 }}, {validated: true}] }
+        query = { $and: [{ createdAt: { $gt: date1 } }, { createdAt: { $lt: date2 }}, {validated: true}] }
     }
     // date1, date2, tag
     if (!category.length && !town.length && date1 && date2&& tag.length) {
-        query = { $and: [{ date: { $gt: date1 } }, { date: { $lt: date2 }}, {validated: true, tag: tagRegex}] }
+        query = { $and: [{ createdAt: { $gt: date1 } }, { createdAt: { $lt: date2 }}, {validated: true, tag: tagRegex}] }
     }
     // Category,town,tag
     if (category.length && town.length && !date1 && !date2&& tag.length) {
@@ -469,7 +469,7 @@ router.post('/filter', (req, res, next) => {
     }
     // Category,town,tag,date1
     if (category.length && town.length && date1 && !date2&& tag.length) {
-        query = { category: category, town: townRegex, date: { $gt: date1 }, tags: tagRegex, validated: true }
+        query = { category: category, town: townRegex, createdAt: { $gt: date1 }, tags: tagRegex, validated: true }
     }
     // Category,tag
     if (category.length && !town.length && !date1 && !date2&& tag.length) {
@@ -481,7 +481,7 @@ router.post('/filter', (req, res, next) => {
     }
     // date1, tag
     if (!category.length && !town.length && date1 && !date2&& tag.length) {
-        query = { tags: tagRegex, date: { $gt: date1 }, validated: true }
+        query = { tags: tagRegex, createdAt: { $gt: date1 }, validated: true }
     }
     // tag
     if (!category.length&& !town.length&& !date1 && !date2&& tag.length) {

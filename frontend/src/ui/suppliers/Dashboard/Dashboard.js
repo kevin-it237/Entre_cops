@@ -152,6 +152,7 @@ class Dashboard extends Component {
                             <div className="col-sm-12 col-md-12 col-lg-8 mt-2 d-flex flex-column justify-content-between">
                                 {error && error.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
                                 <div className="tab-content" id="nav-tabContent">
+                                    <h3 className="pt-0 mb-3">Liste des réservations</h3>
                                     {
                                         eventsLoading ? null :
                                             events && events.length ?
@@ -184,7 +185,7 @@ class Dashboard extends Component {
                                                                     event.comments.reverse().map((comment, i) => (
                                                                         <ReviewItem key={i} comment={comment} />
                                                                     ))
-                                                                    : <h5 className="text-center py-3">Aucun commentaire</h5>
+                                                                    : <h5 className="py-3">Aucun commentaire</h5>
                                                                 }
                                                             </div>
                                                         </div>
@@ -230,6 +231,7 @@ class Dashboard extends Component {
                             <div className="col-sm-12 col-md-12 col-lg-8 mt-2 d-flex flex-column justify-content-between">
                                 {error2 && error2.length ? <div className="alert alert-danger" style={{ fontSize: "1.3rem" }}>{error}</div> : null}
                                 <div className="tab-content" id="nav-tabContent">
+                                <h3 className="pt-0 mb-3">Liste des réservations</h3>
                                 {
                                     servicesLoading ? null :
                                         services && services.length ?
@@ -254,7 +256,7 @@ class Dashboard extends Component {
                                                             <button className="btn btn-dark ml-auto mt-3" onClick={() => this.generateCSV(service.reservations, service.title)}>Télécharger la liste&nbsp;<FontAwesomeIcon icon={faDownload} size={"1x"} /></button>
                                                             {/* <button className={service.reservations.length ? "btn btn-danger ml-3 mt-3" : "btn btn-danger ml-auto mt-3"}>Supprimer l'évenement</button> */}
                                                         </div>
-                                                        {/* <div className="row pt-3">
+                                                        <div className="row pt-3">
                                                             <div className="col-sm-12">
                                                                 <h3 className="pt-3 mb-5">Commentaires des utilisateurs</h3>
                                                                 {
@@ -262,10 +264,10 @@ class Dashboard extends Component {
                                                                     service.comments.reverse().map((comment, i) => (
                                                                         <ReviewItem key={i} comment={comment} />
                                                                     ))
-                                                                    : <h5 className="text-center py-3">Aucun commentaire</h5>
+                                                                    : <h5 className="py-3">Aucun commentaire</h5>
                                                                 }
                                                             </div>
-                                                        </div> */}
+                                                        </div>
                                                     </div>
                                                 ): 
                                                 <div key={i} className={i===0 ?"tab-pane fade show active":"tab-pane fade show"} id={`service${i}`} role="tabpanel">

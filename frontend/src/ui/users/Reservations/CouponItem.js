@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const CouponItem = (props) => (
-    <a onClick={() => this.displayCoupon(props.coupon) } href={props.coupon.link} className={props.coupon.visited ? "noti-link d-flex" : "noti-link d-flex notvisited"}>
+    <a onClick={() => props.displayCoupon(props.coupon) } href={props.coupon.link} className={props.coupon.visited ? "noti-link d-flex" : "noti-link d-flex notvisited"}>
         <img src={props.coupon.image} className="rounded-circle img-fluid" alt="" />
         <div className="d-flex d-flex justify-content-between flex-grow-1">
             <div className="mr-auto">

@@ -93,6 +93,7 @@ class AdminCoupons extends Component {
         })
     }
 
+    // Open modal and get single event/Service
     openModal = (id, type) => {
         this.setState({showModal: true, loading: true, eventType: type});
         let url = "/api/" + type + "/" + id;
@@ -256,9 +257,11 @@ class AdminCoupons extends Component {
                                                                 <tr key={event._id}>
                                                                     <th scope="row">{i + 1}</th>
                                                                     <td>{event.title}</td>
-                                                                    <td>{event.coupons ? event.coupons.nCoupons : 0}</td>
+                                                                    <td>{event.coupons ? 
+                                                                        (new Date(event.coupons.datelimite).getTime() > new Date().getTime()) ? event.coupons.nCoupons: "Coupon Expiré" : "Pas de coupon"}</td>
                                                                     <td className="actions text-right">
-                                                                        {event.coupons ?
+                                                                        {/* Si le coupon existe et est encore en période de validité */}
+                                                                        {event.coupons && (new Date(event.coupons.datelimite).getTime() > new Date().getTime())?
                                                                             <Hoc>
                                                                                 <button className="btn btn-dark btn-lg mr-3" onClick={() => this.previewCoupon(event)}>Afficher le coupon</button>
                                                                                 <button className="btn btn-outline-danger mr-3 btn-lg" onClick={() => this.removeCoupon(event._id, "event")}>Annuler coupons</button>
@@ -293,10 +296,11 @@ class AdminCoupons extends Component {
                                                                 <tr key={service._id}>
                                                                     <th scope="row">{i + 1}</th>
                                                                     <td>{service.title}</td>
-                                                                    <td>{service.coupons ? service.coupons.nCoupons : 0}</td>
+                                                                    <td>{service.coupons ? 
+                                                                        (new Date(service.coupons.datelimite).getTime() > new Date().getTime()) ? service.coupons.nCoupons: "Coupon Expiré" : "Pas de coupon"}</td>
                                                                     <td className="actions">
                                                                         {
-                                                                            service.coupons ?
+                                                                            service.coupons && (new Date(service.coupons.datelimite).getTime() > new Date().getTime())?
                                                                                 <Hoc>
                                                                                     <button className="btn btn-dark btn-lg mr-3" onClick={() => this.previewCoupon(service)}>Afficher le coupon</button>
                                                                                     <button className="btn btn-outline-danger mr-3 btn-lg" onClick={() => this.removeCoupon(service._id, "service")}>Annuler coupons</button>

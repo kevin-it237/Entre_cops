@@ -53,7 +53,9 @@ class Reservation extends Component {
                 });
                 // Find user coupons
                 if (event.coupons && event.coupons.clients) {
-                    if (event.coupons.clients.includes(authData.user._id)) {
+                    if (event.coupons.clients.filter(client => client.id === authData.user._id).length > 0) {
+                        event.coupons.announceType = "event";
+                        event.coupons.announceId = event._id;
                         coupons.push(event.coupons)
                     }
                 }
@@ -80,7 +82,9 @@ class Reservation extends Component {
                     });
                     // Find user coupons
                     if (service.coupons && service.coupons.clients) {
-                        if (service.coupons.clients.includes(authData.user._id)) {
+                        if (service.coupons.clients.filter(client => client.id === authData.user._id).length > 0) {
+                            service.coupons.announceType = "service";
+                            service.coupons.announceId = service._id;
                             coupons2.push(service.coupons)
                         }
                     }
@@ -111,11 +115,33 @@ class Reservation extends Component {
             this.setState({deleting: false, reservations: newReservations, selectedReservations: []});
         })
         .catch(err => {
-            this.setState({ error: "Une érreur s'est produite. Veuillez recharger", loading: false })
+            this.setState({ error: "Une érreur s'est produite. Veuillez recharger", deleting: false })
+        })
+    }
+
+    // User want to delete coupon
+    deleteCoupon = () => {
+        const {selectedCoupon, coupons} = this.state
+        const authData = JSON.parse(localStorage.getItem("authData"));
+        this.setState({ deleting: true });
+
+        let url = '/api/announce/' + selectedCoupon.announceId + '/retrieve/coupon';
+        let coupon = { ...selectedCoupon};
+        coupon.nCoupons = Number(coupon.nCoupons) + 1;
+        let newClients = coupon.clients.filter(client => client.id !== authData.user._id)
+        coupon.clients = newClients;
+        axios.patch(url, { coupon: coupon, announceType: selectedCoupon.announceType })
+        .then(res => {
+            let newCoupons = coupons.filter(coupon => JSON.stringify(coupon) !== JSON.stringify(selectedCoupon) )
+            this.setState({ deleting: false, coupons: newCoupons, showModal: false, selectedCoupon: null })
+        })
+        .catch(err => {
+            this.setState({ error: 'Une erreur s\'est produite. Veuillez reéssayer.', deleting: false })
         })
     }
 
     displayCoupon = (coupon) => {
+        console.log(coupon)
         this.setState({showModal: true, selectedCoupon: coupon})
     }
 
@@ -136,7 +162,7 @@ class Reservation extends Component {
                                         {
                                             this.state.loading ? <div className="d-block ml-auto mr-auto text-center mt-5"><Loader /></div> :
                                                 this.state.coupons.map((coupon, id) => (
-                                                    <CouponItem key={id} coupon={coupon} />
+                                                    <CouponItem displayCoupon={this.displayCoupon} key={id} coupon={coupon} />
                                                 ))
                                         }
                                     </Tab>
@@ -176,6 +202,9 @@ class Reservation extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="py-3">
+                            <Button variant="danger" disabled={this.state.deleting} onClick={() => this.deleteCoupon()}>
+                                {this.state.deleting ? <Loader color="white" />:"Supprimer"}
+                            </Button>
                             <Button variant="default" onClick={() => this.setState({ showModal: false })}>
                                 Fermer
                             </Button>

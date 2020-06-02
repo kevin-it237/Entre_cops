@@ -14,9 +14,9 @@ class Home extends Component {
                                 <img src={img} className="img-fluid " alt="" />
                             </div>
                             <div className="col-sm-12 col-md-6 d-md-center">
-                                <h1><b>Vous avez des services ou</b> </h1>
-                                <h1><b>des actualités à communiquer ?</b></h1>
-                                <a className="btn btn-outline-light btn-lg mt-4 supplierdemand" href="/supplier">Devenez un Partenaire Maintenant</a>
+                                <h2><b>Vous avez des services ou</b> </h2>
+                                <h2><b>des actualités à communiquer ?</b></h2>
+                                <a className="btn btn-outline-light btn-lg mt-5 supplierdemand" href="/supplier">Devenez un Partenaire Maintenant</a>
                             </div>
                         </div>
                     </div>
