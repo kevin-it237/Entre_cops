@@ -201,7 +201,7 @@ class AdminService extends Component {
                     refreshServiceList={this.refreshServiceList} />
 
                 {/* reservation list */}
-                <Modal show={this.state.showReservationListModal} onHide={() => this.setState({showReservationListModal : false})} size="lg" >
+                <Modal show={this.state.showReservationListModal} onHide={() => this.setState({showReservationListModal : false, selectedReservations: []})} size="lg" >
                     <Modal.Header closeButton>
                         <Modal.Title>Liste des réservations</Modal.Title>
                     </Modal.Header>

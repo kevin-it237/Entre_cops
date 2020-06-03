@@ -90,7 +90,7 @@ class LoginForm extends Component {
                     <img src={userLogo} id="icon" alt="User Icon" />
                     </div>
 
-                    <form>
+                    <form className="pr-4 pl-4">
                         {error && error.length ? <div className="alert alert-danger">{error}</div> : null}
                         <input type="email" value={email} onChange={(e) => this.handleInputChange(e)} id="email" className="fadeIn second" name="email" placeholder="Adresse Email" />
                         {isTyping && !emailValid ? <div style={{ color: "red" }}>Email non valide.</div> : null}
