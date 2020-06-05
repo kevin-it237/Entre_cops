@@ -633,7 +633,7 @@ class DetailsPage extends Component {
                                                     {
                                                         announce.comments&&announce.comments.length ?
                                                         announce.comments.reverse().map((comment, i) => (
-                                                            <ReviewItem key={i} deleteComment={this.deleteComment} deleting={this.state.deletingComment} role={this.props.user.role ? this.props.user.role: ""} comment={comment} />
+                                                            <ReviewItem key={i} deleteComment={this.deleteComment} deleting={this.state.deletingComment} role={this.props.user&&this.props.user.role ? this.props.user.role: "visitor"} comment={comment} />
                                                         ))
                                                         : <h5 className="text-center py-3">Aucun commentaire</h5>
                                                     }
