@@ -6,6 +6,7 @@ import Loader from '../../globalComponent/Loader';
 import {Tab, Tabs, Modal, Button} from 'react-bootstrap';
 import {CouponPreview} from '../../components/CouponSchema/CouponPreview'
 import {ReservationItem} from './ReservationItem';
+import {PaymentItem} from './PaymentItem';
 import {CouponItem} from './CouponItem';
 import './Reservations.scss';
 import Hoc from '../../globalComponent/Hoc';
@@ -177,6 +178,9 @@ class Reservation extends Component {
                                             {this.state.selectedReservations.length > 0&&
                                             <button disabled={deleting} onClick={this.deleteReservation} className="btn btn-danger">{deleting ? <Loader color="white" />:"Supprimer"}</button>}
                                         </div>
+                                    </Tab>
+                                    <Tab eventKey="payment" title="Historique des paiements">
+                                        {/* <PaymentItem /> */}
                                     </Tab>
                                 </Tabs>
                             </div>

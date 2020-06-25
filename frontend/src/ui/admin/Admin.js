@@ -29,6 +29,7 @@ const AdminSuppliers = lazy(() => import('./AdminSuppliers/AdminSuppliers'))
 const AdminUsers = lazy(() => import('./AdminUsers/AdminUsers'))
 const AdminSlider = lazy(() => import('./AdminSlider/AdminSlider'))
 const AdminEmails = lazy(() => import('./AdminEMails/AdminEMails'))
+const AdminPayments = lazy(() => import('./AdminPayments/AdminPayments'))
 
 class Admin extends Component {
 
@@ -93,6 +94,9 @@ class Admin extends Component {
                                 <NavLink className="navbar-brand" to="/admin/coupons">
                                     <h3 className="d-inline align-middle">COUPONS</h3>
                                 </NavLink> 
+                                <NavLink className="navbar-brand" to="/admin/payments">
+                                    <h3 className="d-inline align-middle">PAIEMENTS</h3>
+                                </NavLink> 
                                 <NavLink className="navbar-brand" to="/admin/emails">
                                     <h3 className="d-inline align-middle">ENVOI DES EMAILS</h3>
                                 </NavLink>
@@ -134,6 +138,7 @@ class Admin extends Component {
                                 <Route exact path="/admin/users" component={AdminUsers} />
                                 <Route exact path="/admin/slider" component={AdminSlider} />
                                 <Route exact path="/admin/emails" component={AdminEmails} />
+                                <Route exact path="/admin/payments" component={AdminPayments} />
                                 
                             </Suspense>
                         </div>
