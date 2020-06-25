@@ -351,14 +351,14 @@ class DetailsPage extends Component {
                         addNotification("warning", "Coupon Info!", "Vous avez déja télécharger le coupon.")
                     } else {
                         // Verify if user have already make reservation
-                        let haveMakedReservation = false;
-                        this.state.announce.reservations.forEach(res => {
-                            if (res.userId === this.props.user._id) {
-                                haveMakedReservation = true;
-                                return;
-                            }
-                        })
-                        if(haveMakedReservation) {
+                        // let haveMakedReservation = false;
+                        // this.state.announce.reservations.forEach(res => {
+                        //     if (res.userId === this.props.user._id) {
+                        //         haveMakedReservation = true;
+                        //         return;
+                        //     }
+                        // })
+                        // if(haveMakedReservation) {
                             this.setState({downloadingCoupon: true})
                             // update the the remainings coupons
                             let url = rootUrl + '/api/' + this.props.match.params.anounceType + '/' + this.state.announce._id + '/add/coupon';
@@ -391,9 +391,10 @@ class DetailsPage extends Component {
                             .catch(err => {
                                 this.setState({ loading: false, couponError: 'Une erreur s\'est produite. Veuillez reéssayer.' });
                             })
-                        } else {
-                            addNotification("warning", "Coupon Info!", "Veuillez effectuer une reservation avant de télécharger le coupon.")
-                        }
+                            // User have not made reservation
+                        // } else {
+                        //     addNotification("warning", "Coupon Info!", "Veuillez effectuer une reservation avant de télécharger le coupon.")
+                        // }
                     }
                 }
             }
@@ -520,7 +521,7 @@ class DetailsPage extends Component {
                                                 }
                                                     <hr />
                                                     <button className="button mt-3 book" 
-                                                        onClick={this.openReservationModal}>Reserver</button>
+                                                        onClick={this.openReservationModal}>Reserver ({announce.maxReservation - announce.reservations.length} restants)</button>
                                                     <button className="button mt-3 reccommand" 
                                                         onClick={this.openRecommandationModal}>Recommander</button>
                                                 </div>
@@ -704,7 +705,7 @@ class DetailsPage extends Component {
                                             }
                                                 <hr />
                                                 <button className="button mt-3 book" 
-                                                    onClick={() => this.openReservationModal()}>Reserver</button>
+                                                    onClick={() => this.openReservationModal()}>Reserver ({announce.maxReservation - announce.reservations.length} restants)</button>
                                                 <button className="button mt-3 reccommand" 
                                                     onClick={() => this.openRecommandationModal()}>Recommander</button>
                                             </div>
