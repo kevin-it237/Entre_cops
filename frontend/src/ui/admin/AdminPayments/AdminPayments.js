@@ -96,6 +96,7 @@ class AdminPayments extends Component {
                                         <th>Nom</th>
                                         <th>Email</th>
                                         <th>Tel</th>
+                                        <th>Actu/Service</th>
                                         <th>Somme</th>
                                         <th>Date</th>
                                         <th>Actions</th>
@@ -107,6 +108,7 @@ class AdminPayments extends Component {
                                         <th>Joe Doe</th>
                                         <td>joedoe@gmail.com</td>
                                         <td>655891562</td>
+                                        <td>Lounge Galaxy</td>
                                         <td>1500 FCFA</td>
                                         <td><DateFormat date={new Date()} /></td>
                                         <td className="actions"><button className="btn btn-outline-dark" onClick={() => this.openModal()}>Afficher</button></td>
@@ -116,6 +118,7 @@ class AdminPayments extends Component {
                                         <th>Joe Doe</th>
                                         <td>joedoe@gmail.com</td>
                                         <td>655891562</td>
+                                        <td>Chop et Yamo</td>
                                         <td>1500 FCFA</td>
                                         <td><DateFormat date={new Date()} /></td>
                                         <td className="actions"><button className="btn btn-outline-dark" onClick={() => this.openModal()}>Afficher</button></td>
@@ -125,6 +128,7 @@ class AdminPayments extends Component {
                                         <th>Joe Doe</th>
                                         <td>joedoe@gmail.com</td>
                                         <td>655891562</td>
+                                        <td>Lounge Galaxy</td>
                                         <td>1000 FCFA</td>
                                         <td><DateFormat date={new Date()} /></td>
                                         <td className="actions"><button className="btn btn-outline-dark" onClick={() => this.openModal()}>Afficher</button></td>
@@ -134,6 +138,7 @@ class AdminPayments extends Component {
                                         <th>Joe Doe</th>
                                         <td>joedoe@gmail.com</td>
                                         <td>655891562</td>
+                                        <td>Chop et Yamo</td>
                                         <td>1000 FCFA</td>
                                         <td><DateFormat date={new Date()} /></td>
                                         <td className="actions"><button className="btn btn-outline-dark" onClick={() => this.openModal()}>Afficher</button></td>
