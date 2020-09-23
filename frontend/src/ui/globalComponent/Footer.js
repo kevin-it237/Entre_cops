@@ -23,8 +23,8 @@ class Footer extends Component {
                             <ul>
                                 <li><a href="/#">Contact</a></li>
                                 <li><a href="/#">A propos</a></li>
-                                <li><a href="/#">Conditions</a></li>
                                 <li><a href="/#">Confidentialité</a></li>
+                                <li><a href="/#">Termes & Conditions</a></li>
                             </ul>
                         </div>
                         <div className="col-sm-12 col-md-3">
