@@ -12,7 +12,6 @@ const serviceSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     title: { type: String, required: true },
     category: { type: String, required: true },
-    problem: { type: String, required: true },
     offre: { type: String, required: true },
     duration: { type: String, required: false },
     target: { type: String, required: true },

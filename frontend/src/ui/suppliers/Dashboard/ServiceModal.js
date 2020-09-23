@@ -14,7 +14,6 @@ class ServiceModal extends Component {
         title: '',
         category: '',
         cible: '',
-        probleme: '',
         serviceVideo: '',
         youtubeVideoLink: '',
         offre: '',
@@ -33,7 +32,6 @@ class ServiceModal extends Component {
         cibleValid: false,
         placeValid: false,
         offreValid: false,
-        problemeValid: false,
         serviceImageValid: false,
         maxReservationValid: false,
         loading: false,
@@ -61,15 +59,12 @@ class ServiceModal extends Component {
     }
 
     validateField = (fieldName, value) => {
-        let { titleValid, problemeValid, cibleValid, serviceImageValid, 
+        let { titleValid, cibleValid, serviceImageValid, 
             categoryValid, offreValid, placeValid, maxReservationValid } = this.state;
 
         switch (fieldName) {
             case 'title':
                 titleValid = value.length > 0;
-                break;
-            case 'probleme':
-                problemeValid = value.length > 0;
                 break;
             case 'cible':
                 cibleValid = value.length > 0;
@@ -94,7 +89,6 @@ class ServiceModal extends Component {
         }
         this.setState({
             titleValid: titleValid,
-            problemeValid: problemeValid,
             cibleValid: cibleValid,
             serviceImageValid: serviceImageValid,
             categoryValid: categoryValid,
@@ -108,7 +102,6 @@ class ServiceModal extends Component {
         this.setState({
             formValid:
                 this.state.titleValid &&
-                this.state.problemeValid &&
                 this.state.cibleValid &&
                 this.state.categoryValid &&
                 this.state.serviceImageValid &&
@@ -122,11 +115,10 @@ class ServiceModal extends Component {
         e.preventDefault();
         if (this.state.formValid) {
             const formData = new FormData();
-            const { title, probleme, cible, category, images, serviceVideo, offre, duration, place, youtubeVideoLink, tags, mapLink, maxReservation } = this.state;
+            const { title,  cible, category, images, serviceVideo, offre, duration, place, youtubeVideoLink, tags, mapLink, maxReservation } = this.state;
             formData.append('title', title);
             formData.append('category', category);
             formData.append('cible', cible);
-            formData.append('problem', probleme);
             formData.append('youtubeVideoLink', youtubeVideoLink);
             formData.append('offre', offre);
             formData.append('duration', duration);
@@ -178,7 +170,6 @@ class ServiceModal extends Component {
                                 title: '',
                                 cible: '',
                                 category: '',
-                                probleme: '',
                                 serviceVideo: '',
                                 maxReservation: '',
                                 offre:'',
@@ -247,7 +238,6 @@ class ServiceModal extends Component {
                     cible: service.target,
                     offre: service.offre,
                     place: service.place,
-                    probleme: service.problem,
                     serviceVideo: service.video&&service.video.length ? rootUrl + "/" + service.video : null,
                     previewImages: images,
                     maxReservation: service.maxReservation,
@@ -258,7 +248,6 @@ class ServiceModal extends Component {
                     maxReservationValid: true,
                     tags: service.tags,
                     titleValid: true,
-                    problemeValid: true,
                     cibleValid: true,
                     serviceImageValid: true,
                     categoryValid: true,
@@ -368,7 +357,7 @@ class ServiceModal extends Component {
     }
 
     render() {
-        const { serviceVideo, title, probleme, cible, problemeValid, youtubeVideoLink,
+        const { serviceVideo, title, cible, youtubeVideoLink,
             category, serviceImageValid, titleValid, cibleValid, categoryValid, offre, place, placeValid,
             error, loading, isTyping, categories, validating, deleting, duration, offreValid, mapLink,
             maxReservation, maxReservationValid } = this.state;
@@ -404,11 +393,6 @@ class ServiceModal extends Component {
                                                         }
                                                     </select>
                                                     {isTyping && !categoryValid ? <div className="invalid-feedback">Sélectionnez une catégorie</div> : null}
-                                                </div>
-                                                <div className="form-group">
-                                                    <label for="name">Problème</label>
-                                                    <textarea type="text" value={probleme} className={isTyping && !problemeValid ? "form-control is-invalid" : "form-control"} onChange={(e) => this.handleInputChange(e)} name="probleme" rows={2} placeholder="Problème"></textarea>
-                                                    {isTyping && !problemeValid ? <div className="invalid-feedback">Invalide</div> : null}
                                                 </div>
                                                 <div className="form-group">
                                                     <label for="name">Offre</label>

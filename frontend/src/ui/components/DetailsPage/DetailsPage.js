@@ -613,13 +613,6 @@ class DetailsPage extends Component {
                                                             <p>{announce.offre}</p>
                                                         </div>
                                                     </div>
-                                                    <div className="otherinfos">
-                                                        <div className="d-flex flex-column">
-                                                            <h3>Problème</h3>
-                                                            <p>{announce.problem}</p>
-                                                        </div>
-                                                        <hr/>
-                                                    </div>
                                                 </Hoc>:null
                                             }
 
